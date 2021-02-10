@@ -25,7 +25,7 @@ trigger ContractOverlaping on Contract__c (after insert, after update) {
                             }
                             addedId = c.Id;
                 }
-        
+
 
         if(isOverlaped) {
             String errorMessage = 'Contract that you trying to create is overlaping with : ';
@@ -38,6 +38,17 @@ trigger ContractOverlaping on Contract__c (after insert, after update) {
 
 
         private Boolean isOverlaped(Contract__c oldContract,Contract__c newContract){
+            if(oldContract.End_Date__c==null){
+                if(oldContract.Start_Date__c<newContract.End_Date__c || oldContract.Start_Date__c < newContract.Start_Date__c){
+                    return true;
+                }
+            }
+            if (newContract.End_Date__c == null){
+
+                if(oldContract.End_Date__c > newContract.Start_Date__c){
+                    return true;
+                }
+            }
 
             if(    (oldContract.Start_Date__c > newContract.Start_Date__c) && (oldContract.Start_Date__c < newContract.End_Date__c)
                     || (oldContract.End_Date__c > newContract.Start_Date__c   && oldContract.End_Date__c < newContract.End_Date__c)
