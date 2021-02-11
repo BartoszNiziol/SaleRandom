@@ -1,0 +1,39 @@
+
+
+<apex:page id="SearchForDoctor" controller="BNSearchController" >
+    <style>
+
+
+
+</style>
+    <apex:form>
+        <apex:pageBlock title="Search for doctors"  >
+        <apex:pageBlockSection columns="2" >
+            <apex:inputField value="{!doctor.First_Name__c}"/>
+            <apex:inputField value="{!doctor.Email__c}"/>
+            <apex:inputField value="{!doctor.Name}"/>
+            <apex:inputField value="{!doctor.Country__c}"/>
+        </apex:pageBlockSection>
+
+        <apex:pageBlockButtons location="bottom" >
+            <apex:commandButton action="{!search}" value="Search" />
+            <apex:commandButton action="{!clear}" value="Clear"/>
+        </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <apex:pageBlock title="Results"  >
+            <apex:pageBlockSection >
+                <apex:pageBlockTable value ="{! foundDoctors}" var="docs" >
+                    <apex:column  headerValue="Action">
+                         <apex:outputLink value="https://resourceful-goat-uzeiu7-dev-ed.my.salesforce.com/{!docs.Id}/e?retURL=%2{!docs.Id}">Edit</apex:outputLink>
+                          |
+                         <apex:outputLink value="https://resourceful-goat-uzeiu7-dev-ed.my.salesforce.com/{!docs.Id}"> View</apex:outputLink>
+                    </apex:column>
+                    <apex:column value="{! docs.First_Name__c}" headerValue="First Name"/>
+                    <apex:column value="{! docs.NAME}" headerValue="Last Name"/>
+                    <apex:column value="{! docs.Email__c}" headerValue="Email"/>
+                    <apex:column value="{! docs.Country__c}" headerValue="Country"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

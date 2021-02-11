@@ -2,46 +2,67 @@
  * Created by BRITENET on 10.02.2021.
  */
 
-trigger ContractOverlaping on Contract__c (after insert, after update) {
-    Id addedId = null;
-    List<Contract__c > invalidContract = new List<Contract__c>();
-    Boolean isOverlaped = false;
+trigger ContractOverlaping on Contract__c (before insert, before update) {
 
+    Map<String, List<Contract__c>> doctorsHospitalsIdToContracts = new Map<String, List< Contract__c>>();
+    List<Id> doctorsIdList = new List<Id>();
+    List<Id> hospitalsIdList = new List<Id>();
 
-    For (Contract__c c : Trigger.new) {
-        List<Contract__c> matchedContracts = [
-                SELECT Id,Start_Date__c,End_Date__c,Doctor__r.First_Name__c,Doctor__r.Name,Hospital__r.Name
-                FROM Contract__c
-                WHERE Doctor__c = :c.Doctor__c AND Hospital__c = :c.Hospital__c
-        ];
+    For (Contract__c contractToAdd : Trigger.new) {
+        doctorsIdList.add(contractToAdd.Doctor__c);
+        hospitalsIdList.add(contractToAdd.Hospital__c);
+    }
 
-        System.debug(matchedContracts);
+    List<Contract__c> pairingContracts = [
+            SELECT Id,Start_Date__c,End_Date__c,Doctor__r.First_Name__c,Doctor__r.Name,Hospital__r.Name
+            FROM Contract__c
+            WHERE Doctor__c IN :doctorsIdList AND Hospital__c IN :hospitalsIdList
+    ];
 
-        for (Contract__c match : matchedContracts) {
+    for (Contract__c matchingContract : pairingContracts) {
+        if (doctorsHospitalsIdToContracts.containsKey(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c))) {
+            doctorsHospitalsIdToContracts.get(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c))
+                    .add(matchingContract);
+        } else {
+            doctorsHospitalsIdToContracts.put(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c), new List<Contract__c>{
+                    matchingContract
+            });
+        }
+    }
+    for (Contract__c contractsToAdd : Trigger.new) {
+        String errorMessage = 'Contract that you trying to create is overlapping with :';
+        Set<String> doctorsHospitalsIdToContractsKeySet = doctorsHospitalsIdToContracts.keySet();
 
-            if (isOverlaped(c, match)) {
-                invalidContract.add(match);
-                isOverlaped = true;
+        for (String combinedDoctorHospitalId : doctorsHospitalsIdToContractsKeySet) {
+            if (combinedDoctorHospitalId.equals(String.valueOf(contractsToAdd.Doctor__c) + String.valueOf(contractsToAdd.Hospital__c))) {
+                for (Contract__c oldContract : doctorsHospitalsIdToContracts.get(combinedDoctorHospitalId)) {
+                    if (isOverlapped(oldContract, contractsToAdd)) {
+
+                        Date startDate = oldContract.Start_Date__c;
+                        Date endDate = oldContract.End_Date__c;
+                        String dateDisplayString = startDate.day()
+                                + '/' + startDate.month()
+                                + '/' + startDate.year()
+                                + '-'
+                                + endDate.day()
+                                + '/'
+                                + endDate.month()
+                                + '/'
+                                + endDate.year();
+
+                        errorMessage += oldContract.Doctor__r.First_Name__c
+                                + ' ' + oldContract.Doctor__r.Name
+                                + ' in ' + oldContract.Hospital__r.Name
+                                + ' on ' + dateDisplayString + ' | ';
+                    }
+                }
             }
         }
-        addedId = c.Id;
+        contractsToAdd.addError(errorMessage);
     }
 
 
-    if (isOverlaped) {
-        String errorMessage = 'Contract that you trying to create is overlaping with : ';
-        for (Contract__c inv : invalidContract) {
-            Date startDate = inv.Start_Date__c;
-            Date endDate = inv.End_Date__c;
-            String dateDisplayString = startDate.day()+'/'+startDate.month()+'/'+startDate.year()+'-'+endDate.day()+'/'+endDate.month()+'/'+endDate.year();
-            errorMessage += inv.Doctor__r.First_Name__c+' '+inv.Doctor__r.Name +' in '+inv.Hospital__r.Name+' on '+ dateDisplayString+ ' | ';
-        }
-
-        Trigger.newMap.get(addedId).addError(errorMessage);
-    }
-
-
-    private Boolean isOverlaped(Contract__c oldContract, Contract__c newContract) {
+    private Boolean isOverlapped(Contract__c oldContract, Contract__c newContract) {
         if (oldContract.End_Date__c == null) {
             if (oldContract.Start_Date__c < newContract.End_Date__c || oldContract.Start_Date__c < newContract.Start_Date__c) {
                 return true;
