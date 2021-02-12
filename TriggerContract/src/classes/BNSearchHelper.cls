@@ -15,7 +15,6 @@ public with sharing class BNSearchHelper {
         else {
             firstNameLike = '%';
         }
-
         if ((lastName != null)&&(lastName != '')) {
             lastNameLike = '%' + lastName + '%';
         }
@@ -34,13 +33,6 @@ public with sharing class BNSearchHelper {
         else {
             countryLike = '%';
         }
-
-
-
-
-
-
-
         List<Doctor__c> queredDoctors = [
                 SELECT Id,First_Name__c,Name,Email__c,Country__c
                 FROM Doctor__c
@@ -49,11 +41,6 @@ public with sharing class BNSearchHelper {
                 AND Email__c LIKE :emailLike
                 AND Country__c LIKE :countryLike
         ];
-
-
         return queredDoctors;
-
     }
-
-
 }

@@ -1,35 +1,55 @@
-
-
-<apex:page id="SearchForDoctor" controller="BNSearchController" >
+<apex:page id="SearchForDoctor" controller="BNSearchController">
     <style>
+    .TitleFacet{
+       font-size: 23px;
+       margin-top: 10px;
+       margin-bottom: 10px;
+       padding-left: 10px;
+       font-weight: bold;
+    }
+   #SearchForDoctor\:j_id1\:searchBlock > div.pbBottomButtons > table > tbody > tr > td.pbTitle
+    {
+        width: 0px;
+        padding: 0px;
+    }
+    </style>
 
-
-
-</style>
     <apex:form>
-        <apex:pageBlock title="Search for doctors"  >
-        <apex:pageBlockSection columns="2" >
-            <apex:inputField value="{!doctor.First_Name__c}"/>
-            <apex:inputField value="{!doctor.Email__c}"/>
-            <apex:inputField value="{!doctor.Name}"/>
-            <apex:inputField value="{!doctor.Country__c}"/>
-        </apex:pageBlockSection>
-
-        <apex:pageBlockButtons location="bottom" >
-            <apex:commandButton action="{!search}" value="Search" />
-            <apex:commandButton action="{!clear}" value="Clear"/>
-        </apex:pageBlockButtons>
+        <apex:pageBlock title="Search for doctors" id="searchBlock" >
+            <apex:facet name="header">
+               <div class="TitleFacet">Search For Doctors</div>
+            </apex:facet>
+            <apex:pageBlockSection columns="2">
+                <apex:inputField value="{!doctor.First_Name__c}" />
+                <apex:inputField value="{!doctor.Email__c}"/>
+                <apex:inputField value="{!doctor.Name}" required="true"/>
+                <apex:inputField value="{!doctor.Country__c}"/>
+            </apex:pageBlockSection >
+            <apex:pageBlockButtons location="bottom">
+                <div align="center">
+                <apex:commandButton action="{!search}" value="Search" style="" reRender="resultBlock,searchBlock" />
+                <apex:commandButton action="{!clear}" value="Clear" immediate="true" reRender="searchBlock,resultBlock" />
+                </div>
+            </apex:pageBlockButtons>
         </apex:pageBlock>
-        <apex:pageBlock title="Results"  >
-            <apex:pageBlockSection >
-                <apex:pageBlockTable value ="{! foundDoctors}" var="docs" >
-                    <apex:column  headerValue="Action">
-                         <apex:outputLink value="https://resourceful-goat-uzeiu7-dev-ed.my.salesforce.com/{!docs.Id}/e?retURL=%2{!docs.Id}">Edit</apex:outputLink>
-                          |
-                         <apex:outputLink value="https://resourceful-goat-uzeiu7-dev-ed.my.salesforce.com/{!docs.Id}"> View</apex:outputLink>
+        <apex:pageBlock title="Results" id ="resultBlock">
+            <apex:facet name="header">
+                <div class="TitleFacet">Results</div>
+            </apex:facet>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockTable value="{! foundDoctors}" var="docs">
+                    <apex:column headerValue="Action">
+                        <apex:outputLink target="_blank"
+                                         value="https://resourceful-goat-uzeiu7-dev-ed.my.salesforce.com/{!docs.Id}/e?retURL=%2{!docs.Id}">
+                            Edit
+                        </apex:outputLink>
+                        |
+                        <apex:outputLink target="_blank"
+                                         value="https://resourceful-goat-uzeiu7-dev-ed.my.salesforce.com/{!docs.Id}">
+                            View
+                        </apex:outputLink>
                     </apex:column>
-                    <apex:column value="{! docs.First_Name__c}" headerValue="First Name"/>
-                    <apex:column value="{! docs.NAME}" headerValue="Last Name"/>
+                    <apex:column value="{! docs.First_Name__c} {! docs.NAME}" headerValue="Full Name"/>
                     <apex:column value="{! docs.Email__c}" headerValue="Email"/>
                     <apex:column value="{! docs.Country__c}" headerValue="Country"/>
                 </apex:pageBlockTable>
