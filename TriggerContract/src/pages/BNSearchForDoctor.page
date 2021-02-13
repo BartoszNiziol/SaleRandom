@@ -7,13 +7,8 @@
        padding-left: 10px;
        font-weight: bold;
     }
-   #SearchForDoctor\:j_id1\:searchBlock > div.pbBottomButtons > table > tbody > tr > td.pbTitle
-    {
-        width: 0px;
-        padding: 0px;
-    }
-    </style>
 
+    </style>
     <apex:form>
         <apex:pageBlock title="Search for doctors" id="searchBlock" >
             <apex:facet name="header">
@@ -25,18 +20,17 @@
                 <apex:inputField value="{!doctor.Name}" required="true"/>
                 <apex:inputField value="{!doctor.Country__c}"/>
             </apex:pageBlockSection >
-            <apex:pageBlockButtons location="bottom">
                 <div align="center">
                 <apex:commandButton action="{!search}" value="Search" style="" reRender="resultBlock,searchBlock" />
                 <apex:commandButton action="{!clear}" value="Clear" immediate="true" reRender="searchBlock,resultBlock" />
                 </div>
-            </apex:pageBlockButtons>
         </apex:pageBlock>
         <apex:pageBlock title="Results" id ="resultBlock">
             <apex:facet name="header">
                 <div class="TitleFacet">Results</div>
             </apex:facet>
             <apex:pageBlockSection columns="1">
+                <apex:outputPanel >
                 <apex:pageBlockTable value="{! foundDoctors}" var="docs">
                     <apex:column headerValue="Action">
                         <apex:outputLink target="_blank"
@@ -53,6 +47,7 @@
                     <apex:column value="{! docs.Email__c}" headerValue="Email"/>
                     <apex:column value="{! docs.Country__c}" headerValue="Country"/>
                 </apex:pageBlockTable>
+                </apex:outputPanel>
             </apex:pageBlockSection>
         </apex:pageBlock>
     </apex:form>

@@ -8,6 +8,7 @@ public with sharing class BNSearchController {
 
     public BNSearchController(){
         doctor = new Doctor__c();
+        foundDoctors = new List<Doctor__c>();
     }
 
     public void search(){
@@ -18,6 +19,4 @@ public with sharing class BNSearchController {
         foundDoctors = new List<Doctor__c>();
         doctor = new Doctor__c();
     }
-
-
 }

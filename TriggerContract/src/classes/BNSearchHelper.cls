@@ -40,6 +40,7 @@ public with sharing class BNSearchHelper {
                 AND Name LIKE :lastNameLike
                 AND Email__c LIKE :emailLike
                 AND Country__c LIKE :countryLike
+                ORDER BY Name
         ];
         return queredDoctors;
     }
