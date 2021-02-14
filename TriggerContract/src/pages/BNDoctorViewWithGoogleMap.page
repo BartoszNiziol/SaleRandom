@@ -1,0 +1,95 @@
+<apex:page id="BNDoctorViewG" standardController="Doctor__c">
+    <style>
+.TitleFacet{
+       font-size: 20px;
+       padding-left: 10px;
+       font-weight: bold;
+       background-color: transparent;
+       color :black;
+
+    }
+    .PageFacet{
+         padding-top: 9px;
+        padding-bottom 6 px;
+       font-size: 23px;
+       padding-left: 10px;
+       font-weight: bold;
+       background-color: transparent;
+       color :black;
+
+    }
+    .bPageBlock.apexDefaultPageBlock .pbSubheader
+    {
+        background-color: transparent;
+    }
+
+
+
+    </style>
+    <apex:pageBlock>
+
+        <apex:facet name="header" >
+            <div class="PageFacet">Doctor Detail</div>
+        </apex:facet>
+            <div style="float:left;"></div>
+        <apex:form>
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Edit}" value="Edit"   />
+                <apex:commandButton action="{!Delete}" value="Delete"   />
+            </div>
+
+
+            <apex:pageBlockSection title="Details" columns="2">
+                <apex:facet name="header" >
+                    <div class="TitleFacet">Details</div>
+                </apex:facet>
+                <apex:outputField value="{!Doctor__c.First_Name__c}" label="First Name"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Phone_Number__c}" label="Phone Number"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Name}" label="Last Name"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Email__c}" label="Email"></apex:outputField>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Address">
+                <apex:facet name="header" >
+                    <div class="TitleFacet">Address</div>
+                </apex:facet>
+                <apex:outputField value="{!Doctor__c.City__c}" label="City"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Country__c}" label="Country"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Street__c}" label="Street"></apex:outputField>
+
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Other" columns="1">
+                <apex:facet name="header" >
+                    <div class="TitleFacet">Other</div>
+                </apex:facet>
+                <apex:outputField value="{!Doctor__c.Birthday_Date__c}" label="Birth Date"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.License_Number__c}" label="License Number"></apex:outputField>
+            </apex:pageBlockSection>
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Edit}" value="Edit"   />
+                <apex:commandButton action="{!Delete}" value="Delete"   />
+            </div>
+        </apex:form>
+    </apex:pageBlock>
+    <apex:pageBlock>
+        <apex:facet name="header" >
+            <div class="PageFacet">Contracts</div>
+        </apex:facet>
+        <apex:form>
+            <apex:pageBlockTable value="{!Doctor__c.Contracts__r}" var="contract">
+                <apex:column headerValue="Action">
+                    <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.Edit,contract.Id)}">
+                        Edit
+                    </apex:outputLink>
+                    |
+                    <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.View,contract.Id)}">
+                        View
+                    </apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="Contract Id" value="{!contract.Id}"></apex:column>
+                <apex:column headerValue="Hospital Name" value="{!contract.Hospital__r.Name}"></apex:column>
+                <apex:column headerValue="Start Date" value="{!contract.Start_Date__c}"></apex:column>
+                <apex:column headerValue="End Date" value="{!contract.End_Date__c}"></apex:column>
+            </apex:pageBlockTable>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>
