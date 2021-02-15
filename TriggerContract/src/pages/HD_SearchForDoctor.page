@@ -10,6 +10,9 @@
                 <div align="center">
                 <apex:commandButton action="{!search}" value="{!$Label.Search_Button}"  reRender="resultBlock,searchBlock" />
                 <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" immediate="true" reRender="searchBlock,resultBlock" />
+                    <apex:commandButton action="{!URLFOR($Page.HD_ExportCsvSearchForDoctor,null,
+                    [surname=inputFormDoctor.Name,firstName=inputFormDoctor.First_Name__c,email=inputFormDoctor.Email__c,country = inputFormDoctor.Country__c])}"
+                                        value="{!$Label.Csv_Button}" immediate="true" reRender="searchBlock,resultBlock"  />
                 </div>
         <apex:pageBlockSection title="{!$Label.Results_Label}" id ="resultBlock" columns="1" >
                 <apex:outputPanel >
