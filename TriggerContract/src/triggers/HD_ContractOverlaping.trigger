@@ -2,7 +2,7 @@
  * Created by BRITENET on 10.02.2021.
  */
 
-trigger ContractOverlaping on Contract__c (before insert, before update) {
+trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
 
     Map<String, List<Contract__c>> doctorsHospitalsIdToContracts = new Map<String, List< Contract__c>>();
     List<Id> doctorsIdList = new List<Id>();

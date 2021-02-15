@@ -1,4 +1,4 @@
-<apex:page id="SearchForDoctor" standardController="Doctor__c" extensions="BNSearchForDoctorController" docType="html-5.0">
+<apex:page id="SearchForDoctor" standardController="Doctor__c" extensions="HD_SearchForDoctorController" docType="html-5.0">
 
     <style>
     .TitleFacet{

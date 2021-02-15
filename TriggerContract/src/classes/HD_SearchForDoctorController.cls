@@ -1,12 +1,12 @@
 
 
-public with sharing class BNSearchForDoctorController {
+public with sharing class HD_SearchForDoctorController {
 
     public Doctor__c inputFormDoctor { get; set; }
     public List<Doctor__c> foundDoctors { get; set; }
-    BNSearchForDoctorSearchHelper searchHelper = new BNSearchForDoctorSearchHelper();
+    HD_SearchForDoctorSearchHelper searchHelper = new HD_SearchForDoctorSearchHelper();
 
-    public BNSearchForDoctorController(ApexPages.StandardController standardController) {
+    public HD_SearchForDoctorController(ApexPages.StandardController standardController) {
         this.inputFormDoctor = (Doctor__c) standardController.getRecord();
         foundDoctors = new List<Doctor__c>();
     }
