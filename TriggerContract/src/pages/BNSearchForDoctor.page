@@ -1,4 +1,5 @@
 <apex:page id="SearchForDoctor" standardController="Doctor__c" extensions="BNSearchForDoctorController" docType="html-5.0">
+
     <style>
     .TitleFacet{
        font-size: 23px;
@@ -7,20 +8,20 @@
        background-color: transparent;
        color :black;
     }
-    #SearchForDoctor\:j_id1\:searchBlock\:resultBlock > div.pbSubheader.brandTertiaryBgr.tertiaryPalette
-    {
+    #SearchForDoctor\:j_id1\:searchBlock\:resultBlock > div.pbSubheader.brandTertiaryBgr.tertiaryPalette{
         background-color:transparent;
         color :black;
     }
     </style>
+
     <apex:form>
         <apex:pageBlock title="Search for doctors" id="searchBlock" >
             <apex:facet name="header">
-               <div class="TitleFacet">Search For Doctors</div>
+               <div class="TitleFacet" style="height:50px; margin-top:10px;">Search For Doctors</div>
             </apex:facet>
             <apex:pageBlockSection columns="2" >
-                <apex:inputField value="{!inputFormDoctor.First_Name__c}" />
-                <apex:inputField value="{!inputFormDoctor.Email__c}" type="text" />
+                <apex:inputField value="{!inputFormDoctor.First_Name__c}"/>
+                <apex:inputText value="{!inputFormDoctor.Email__c}"/>
                 <apex:inputField value="{!inputFormDoctor.Name}" required="true"/>
                 <apex:inputField value="{!inputFormDoctor.Country__c}"/>
             </apex:pageBlockSection >

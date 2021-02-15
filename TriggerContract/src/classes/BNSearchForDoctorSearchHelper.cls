@@ -3,7 +3,6 @@
 public with sharing class BNSearchForDoctorSearchHelper {
 
     public List<Doctor__c> queryDoctors(String firstName, String lastName, String email, String country) {
-
         List<Doctor__c> queredDoctors = [
                 SELECT Id,First_Name__c,Name,Email__c,Country__c
                 FROM Doctor__c
@@ -18,10 +17,9 @@ public with sharing class BNSearchForDoctorSearchHelper {
 
     private String queryLikeGenerator(String field) {
         String fieldLike;
-        if((field != null) && (field != '')){
-            fieldLike =  field + '%';
-        }
-        else {
+        if ((field != null) && (field != '')) {
+            fieldLike = field + '%';
+        } else {
             fieldLike = '%';
         }
         return fieldLike;

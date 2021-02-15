@@ -1,13 +1,11 @@
 <apex:page id="BNDoctorViewL" standardController="Doctor__c">
-    <style>
-.TitleFacet{
-       font-size: 20px;
-       padding-left: 10px;
-       font-weight: bold;
-       background-color: transparent;
-       color :black;
+    <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css"/>
+    <apex:includescript value="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/opencagedata/leaflet-opencage-search@1.4.1/dist/css/L.Control.OpenCageData.Search.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/opencagedata/leaflet-opencage-search@1.4.1/dist/js/L.Control.OpenCageSearch.min.js"></script>
 
-    }
+    <style>
     .PageFacet{
          padding-top: 9px;
         padding-bottom 6 px;
@@ -16,49 +14,61 @@
        font-weight: bold;
        background-color: transparent;
        color :black;
-
     }
-    .bPageBlock.apexDefaultPageBlock .pbSubheader
-    {
-        background-color: transparent;
+    #mapid{
+        height: 180px;
     }
-
-
-
+     #bigHead{
+        font-size: 23px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        margin-left: 5px;
+    }
+    #doctorTitlePrefix{
+        font-size: 15px;
+        margin-left: 5px;
+    }
     </style>
+
+    <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
+                                  style="margin-right:10px;"/></div>
+    <div id="doctorTitlePrefix">Doctor</div>
+    <div id="bigHead"></div>
     <apex:pageBlock>
-        <apex:facet name="header" >
+        <apex:facet name="header">
             <div class="PageFacet">Doctor Detail</div>
         </apex:facet>
         <apex:form>
+            <div style="text-align:center; height:30px;">
+                <apex:commandButton action="{!Edit}" value="Edit"/>
+                <apex:commandButton action="{!Delete}" value="Delete"/>
+            </div>
             <apex:pageBlockSection title="Details" columns="2">
-                <apex:facet name="header" >
-                    <div class="TitleFacet">Details</div>
-                </apex:facet>
                 <apex:outputField value="{!Doctor__c.First_Name__c}" label="First Name"></apex:outputField>
                 <apex:outputField value="{!Doctor__c.Phone_Number__c}" label="Phone Number"></apex:outputField>
                 <apex:outputField value="{!Doctor__c.Name}" label="Last Name"></apex:outputField>
                 <apex:outputField value="{!Doctor__c.Email__c}" label="Email"></apex:outputField>
             </apex:pageBlockSection>
             <apex:pageBlockSection title="Address">
-                <apex:facet name="header" >
-                    <div class="TitleFacet">Address</div>
-                </apex:facet>
                 <apex:outputField value="{!Doctor__c.City__c}" label="City"></apex:outputField>
                 <apex:outputField value="{!Doctor__c.Country__c}" label="Country"></apex:outputField>
                 <apex:outputField value="{!Doctor__c.Street__c}" label="Street"></apex:outputField>
             </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1">
+                <div id="mapid"></div>
+            </apex:pageBlockSection>
             <apex:pageBlockSection title="Other" columns="1">
-                <apex:facet name="header" >
-                    <div class="TitleFacet">Other</div>
-                </apex:facet>
                 <apex:outputField value="{!Doctor__c.Birthday_Date__c}" label="Birth Date"></apex:outputField>
                 <apex:outputField value="{!Doctor__c.License_Number__c}" label="License Number"></apex:outputField>
             </apex:pageBlockSection>
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Edit}" value="Edit"/>
+                <apex:commandButton action="{!Delete}" value="Delete"/>
+            </div>
         </apex:form>
     </apex:pageBlock>
     <apex:pageBlock>
-        <apex:facet name="header" >
+        <apex:facet name="header">
             <div class="PageFacet">Contracts</div>
         </apex:facet>
         <apex:form>
@@ -79,4 +89,41 @@
             </apex:pageBlockTable>
         </apex:form>
     </apex:pageBlock>
+
+    <script>
+     document.getElementById("bigHead").innerHTML ="{!Doctor__c.Name}"
+     var openCageApiKey = '2e8af67ee7bf4a00bbdfce25dfcdefe7';
+     var address = "{!Doctor__c.Street__c},{!Doctor__c.City__c},{!Doctor__c.Country__c}";
+     var mymap = L.map('mapid').setView([0,0], 13);
+     var api_url = 'https://api.opencagedata.com/geocode/v1/json'
+     var request_url = api_url
+    + '?'
+    + 'key=' + openCageApiKey
+    + '&q=' + address
+    + '&pretty=1'
+    + '&no_annotations=1';
+
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'pk.eyJ1IjoiYmFydG9zem5pemlvbHMiLCJhIjoiY2tsNWNndXdkMG11NDJvcDY2cG9xM2NhcSJ9.jEwnPxwOb9ERM90aVRVDEg'
+    }).addTo(mymap);
+
+      var request = new XMLHttpRequest();
+      request.open('GET', request_url, true);
+      request.send();
+      request.onload = function() {
+
+      var data = JSON.parse(request.responseText);
+      var geometry = data.results[0].geometry;
+      lat = geometry.lat;
+      lng = geometry.lng;
+      L.marker([lat,lng]).addTo(mymap);
+      mymap.setView([lat, lng]);
+  };
+    </script>
+
 </apex:page>
