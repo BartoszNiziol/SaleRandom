@@ -36,60 +36,64 @@
 
     <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
                                   style="margin-right:10px;"/></div>
-    <div id="doctorTitlePrefix">Doctor</div>
+    <div id="doctorTitlePrefix">{!$Label.Doctor_Label}</div>
     <div id="bigHead"></div>
     <apex:pageBlock>
         <apex:facet name="header">
-            <div class="PageFacet">Doctor Detail</div>
+            <div class="PageFacet">{!$Label.Doctor_Detail_Label}</div>
         </apex:facet>
         <apex:form>
+            <apex:inputtextarea ID="holdtext" STYLE="display:none;"></apex:inputtextarea>
+            <apex:outputpanel ID="copytext" STYLE="display:none">{!Doctor__c.Phone_Number__c}</apex:outputpanel>
             <div style="text-align:center; height:30px;">
-                <apex:commandButton action="{!Edit}" value="Edit"/>
-                <apex:commandButton action="{!Delete}" value="Delete"/>
+                <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
+                <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
             </div>
-            <apex:pageBlockSection title="Details" columns="2" collapsible="true">
-                <apex:outputField value="{!Doctor__c.First_Name__c}" label="First Name"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.Phone_Number__c}" label="Phone Number"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.Name}" label="Last Name"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.Email__c}" label="Email"></apex:outputField>
+            <apex:pageBlockSection title="{!$Label.Details_Label}" columns="2">
+                <apex:outputField value="{!Doctor__c.First_Name__c}"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Phone_Number__c}">
+                    <apex:commandbutton onClick="ClipBoard('{!$Component.copytext}', '{!$Component.holdtext}');" rerender="copytext" value="Copy to Clipboard"/>
+                </apex:outputField>
+                <apex:outputField value="{!Doctor__c.Name}" ></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Email__c}" ></apex:outputField>
             </apex:pageBlockSection>
-            <apex:pageBlockSection title="Address">
-                <apex:outputField value="{!Doctor__c.City__c}" label="City"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.Country__c}" label="Country"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.Street__c}" label="Street"></apex:outputField>
+            <apex:pageBlockSection title="{!$Label.Address_Label}">
+                <apex:outputField value="{!Doctor__c.City__c}" ></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Country__c}" ></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Street__c}" ></apex:outputField>
             </apex:pageBlockSection>
             <apex:pageBlockSection columns="1">
                 <div id="map"></div>
             </apex:pageBlockSection>
-            <apex:pageBlockSection title="Other" columns="1">
-                <apex:outputField value="{!Doctor__c.Birthday_Date__c}" label="Birth Date"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.License_Number__c}" label="License Number"></apex:outputField>
+            <apex:pageBlockSection title="{!$Label.Other_Label}" columns="1">
+                <apex:outputField value="{!Doctor__c.Birthday_Date__c}"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.License_Number__c}"></apex:outputField>
             </apex:pageBlockSection>
             <div style="text-align:center;">
-                <apex:commandButton action="{!Edit}" value="Edit"/>
-                <apex:commandButton action="{!Delete}" value="Delete"/>
+                <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
+                <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
             </div>
         </apex:form>
     </apex:pageBlock>
     <apex:pageBlock>
         <apex:facet name="header">
-            <div class="PageFacet">Contracts</div>
+            <div class="PageFacet">{!$Label.Contracts_Label}</div>
         </apex:facet>
         <apex:form>
             <apex:pageBlockTable value="{!Doctor__c.Contracts__r}" var="contract">
-                <apex:column headerValue="Action">
+                <apex:column headerValue="{!$Label.Action_Label}">
                     <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.Edit,contract.Id)}">
-                        Edit
+                        {!$Label.Edit_Label}
                     </apex:outputLink>
                     |
                     <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.View,contract.Id)}">
-                        View
+                        {!$Label.View_Label}
                     </apex:outputLink>
                 </apex:column>
-                <apex:column headerValue="Contract Id" value="{!contract.Id}"></apex:column>
-                <apex:column headerValue="Hospital Name" value="{!contract.Hospital__r.Name}"></apex:column>
-                <apex:column headerValue="Start Date" value="{!contract.Start_Date__c}"></apex:column>
-                <apex:column headerValue="End Date" value="{!contract.End_Date__c}"></apex:column>
+                <apex:column headerValue=" {!$Label.Contract_Id_Label}" value="{!contract.Id}"></apex:column>
+                <apex:column headerValue=" {!$Label.Hospital_Name_Label}" value="{!contract.Hospital__r.Name}"></apex:column>
+                <apex:column headerValue=" {!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"></apex:column>
+                <apex:column headerValue=" {!$Label.End_Date_Label}" value="{!contract.End_Date__c}"></apex:column>
             </apex:pageBlockTable>
         </apex:form>
     </apex:pageBlock>
@@ -98,17 +102,17 @@
     document.getElementById("bigHead").innerHTML ="{!Doctor__c.Name}"
 
     $(document).ready(function() {
-         var myOptions = {
+         let myOptions = {
          zoom: 15,
          mapTypeId: google.maps.MapTypeId.ROADMAP,
          mapTypeControl: false
     }
 
-     var map;
-     var marker;
-     var geocoder = new google.maps.Geocoder();
-     var address = "{!Doctor__c.Street__c},{!Doctor__c.City__c},{!Doctor__c.Country__c}";
-     var infowindow = new google.maps.InfoWindow({
+     let map;
+     let marker;
+     let geocoder = new google.maps.Geocoder();
+     let address = "{!Doctor__c.Street__c},{!Doctor__c.City__c},{!Doctor__c.Country__c}";
+     let infowindow = new google.maps.InfoWindow({
      content: "<b>{!Doctor__c.Name}</b><br>" + address + "AIzaSyBCiCk7ro-LGeUEXt4dp8Vyw0_ndvNiExM"
      });
 
@@ -137,9 +141,9 @@
   });
 
   function resizeIframe() {
-    var me = window.name;
+    let me = window.name;
     if (me) {
-      var iframes = parent.document.getElementsByName(me);
+      let iframes = parent.document.getElementsByName(me);
       if (iframes && iframes.length == 1) {
         height = document.body.offsetHeight;
         iframes[0].style.height = height + "px";
@@ -147,6 +151,18 @@
     }
   }
 });
-    </script>
 
+  function ClipBoard(copytextid, holdtextid){
+            copyToClipboard(copytextid);
+        }
+        function copyToClipboard(elementId) {
+          var aux = document.createElement("input");
+          aux.setAttribute("value", document.getElementById(elementId).innerHTML);
+          document.body.appendChild(aux);
+          aux.select();
+          document.execCommand("copy");
+          document.body.removeChild(aux);
+        }
+
+    </script>
 </apex:page>

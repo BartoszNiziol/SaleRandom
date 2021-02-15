@@ -6,6 +6,7 @@ public with sharing class HD_SearchForDoctorController {
     public List<Doctor__c> foundDoctors { get; set; }
     HD_SearchForDoctorSearchHelper searchHelper = new HD_SearchForDoctorSearchHelper();
 
+
     public HD_SearchForDoctorController(ApexPages.StandardController standardController) {
         this.inputFormDoctor = (Doctor__c) standardController.getRecord();
         foundDoctors = new List<Doctor__c>();
@@ -19,4 +20,8 @@ public with sharing class HD_SearchForDoctorController {
         foundDoctors = new List<Doctor__c>();
         inputFormDoctor = new Doctor__c();
     }
+
+   public void sortFullName(){
+
+   }
 }

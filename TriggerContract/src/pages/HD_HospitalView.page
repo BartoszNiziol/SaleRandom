@@ -1,4 +1,4 @@
-<apex:page id="BNDoctorViewL" standardController="Doctor__c">
+<apex:page id="HD_HospitalViev" standardController="Hospital__c">
     <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css"/>
     <apex:includescript value="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"/>
     <link rel="stylesheet"
@@ -24,7 +24,7 @@
         font-weight: bold;
         margin-left: 5px;
     }
-    #doctorTitlePrefix{
+    #hospitalPrefix{
         font-size: 15px;
         margin-left: 5px;
     }
@@ -32,71 +32,67 @@
 
     <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
                                   style="margin-right:10px;"/></div>
-    <div id="doctorTitlePrefix">Doctor</div>
+    <div id="hospitalPrefix">{!$Label.Hospital_Label}</div>
     <div id="bigHead"></div>
     <apex:pageBlock>
         <apex:facet name="header">
-            <div class="PageFacet">Doctor Detail</div>
+            <div class="PageFacet">{!$Label.Hospital_Detail_Label}</div>
         </apex:facet>
         <apex:form>
             <div style="text-align:center; height:30px;">
-                <apex:commandButton action="{!Edit}" value="Edit"/>
-                <apex:commandButton action="{!Delete}" value="Delete"/>
+                <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
+                <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
             </div>
-            <apex:pageBlockSection title="Details" columns="2">
-                <apex:outputField value="{!Doctor__c.First_Name__c}" label="First Name"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.Phone_Number__c}" label="Phone Number"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.Name}" label="Last Name"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.Email__c}" label="Email"></apex:outputField>
+            <apex:pageBlockSection title="{!$Label.Details_Label}" columns="2">
+                <apex:outputField value="{!Hospital__c.Name}" ></apex:outputField>
+                <apex:outputField value="{!Hospital__c.Phone_Number__c}" ></apex:outputField>
+                <apex:outputField value="{!Hospital__c.Web_Page__c}" ></apex:outputField>
+                <apex:outputField value="{!Hospital__c.Email__c}" ></apex:outputField>
             </apex:pageBlockSection>
-            <apex:pageBlockSection title="Address">
-                <apex:outputField value="{!Doctor__c.City__c}" label="City"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.Country__c}" label="Country"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.Street__c}" label="Street"></apex:outputField>
+            <apex:pageBlockSection title="{!$Label.Address_Label}">
+                <apex:outputField value="{!Hospital__c.City__c}"></apex:outputField>
+                <apex:outputField value="{!Hospital__c.Country__c}"></apex:outputField>
+                <apex:outputField value="{!Hospital__c.Street__c}" ></apex:outputField>
             </apex:pageBlockSection>
             <apex:pageBlockSection columns="1">
                 <div id="mapid"></div>
             </apex:pageBlockSection>
-            <apex:pageBlockSection title="Other" columns="1">
-                <apex:outputField value="{!Doctor__c.Birthday_Date__c}" label="Birth Date"></apex:outputField>
-                <apex:outputField value="{!Doctor__c.License_Number__c}" label="License Number"></apex:outputField>
-            </apex:pageBlockSection>
             <div style="text-align:center;">
-                <apex:commandButton action="{!Edit}" value="Edit"/>
-                <apex:commandButton action="{!Delete}" value="Delete"/>
+                <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
+                <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
             </div>
         </apex:form>
     </apex:pageBlock>
     <apex:pageBlock>
         <apex:facet name="header">
-            <div class="PageFacet">Contracts</div>
+            <div class="PageFacet">{!$Label.Contracts_Label}</div>
         </apex:facet>
         <apex:form>
-            <apex:pageBlockTable value="{!Doctor__c.Contracts__r}" var="contract">
-                <apex:column headerValue="Action">
+            <apex:pageBlockTable value="{!Hospital__c.Contracts__r}" var="contract">
+                <apex:column headerValue="{!$Label.Action_Label}">
                     <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.Edit,contract.Id)}">
-                        Edit
+                        {!$Label.Edit_Label}
                     </apex:outputLink>
                     |
                     <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.View,contract.Id)}">
-                        View
+                        {!$Label.View_Label}
                     </apex:outputLink>
                 </apex:column>
-                <apex:column headerValue="Contract Id" value="{!contract.Id}"></apex:column>
-                <apex:column headerValue="Hospital Name" value="{!contract.Hospital__r.Name}"></apex:column>
-                <apex:column headerValue="Start Date" value="{!contract.Start_Date__c}"></apex:column>
-                <apex:column headerValue="End Date" value="{!contract.End_Date__c}"></apex:column>
+                <apex:column headerValue="{!$Label.Contract_Id_Label}" value="{!contract.Id}"></apex:column>
+                <apex:column headerValue="{!$Label.Doctor_Label}" value="{!contract.Doctor__r.Name} {!contract.Doctor__r.First_Name__c}"></apex:column>
+                <apex:column headerValue="{!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"></apex:column>
+                <apex:column headerValue="{!$Label.End_Date_Label}" value="{!contract.End_Date__c}"></apex:column>
             </apex:pageBlockTable>
         </apex:form>
     </apex:pageBlock>
 
     <script>
-     document.getElementById("bigHead").innerHTML ="{!Doctor__c.Name}"
-     var openCageApiKey = '2e8af67ee7bf4a00bbdfce25dfcdefe7';
-     var address = "{!Doctor__c.Street__c},{!Doctor__c.City__c},{!Doctor__c.Country__c}";
-     var mymap = L.map('mapid').setView([0,0], 13);
-     var api_url = 'https://api.opencagedata.com/geocode/v1/json'
-     var request_url = api_url
+     document.getElementById("bigHead").innerHTML ="{!Hospital__c.Name}"
+     let openCageApiKey = '2e8af67ee7bf4a00bbdfce25dfcdefe7';
+     let address = "{!Hospital__c.Street__c},{!Hospital__c.City__c},{!Hospital__c.Country__c}";
+     let mymap = L.map('mapid').setView([0,0], 13);
+     let api_url = 'https://api.opencagedata.com/geocode/v1/json'
+     let request_url = api_url
     + '?'
     + 'key=' + openCageApiKey
     + '&q=' + address
@@ -112,13 +108,13 @@
       accessToken: 'pk.eyJ1IjoiYmFydG9zem5pemlvbHMiLCJhIjoiY2tsNWNndXdkMG11NDJvcDY2cG9xM2NhcSJ9.jEwnPxwOb9ERM90aVRVDEg'
     }).addTo(mymap);
 
-      var request = new XMLHttpRequest();
+      let request = new XMLHttpRequest();
       request.open('GET', request_url, true);
       request.send();
       request.onload = function() {
 
-      var data = JSON.parse(request.responseText);
-      var geometry = data.results[0].geometry;
+      let data = JSON.parse(request.responseText);
+      let geometry = data.results[0].geometry;
       lat = geometry.lat;
       lng = geometry.lng;
       L.marker([lat,lng]).addTo(mymap);
