@@ -30,11 +30,13 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
         }
     }
     for (Contract__c contractsToAdd : Trigger.new) {
-        String errorMessage = 'Contract that you trying to create is overlapping with :';
+        String errorMessage = System.Label.Overlapping_Error;
         Set<String> doctorsHospitalsIdToContractsKeySet = doctorsHospitalsIdToContracts.keySet();
 
         for (String combinedDoctorHospitalId : doctorsHospitalsIdToContractsKeySet) {
+
             if (combinedDoctorHospitalId.equals(String.valueOf(contractsToAdd.Doctor__c) + String.valueOf(contractsToAdd.Hospital__c))) {
+
                 for (Contract__c oldContract : doctorsHospitalsIdToContracts.get(combinedDoctorHospitalId)) {
                     if (isOverlapped(oldContract, contractsToAdd)) {
 

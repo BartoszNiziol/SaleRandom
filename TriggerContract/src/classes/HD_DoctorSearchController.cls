@@ -1,10 +1,10 @@
 
 
-public with sharing class HD_SearchForDoctorController {
+public with sharing class HD_DoctorSearchController {
 
     public Doctor__c inputFormDoctor { get; set; }
     public List<Doctor__c> foundDoctors { get; set; }
-    HD_SearchForDoctorSearchHelper searchHelper = new HD_SearchForDoctorSearchHelper();
+    HD_DoctrSearchHelper searchHelper = new HD_DoctrSearchHelper();
     public String sortDirection = 'ASC';
     public String actualSortExpression = 'Name';
 
@@ -34,7 +34,7 @@ public with sharing class HD_SearchForDoctorController {
         sortDirection = value;
     }
 
-    public HD_SearchForDoctorController(ApexPages.StandardController standardController) {
+    public HD_DoctorSearchController(ApexPages.StandardController standardController) {
         this.inputFormDoctor = (Doctor__c) standardController.getRecord();
         foundDoctors = new List<Doctor__c>();
     }

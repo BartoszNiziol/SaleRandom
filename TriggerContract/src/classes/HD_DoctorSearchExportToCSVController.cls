@@ -5,9 +5,10 @@ public with sharing class HD_DoctorSearchExportToCSVController {
     String surname = System.currentPageReference().getParameters().get('Name');
     String email = System.currentPageReference().getParameters().get('email');
     String country = System.currentPageReference().getParameters().get('country');
+    String nowDT = String.valueOf(System.now());
 
     public List<Doctor__c> foundDoctors { get; set; }
-    HD_SearchForDoctorSearchHelper searchHelper = new HD_SearchForDoctorSearchHelper();
+    HD_DoctrSearchHelper searchHelper = new HD_DoctrSearchHelper();
     public String header ='FullName,Email,Country';
 
     public HD_DoctorSearchExportToCSVController(ApexPages.StandardController standardController) {
@@ -16,7 +17,7 @@ public with sharing class HD_DoctorSearchExportToCSVController {
     }
 
     public void setCsv(){
-        foundDoctors = searchHelper.queryDoctorsWithoutOrder(firstName, surname, email, country);
+        foundDoctors = searchHelper.queryDoctors(firstName, surname, email, country, null ,null );
 
     }
 
