@@ -1,9 +1,7 @@
 
-<apex:page id="HD_ExportCsvSearchForDoctor" standardController="Doctor__c" readOnly="true" contentType="application/vnd.ms-excel#ConsignmentSearchData.csv" standardstylesheets="false" extensions="HD_ExportCsvSearchForDoctorController" action="{!setCsv}" >
-    <apex:pageBlock>
+<apex:page id="HD_ExportCsvSearchForDoctor" standardController="Doctor__c" readOnly="true" cache="true" contentType="application/octet-stream#ConsignmentSearchData.csv" standardstylesheets="false" extensions="HD_ExportCsvSearchForDoctorController" action="{!setCsv}"  >
         <apex:repeat value="{!foundDoctors}" var="doc" >
          {!doc.First_Name__c} {!doc.Name},{!doc.Email__c},{!doc.Country__c}
          </apex:repeat>
-    </apex:pageBlock>
 </apex:page>
 

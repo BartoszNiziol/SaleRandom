@@ -22,7 +22,12 @@ public with sharing class HD_ExportCsvSearchForDoctorController {
     }
 
     public void setCsv(){
-        foundDoctors = searchHelper.queryDoctors(firstName, surname, email, country);
+        System.debug('First Name : ' + firstName);
+        System.debug('Surname : ' + surname);
+        System.debug('Email : ' + email);
+        System.debug('Country : ' + country);
+        foundDoctors = searchHelper.queryDoctorsWithoutOrder(firstName, surname, email, country);
+        System.debug(foundDoctors);
     }
 
 

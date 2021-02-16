@@ -11,7 +11,7 @@
                 <apex:commandButton action="{!search}" value="{!$Label.Search_Button}"  reRender="resultBlock,searchBlock" />
                 <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" immediate="true" reRender="searchBlock,resultBlock" />
                     <apex:commandButton action="{!URLFOR($Page.HD_ExportCsvSearchForDoctor,null,
-                    [surname=inputFormDoctor.Name,firstName=inputFormDoctor.First_Name__c,email=inputFormDoctor.Email__c,country = inputFormDoctor.Country__c])}"
+                    [Name=inputFormDoctor.Name,firstName=inputFormDoctor.First_Name__c,email=inputFormDoctor.Email__c,country = inputFormDoctor.Country__c])}"
                                         value="{!$Label.Csv_Button}" immediate="true" reRender="searchBlock,resultBlock"  />
                 </div>
         <apex:pageBlockSection title="{!$Label.Results_Label}" id ="resultBlock" columns="1" >
@@ -26,12 +26,28 @@
                             {!$Label.View_Label}
                         </apex:outputLink>
                     </apex:column>
-                    <apex:column  headerValue="{!$Label.Full_Name_Label}" >
+                    <apex:column  >
                         {! docs.First_Name__c} {! docs.NAME}
-<!--                       <apex:commandButton action="{!sortFullName}" value="{!$Label.Search_Button}"  reRender="resultBlock" />-->
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!search}" value="{!$Label.Full_Name_Label}{!IF(sortExpression=='Name',IF(sortDirection='ASC','▼','▲'),'')}" id="cmdSort" reRender="resultBlock">
+                                <apex:param value="Name" name="column" assignTo="{!sortExpression}" ></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
                     </apex:column>
-                    <apex:column  headerValue="{!$Label.Email_Label}">{! docs.Email__c}</apex:column>
-                    <apex:column  headerValue="{!$Label.Country_Label}">{! docs.Country__c}</apex:column>
+                    <apex:column  headerValue="">{! docs.Email__c}
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!search}" value="{!$Label.Email_Label}{!IF(sortExpression=='Email__c',IF(sortDirection='ASC','▼','▲'),'')}" reRender="resultBlock">
+                                <apex:param value="Email__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
+                    </apex:column>
+                    <apex:column  headerValue="{!$Label.Country_Label}">{! docs.Country__c}
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!search}" value="Country{!IF(sortExpression=='Country__c',IF(sortDirection='ASC','▼','▲'),'')}" reRender="resultBlock">
+                                <apex:param value="Country__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
+                    </apex:column>
                 </apex:pageBlockTable>
                 </apex:outputPanel>
             </apex:pageBlockSection>
