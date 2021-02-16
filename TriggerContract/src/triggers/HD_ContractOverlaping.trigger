@@ -7,6 +7,7 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
     Map<String, List<Contract__c>> doctorsHospitalsIdToContracts = new Map<String, List< Contract__c>>();
     List<Id> doctorsIdList = new List<Id>();
     List<Id> hospitalsIdList = new List<Id>();
+    Map<Contract__c,String> contractsWithError = new Map<Contract__c,String>();
 
     for (Contract__c contractToAdd : Trigger.new) {
         doctorsIdList.add(contractToAdd.Doctor__c);
@@ -30,15 +31,15 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
         }
     }
     for (Contract__c contractsToAdd : Trigger.new) {
+
         String errorMessage = System.Label.Overlapping_Error;
+
         Set<String> doctorsHospitalsIdToContractsKeySet = doctorsHospitalsIdToContracts.keySet();
 
         for (String combinedDoctorHospitalId : doctorsHospitalsIdToContractsKeySet) {
-
-            if (combinedDoctorHospitalId.equals(String.valueOf(contractsToAdd.Doctor__c) + String.valueOf(contractsToAdd.Hospital__c))) {
-
                 for (Contract__c oldContract : doctorsHospitalsIdToContracts.get(combinedDoctorHospitalId)) {
                     if (isOverlapped(oldContract, contractsToAdd)) {
+
 
                         Date startDate = oldContract.Start_Date__c;
                         Date endDate = oldContract.End_Date__c;
@@ -56,12 +57,21 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
                                 + ' ' + oldContract.Doctor__r.Name
                                 + ' in ' + oldContract.Hospital__r.Name
                                 + ' on ' + dateDisplayString + ' | ';
+                        contractsWithError.put(contractsToAdd,errorMessage);
                     }
+
+
+
                 }
             }
+
+        for (Contract__c c : contractsWithError.keySet()){
+            c.addError(contractsWithError.get(c));
         }
-        contractsToAdd.addError(errorMessage);
+
+      //  contractsToAdd.addError(errorMessage);
     }
+
 
 
     private Boolean isOverlapped(Contract__c oldContract, Contract__c newContract) {

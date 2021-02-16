@@ -7,6 +7,8 @@ public with sharing class HD_DoctorSearchController {
     HD_DoctrSearchHelper searchHelper = new HD_DoctrSearchHelper();
     public String sortDirection = 'ASC';
     public String actualSortExpression = 'Name';
+    public ApexPages.StandardSetController setController {get;set;}
+    public Integer pageSize = 5;
 
     public String sortExpression {
         get {
@@ -41,11 +43,15 @@ public with sharing class HD_DoctorSearchController {
 
     public void search() {
         foundDoctors = searchHelper.queryDoctors(inputFormDoctor.First_Name__c, inputFormDoctor.Name, inputFormDoctor.Email__c, inputFormDoctor.Country__c, actualSortExpression,sortDirection );
+        setController = new ApexPages.StandardSetController(foundDoctors);
+        setController.setPageSize(pageSize);
+        foundDoctors = (List<Doctor__c>) setController.getRecords();
     }
 
     public void clear() {
         foundDoctors = new List<Doctor__c>();
         inputFormDoctor = new Doctor__c();
     }
+
 
 }

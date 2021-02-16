@@ -135,7 +135,7 @@
       }
     } else {
       $('#map').css({'height' : '15px'});
-      $('#map').html("Oops! address could not be found, please make sure the address is correct.");
+      $('#map').html(System.Label.Map_could_not_be_found);
       resizeIframe();
     }
   });

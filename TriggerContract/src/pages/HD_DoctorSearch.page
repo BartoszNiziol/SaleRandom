@@ -1,4 +1,4 @@
-<apex:page id="DoctorSearch" standardController="Doctor__c" extensions="HD_DoctorSearchController" docType="html-5.0">
+<apex:page id="DoctorSearch" standardController="Doctor__c" extensions="HD_DoctorSearchController,HD_DoctorSearchPaginationController" docType="html-5.0">
     <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
     <apex:form id ="mainForm">
         <apex:pageBlock  id="searchBlock" >
@@ -19,7 +19,6 @@
                                         value="{!$Label.Csv_Button}" immediate="true" reRender="searchBlock,resultBlock"  />
                 </div>
         <apex:pageBlockSection title="{!$Label.Results_Label}" id ="resultBlock" columns="1" >
-                <apex:outputPanel >
                 <apex:pageBlockTable value="{!foundDoctors}" var="docs">
                     <apex:column headerValue="{!$Label.Action_Label}">
                         <apex:outputLink target="_blank" value="{!URLFOR($Action.Doctor__c.Edit,docs.Id)}">
@@ -53,8 +52,13 @@
                         </apex:facet>
                     </apex:column>
                 </apex:pageBlockTable>
-                </apex:outputPanel>
-            </apex:pageBlockSection>
+            <apex:panelGrid columns="4">
+                <apex:commandLink action="{!first}">First</apex:commandlink>
+                <apex:commandLink action="{!previous}" rendered="{!hasPrevious}">Previous</apex:commandlink>
+                <apex:commandLink action="{!next}" rendered="{!hasNext}">Next</apex:commandlink>
+                <apex:commandLink action="{!last}">Last</apex:commandlink>
+            </apex:panelGrid>
+        </apex:pageBlockSection>
             </apex:pageBlock>
     </apex:form>
 </apex:page>
