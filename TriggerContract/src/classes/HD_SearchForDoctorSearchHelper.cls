@@ -2,8 +2,6 @@
 
 public with sharing class HD_SearchForDoctorSearchHelper {
 
-//    String sortBy ;
-//    Boolean firstNameASCFlag;
 
     public List<Doctor__c> queryDoctors(String firstName, String lastName, String email, String country, String orderBy ,String order) {
 
@@ -30,7 +28,6 @@ public with sharing class HD_SearchForDoctorSearchHelper {
 
 
         return  Database.query(query);
-
     }
 
     private String dynamicQueryLikeGenerator(String field){

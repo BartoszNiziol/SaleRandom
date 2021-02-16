@@ -8,7 +8,7 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
     List<Id> doctorsIdList = new List<Id>();
     List<Id> hospitalsIdList = new List<Id>();
 
-    For (Contract__c contractToAdd : Trigger.new) {
+    for (Contract__c contractToAdd : Trigger.new) {
         doctorsIdList.add(contractToAdd.Doctor__c);
         hospitalsIdList.add(contractToAdd.Hospital__c);
     }

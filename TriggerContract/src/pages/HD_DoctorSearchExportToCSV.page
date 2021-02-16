@@ -1,0 +1,9 @@
+
+<apex:page id="HD_DoctorSearchExportToCSVController" standardController="Doctor__c" readOnly="true" cache="true" contentType="application/octet-stream#ConsignmentSearchData.csv" standardstylesheets="false" extensions="HD_DoctorSearchExportToCSVController"
+           action="{!setCsv}"  >
+         Full Name,Email,Country
+        <apex:repeat value="{!foundDoctors}" var="doc" >
+         {!doc.First_Name__c} {!doc.Name},{!doc.Email__c},{!doc.Country__c}
+         </apex:repeat>
+</apex:page>
+
