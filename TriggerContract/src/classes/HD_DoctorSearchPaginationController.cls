@@ -19,7 +19,6 @@ public with sharing class HD_DoctorSearchPaginationController {
             if(con == null) {
                 con = new ApexPages.StandardSetController(Database.getQueryLocator(mainSearchQuery));
                 con.setPageSize(5);
-
             }
             return con;
         }

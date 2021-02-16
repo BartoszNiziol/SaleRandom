@@ -1,7 +1,7 @@
-<apex:page id="DoctorSearch" standardController="Doctor__c" extensions="HD_DoctorSearchController,HD_DoctorSearchPaginationController" docType="html-5.0">
+<apex:page id="DoctorSearch"  standardController="Doctor__c" extensions="HD_DoctorSearchController" docType="html-5.0">
     <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
-    <apex:form id ="mainForm">
-        <apex:pageBlock  id="searchBlock" >
+    <apex:form id ="mainForm" >
+        <apex:pageBlock  id="searchBlock"  >
             <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Doctors_Label}">
                 <apex:inputField value="{!inputFormDoctor.First_Name__c}"/>
                 <apex:inputText value="{!inputFormDoctor.Email__c}" id ="emailInput"/>
@@ -9,14 +9,17 @@
                 <apex:inputField value="{!inputFormDoctor.Country__c}"/>
             </apex:pageBlockSection >
                 <div align="center">
-                <apex:commandButton action="{!search}" value="{!$Label.Search_Button}"  reRender="resultBlock,searchBlock" />
-                <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" onClick="this.form.reset();" immediate="true" reRender="searchBlock,resultBlock,mainForm"  id="clearButton"/>
-                    <apex:commandButton action="{!URLFOR($Page.HD_DoctorSearchExportToCSV,null,
-                    [Name=inputFormDoctor.Name,
-                    firstName=inputFormDoctor.First_Name__c,
-                    email=inputFormDoctor.Email__c,
-                    country = inputFormDoctor.Country__c])}"
-                                        value="{!$Label.Csv_Button}" immediate="true" reRender="searchBlock,resultBlock"  />
+                <apex:commandButton action="{!search}" value="{!$Label.Search_Button}" status="loading"  reRender="resultBlock,searchBlock" />
+                <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" status="loading" onClick="this.form.reset();" immediate="true" reRender="searchBlock,resultBlock,mainForm"  id="clearButton"/>
+<!--                    <apex:commandButton action="{!URLFOR($Page.HD_DoctorSearchExportToCSV,null,-->
+<!--                    [Name=inputFormDoctor.Name,-->
+<!--                    firstName=inputFormDoctor.First_Name__c,-->
+<!--                    email=inputFormDoctor.Email__c,-->
+<!--                    country = inputFormDoctor.Country__c])}"-->
+<!--                                        value="{!$Label.Csv_Button}" immediate="true" reRender="searchBlock,resultBlock"  />-->
+                 <apex:commandButton  action="{!URLFOR($Page.HD_DoctorSearchExportToCSV)}"  value="{!$Label.Csv_Button}"   reRender="resultBlock,searchBlock" />
+                   <apex:commandButton action="{!exportCsv}" immediate="true" value="{!$Label.Csv_Button}"  reRender="resultBlock,searchBlock" />
+
                 </div>
         <apex:pageBlockSection title="{!$Label.Results_Label}" id ="resultBlock" columns="1" >
                 <apex:pageBlockTable value="{!foundDoctors}" var="docs">
@@ -25,40 +28,50 @@
                             {!$Label.Edit_Label}
                         </apex:outputLink>
                         |
-                        <apex:outputLink target="_blank" value="{!URLFOR($Action.Doctor__c.View,docs.Id)}">
+                        <apex:outputLink target="_blank"  value="{!URLFOR($Action.Doctor__c.View,docs.Id)}">
                             {!$Label.View_Label}
                         </apex:outputLink>
                     </apex:column>
                     <apex:column  >
                         {! docs.First_Name__c} {! docs.NAME}
                         <apex:facet name="header">
-                            <apex:commandLink action="{!search}" value="{!$Label.Full_Name_Label}{!IF(sortExpression=='Name',IF(sortDirection='ASC','▼','▲'),'')}" id="cmdSort" reRender="resultBlock">
+                            <apex:commandLink action="{!search}" status="loading" value="{!$Label.Full_Name_Label}{!IF(sortExpression=='Name',IF(sortDirection='ASC','▼','▲'),'')}" id="cmdSort" reRender="resultBlock">
                                 <apex:param value="Name" name="column" assignTo="{!sortExpression}" ></apex:param>
                             </apex:commandLink>
                         </apex:facet>
                     </apex:column>
                     <apex:column  headerValue="">{! docs.Email__c}
                         <apex:facet name="header">
-                            <apex:commandLink action="{!search}" value="{!$Label.Email_Label}{!IF(sortExpression=='Email__c',IF(sortDirection='ASC','▼','▲'),'')}" reRender="resultBlock">
+                            <apex:commandLink action="{!search}" status="loading" value="{!$Label.Email_Label}{!IF(sortExpression=='Email__c',IF(sortDirection='ASC','▼','▲'),'')}" reRender="resultBlock">
                                 <apex:param value="Email__c" name="column" assignTo="{!sortExpression}" ></apex:param>
                             </apex:commandLink>
                         </apex:facet>
                     </apex:column>
                     <apex:column  headerValue="{!$Label.Country_Label}">{! docs.Country__c}
                         <apex:facet name="header">
-                            <apex:commandLink action="{!search}" value="{!$Label.Country_Label}{!IF(sortExpression=='Country__c',IF(sortDirection='ASC','▼','▲'),'')}" reRender="resultBlock">
+                            <apex:commandLink action="{!search}" status="loading" value="{!$Label.Country_Label}{!IF(sortExpression=='Country__c',IF(sortDirection='ASC','▼','▲'),'')}" reRender="resultBlock">
                                 <apex:param value="Country__c" name="column" assignTo="{!sortExpression}" ></apex:param>
                             </apex:commandLink>
                         </apex:facet>
                     </apex:column>
                 </apex:pageBlockTable>
             <apex:panelGrid columns="4">
-                <apex:commandLink action="{!first}">First</apex:commandlink>
-                <apex:commandLink action="{!previous}" rendered="{!hasPrevious}">Previous</apex:commandlink>
-                <apex:commandLink action="{!next}" rendered="{!hasNext}">Next</apex:commandlink>
-                <apex:commandLink action="{!last}">Last</apex:commandlink>
+                <apex:commandLink action="{!first}" status="loading" reRender="resultBlock" >First</apex:commandlink>
+                <apex:commandLink action="{!previous}" status="loading" reRender="resultBlock" rendered="{!hasPrevious}">Previous</apex:commandlink>
+                <apex:commandLink action="{!next}" status="loading" reRender="resultBlock" rendered="{!hasNext}">Next</apex:commandlink>
+                <apex:commandLink action="{!last}" status="loading" reRender="resultBlock">Last</apex:commandlink>
             </apex:panelGrid>
         </apex:pageBlockSection>
             </apex:pageBlock>
+        <apex:actionStatus id="loading">
+            <apex:facet name="start">
+                <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.75; z-index: 1000; background-color: black;">
+                    &nbsp;
+                </div>
+                <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 30% 50%">
+                    <img src="http://upload.wikimedia.org/wikipedia/commons/e/ed/Cursor_Windows_Vista.gif" />
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
     </apex:form>
 </apex:page>

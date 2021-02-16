@@ -9,10 +9,8 @@ public with sharing class HD_DoctorSearchExportToCSVController {
 
     public List<Doctor__c> foundDoctors { get; set; }
     HD_DoctrSearchHelper searchHelper = new HD_DoctrSearchHelper();
-    public String header ='FullName,Email,Country';
 
     public HD_DoctorSearchExportToCSVController(ApexPages.StandardController standardController) {
-        foundDoctors = new List<Doctor__c>();
 
     }
 
