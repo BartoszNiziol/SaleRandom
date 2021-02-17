@@ -60,6 +60,7 @@
             <div style="text-align:center;">
                 <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
                 <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
+
             </div>
         </apex:form>
     </apex:pageBlock>

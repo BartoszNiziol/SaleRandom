@@ -1,4 +1,4 @@
-<apex:page id="BNDoctorViewG" standardController="Doctor__c">
+<apex:page id="BNDoctorViewG" standardController="Doctor__c" extensions="HD_DoctorVievController">
     <script type="text/javascript"
             src="https://maps.google.com/maps/api/js?key=AIzaSyBCiCk7ro-LGeUEXt4dp8Vyw0_ndvNiExM&sensor=false"></script>
     <script type="text/javascript"
@@ -38,11 +38,12 @@
                                   style="margin-right:10px;"/></div>
     <div id="doctorTitlePrefix">{!$Label.Doctor_Label}</div>
     <div id="bigHead"></div>
+    <apex:form>
     <apex:pageBlock>
         <apex:facet name="header">
             <div class="PageFacet">{!$Label.Doctor_Detail_Label}</div>
         </apex:facet>
-        <apex:form>
+<!--        <apex:form>-->
             <apex:inputtextarea ID="holdtext" STYLE="display:none;"></apex:inputtextarea>
             <apex:outputpanel ID="copytext" STYLE="display:none">{!Doctor__c.Phone_Number__c}</apex:outputpanel>
             <div style="text-align:center; height:30px;">
@@ -73,14 +74,15 @@
                 <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
                 <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
             </div>
-        </apex:form>
+<!--        </apex:form>-->
     </apex:pageBlock>
-    <apex:pageBlock>
+    <apex:pageBlock id="contractsBlockPage">
         <apex:facet name="header">
             <div class="PageFacet">{!$Label.Contracts_Label}</div>
         </apex:facet>
-        <apex:form>
-            <apex:pageBlockTable value="{!Doctor__c.Contracts__r}" var="contract">
+<!--        <apex:form id="ContractForm" rendered="true">-->
+
+            <apex:pageBlockTable value="{!availableContracts}" var="contract" id="ContractsColumn">
                 <apex:column headerValue="{!$Label.Action_Label}">
                     <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.Edit,contract.Id)}">
                         {!$Label.Edit_Label}
@@ -89,15 +91,21 @@
                     <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.View,contract.Id)}">
                         {!$Label.View_Label}
                     </apex:outputLink>
+                    |
+                    <apex:commandLink  action="{!dismiss}" reRender="contractsBlockPage,ContractsColumn">
+                        <apex:param name ="test" value="{!contract.Id}"  assignTo="{!contractId}"></apex:param>
+                        {!$Label.Dismiss_Button}
+                    </apex:commandLink> >
                 </apex:column>
                 <apex:column headerValue=" {!$Label.Contract_Id_Label}" value="{!contract.Id}"></apex:column>
                 <apex:column headerValue=" {!$Label.Hospital_Name_Label}" value="{!contract.Hospital__r.Name}"></apex:column>
                 <apex:column headerValue=" {!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"></apex:column>
                 <apex:column headerValue=" {!$Label.End_Date_Label}" value="{!contract.End_Date__c}"></apex:column>
             </apex:pageBlockTable>
-        </apex:form>
-    </apex:pageBlock>
 
+<!--        </apex:form>-->
+    </apex:pageBlock>
+        </apex:form>
     <script type="text/javascript">
     document.getElementById("bigHead").innerHTML ="{!Doctor__c.Name}"
 
