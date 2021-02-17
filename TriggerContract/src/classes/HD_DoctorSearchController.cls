@@ -4,31 +4,22 @@ public with sharing class HD_DoctorSearchController {
 
     public Doctor__c inputFormDoctor { get; set; }
     public List<Doctor__c> foundDoctors { get; set; }
-    public HD_DoctrSearchHelper searchHelper = new HD_DoctrSearchHelper();
+    public HD_DoctrSearchHelper searchHelper { get; set; }
     public String sortDirection = 'ASC';
     public String actualSortExpression = 'Name';
-    public ApexPages.StandardSetController setController {get;set;}
+    public ApexPages.StandardSetController setController { get; set; }
     public Integer pageSize = 5;
 
-
-    public HD_DoctorSearchController(ApexPages.StandardController standardController) {
-        this.inputFormDoctor = (Doctor__c) standardController.getRecord();
-        foundDoctors = new List<Doctor__c>();
-        setController = new ApexPages.StandardSetController(foundDoctors);
-
+    public HD_DoctorSearchController() {
+        inputFormDoctor = new Doctor__c();
+        searchHelper = new HD_DoctrSearchHelper();
     }
 
-    public List<Doctor__c> getResultsForCsv(){
-        setController.setPageSize(setController.getResultSize());
-        return (List<Doctor__c>) setController.getRecords();
-    }
-    public void getPrepereCSV(){
-        foundDoctors = searchHelper.queryDoctors(inputFormDoctor.First_Name__c, inputFormDoctor.Name, inputFormDoctor.Email__c, inputFormDoctor.Country__c, actualSortExpression,sortDirection );
-    }
+
 
     public void spin() {
         long now = datetime.now().gettime();
-        while(datetime.now().gettime()-now<5000); // Busy loop for 5000 ms
+        while (datetime.now().gettime() - now < 5000); // Busy loop for 5000 ms
     }
 
     public String sortExpression {
@@ -53,25 +44,31 @@ public with sharing class HD_DoctorSearchController {
         }
     }
 
-    public void setSortDirection(String value){
+    public void setSortDirection(String value) {
         sortDirection = value;
     }
-    public PageReference exportCSV(){
-        PageReference pageReference = new PageReference('https://resourceful-goat-uzeiu7-dev-ed--c.visualforce.com/apex/HD_DoctorSearchExportToCSV');
-        pageReference.setRedirect(true);
 
-        return pageReference;
+    public PageReference exportCSV() {
+        setController.setPageSize(setController.getResultSize());
+        foundDoctors = setController.getRecords();
+        PageReference page = Page.HD_DoctorSearchExportToCSV;
+        page.setRedirect(false);
+        return page;
+    }
+
+    public PageReference exportXML() {
+        setController.setPageSize(setController.getResultSize());
+        foundDoctors = setController.getRecords();
+        PageReference page = Page.HD_DoctorSearchExportToXML;
+        page.setRedirect(false);
+        return page;
     }
 
     public void search() {
-        foundDoctors = searchHelper.queryDoctors(inputFormDoctor.First_Name__c, inputFormDoctor.Name, inputFormDoctor.Email__c, inputFormDoctor.Country__c, actualSortExpression,sortDirection );
+        foundDoctors = searchHelper.queryDoctors(inputFormDoctor.First_Name__c, inputFormDoctor.Name, inputFormDoctor.Email__c, inputFormDoctor.Country__c, actualSortExpression, sortDirection);
         setController = new ApexPages.StandardSetController(foundDoctors);
         setController.setPageSize(pageSize);
         foundDoctors = (List<Doctor__c>) setController.getRecords();
-        System.debug(foundDoctors);
-    }
-    public void search2() {
-        foundDoctors = searchHelper.queryDoctors(inputFormDoctor.First_Name__c, inputFormDoctor.Name, inputFormDoctor.Email__c, inputFormDoctor.Country__c, actualSortExpression,sortDirection );
     }
 
     public void clear() {
@@ -79,13 +76,13 @@ public with sharing class HD_DoctorSearchController {
         inputFormDoctor = new Doctor__c();
     }
 
-    public List<Doctor__c> getlistDoctors(){
-        return (List<Doctor__c>)setController.getRecords();
+    public List<Doctor__c> getlistDoctors() {
+        return (List<Doctor__c>) setController.getRecords();
     }
 
     public Boolean hasNext {
         get {
-            if(setController != null) {
+            if (setController != null) {
                 return setController.getHasNext();
             } else {
                 return false;
@@ -95,9 +92,9 @@ public with sharing class HD_DoctorSearchController {
     }
     public Boolean hasPrevious {
         get {
-            if(setController != null) {
+            if (setController != null) {
                 return setController.getHasPrevious();
-            }else {
+            } else {
                 return false;
             }
         }
@@ -126,7 +123,6 @@ public with sharing class HD_DoctorSearchController {
     public void previous() {
         setController.previous();
     }
-
 
 
 }

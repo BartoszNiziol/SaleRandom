@@ -1,5 +1,5 @@
 
-<apex:page id="HD_DoctorSearchExportToCSV" action="{!search2}" standardController="Doctor__c" extensions="HD_DoctorSearchController" readOnly="true" cache="true" contentType="application/octet-stream#Doctor.csv" standardstylesheets="false" >
+<apex:page id="HD_DoctorSearchExportToCSV" controller="HD_DoctorSearchController" cache="true" contentType="application/vnd.ms-excel#Doctor_{!TODAY()}.csv" >
 
          Id;Full Name;Email;Country;
         <apex:repeat value="{!foundDoctors}" var="doc" >
