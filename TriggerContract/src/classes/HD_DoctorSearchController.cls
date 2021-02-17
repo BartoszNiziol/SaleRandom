@@ -15,8 +15,6 @@ public with sharing class HD_DoctorSearchController {
         searchHelper = new HD_DoctrSearchHelper();
     }
 
-
-
     public void spin() {
         long now = datetime.now().gettime();
         while (datetime.now().gettime() - now < 5000); // Busy loop for 5000 ms
@@ -42,10 +40,6 @@ public with sharing class HD_DoctorSearchController {
         } else {
             return sortDirection;
         }
-    }
-
-    public void setSortDirection(String value) {
-        sortDirection = value;
     }
 
     public PageReference exportCSV() {
@@ -76,10 +70,6 @@ public with sharing class HD_DoctorSearchController {
         inputFormDoctor = new Doctor__c();
     }
 
-    public List<Doctor__c> getlistDoctors() {
-        return (List<Doctor__c>) setController.getRecords();
-    }
-
     public Boolean hasNext {
         get {
             if (setController != null) {
@@ -90,6 +80,7 @@ public with sharing class HD_DoctorSearchController {
         }
         set;
     }
+
     public Boolean hasPrevious {
         get {
             if (setController != null) {
@@ -101,27 +92,24 @@ public with sharing class HD_DoctorSearchController {
         set;
     }
 
-    public Integer pageNumber {
-        get {
-            return setController.getPageNumber();
-        }
-        set;
-    }
-
     public void next() {
         setController.next();
+        foundDoctors =(List<Doctor__c>) setController.getRecords();
 
     }
     public void first() {
         setController.first();
+        foundDoctors =(List<Doctor__c>) setController.getRecords();
     }
 
     public void last() {
         setController.last();
+        foundDoctors =(List<Doctor__c>) setController.getRecords();
     }
 
     public void previous() {
         setController.previous();
+        foundDoctors =(List<Doctor__c>) setController.getRecords();
     }
 
 
