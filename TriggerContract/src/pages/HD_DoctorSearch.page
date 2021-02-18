@@ -9,9 +9,9 @@
                 <apex:inputField value="{!inputFormDoctor.Country__c}"/>
             </apex:pageBlockSection>
             <div align="center">
-                <apex:commandButton action="{!search}" value="{!$Label.Search_Button}" status="loading"
+                <apex:commandButton action="{!search}" value="{!$Label.Search_Button}" status="loadingGif"
                                     reRender="resultBlock,searchBlock"/>
-                <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" status="loading"
+                <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" status="loadingGif"
                                     onClick="this.form.reset();" immediate="true"
                                     reRender="searchBlock,resultBlock,mainForm" id="clearButton"/>
                 <apex:commandButton action="{!exportCsv}" value="{!$Label.Csv_Button}"/>
@@ -31,7 +31,7 @@
                     <apex:column>
                         {! docs.First_Name__c} {! docs.NAME}
                         <apex:facet name="header">
-                            <apex:commandLink action="{!search}" status="loading"
+                            <apex:commandLink action="{!search}" status="loadingGif"
                                               value="{!$Label.Full_Name_Label}{!IF(sortExpression=='Name',IF(sortDirection='ASC','▼','▲'),'')}"
                                               id="cmdSort" reRender="resultBlock">
                                 <apex:param value="Name" name="column" assignTo="{!sortExpression}"></apex:param>
@@ -40,7 +40,7 @@
                     </apex:column>
                     <apex:column headerValue="">{! docs.Email__c}
                         <apex:facet name="header">
-                            <apex:commandLink action="{!search}" status="loading"
+                            <apex:commandLink action="{!search}" status="loadingGif"
                                               value="{!$Label.Email_Label}{!IF(sortExpression=='Email__c',IF(sortDirection='ASC','▼','▲'),'')}"
                                               reRender="resultBlock">
                                 <apex:param value="Email__c" name="column" assignTo="{!sortExpression}"></apex:param>
@@ -49,7 +49,7 @@
                     </apex:column>
                     <apex:column headerValue="{!$Label.Country_Label}">{! docs.Country__c}
                         <apex:facet name="header">
-                            <apex:commandLink action="{!search}" status="loading"
+                            <apex:commandLink action="{!search}" status="loadingGif"
                                               value="{!$Label.Country_Label}{!IF(sortExpression=='Country__c',IF(sortDirection='ASC','▼','▲'),'')}"
                                               reRender="resultBlock">
                                 <apex:param value="Country__c" name="column" assignTo="{!sortExpression}"></apex:param>
@@ -58,26 +58,17 @@
                     </apex:column>
                 </apex:pageBlockTable>
                 <apex:panelGrid columns="4">
-                    <apex:commandLink action="{!first}" status="loading"
+                    <apex:commandLink action="{!first}" status="loadingGif"
                                       reRender="resultBlock">{!$Label.First_Label}</apex:commandlink>
-                    <apex:commandLink action="{!previous}" status="loading" reRender="resultBlock"
+                    <apex:commandLink action="{!previous}" status="loadingGif" reRender="resultBlock"
                                       rendered="{!hasPrevious}">{!$Label.Previous_Label}</apex:commandlink>
-                    <apex:commandLink action="{!next}" status="loading" reRender="resultBlock"
+                    <apex:commandLink action="{!next}" status="loadingGif" reRender="resultBlock"
                                       rendered="{!hasNext}">{!$Label.Next_Label}</apex:commandlink>
-                    <apex:commandLink action="{!last}" status="loading"
+                    <apex:commandLink action="{!last}" status="loadingGif"
                                       reRender="resultBlock">{!$Label.Last_Label}</apex:commandlink>
                 </apex:panelGrid>
             </apex:pageBlockSection>
         </apex:pageBlock>
-        <apex:actionStatus id="loading">
-            <apex:facet name="start">
-                <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.75; z-index: 1000; background-color: black;">
-                    &nbsp;
-                </div>
-                <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 30% 50%">
-                    <img src="http://upload.wikimedia.org/wikipedia/commons/e/ed/Cursor_Windows_Vista.gif"/>
-                </div>
-            </apex:facet>
-        </apex:actionStatus>
+        <c:loading_component></c:loading_component>
     </apex:form>
 </apex:page>

@@ -40,10 +40,10 @@
     <div id="bigHead"></div>
     <apex:form>
     <apex:pageBlock>
+        <c:loading_component></c:loading_component>
         <apex:facet name="header">
             <div class="PageFacet">{!$Label.Doctor_Detail_Label}</div>
         </apex:facet>
-<!--        <apex:form>-->
             <apex:inputtextarea ID="holdtext" STYLE="display:none;"></apex:inputtextarea>
             <apex:outputpanel ID="copytext" STYLE="display:none">{!Doctor__c.Phone_Number__c}</apex:outputpanel>
             <div style="text-align:center; height:30px;">
@@ -74,14 +74,11 @@
                 <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
                 <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
             </div>
-<!--        </apex:form>-->
     </apex:pageBlock>
     <apex:pageBlock id="contractsBlockPage">
         <apex:facet name="header">
             <div class="PageFacet">{!$Label.Contracts_Label}</div>
         </apex:facet>
-<!--        <apex:form id="ContractForm" rendered="true">-->
-
             <apex:pageBlockTable value="{!availableContracts}" var="contract" id="ContractsColumn">
                 <apex:column headerValue="{!$Label.Action_Label}">
                     <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.Edit,contract.Id)}">
@@ -92,7 +89,7 @@
                         {!$Label.View_Label}
                     </apex:outputLink>
                     |
-                    <apex:commandLink  action="{!dismiss}" reRender="contractsBlockPage,ContractsColumn">
+                    <apex:commandLink  action="{!dismiss}" reRender="contractsBlockPage,ContractsColumn" status="loadingGif">
                         <apex:param name ="test" value="{!contract.Id}"  assignTo="{!contractId}"></apex:param>
                         {!$Label.Dismiss_Button}
                     </apex:commandLink> >
@@ -102,10 +99,11 @@
                 <apex:column headerValue=" {!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"></apex:column>
                 <apex:column headerValue=" {!$Label.End_Date_Label}" value="{!contract.End_Date__c}"></apex:column>
             </apex:pageBlockTable>
-
-<!--        </apex:form>-->
     </apex:pageBlock>
         </apex:form>
+    <apex:relatedList list="histories">
+        <apex:facet name="header">Doctor History</apex:facet>
+    </apex:relatedList>
     <script type="text/javascript">
     document.getElementById("bigHead").innerHTML ="{!Doctor__c.Name}"
 

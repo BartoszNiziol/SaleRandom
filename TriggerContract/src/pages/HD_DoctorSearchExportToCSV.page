@@ -1,9 +1,9 @@
 <apex:page id="HD_DoctorSearchExportToCSV" controller="HD_DoctorSearchController" cache="true"
            contentType="application/vnd.ms-excel#Doctor_{!TODAY()}.csv">
 
-    Id;Full Name;Email;Country;
+    Id; First Name; Surname; Email; Country;
     <apex:repeat value="{!foundDoctors}" var="doc">
-        {!doc.Id};{!doc.First_Name__c} {!doc.Name};{!doc.Email__c};{!doc.Country__c};
+        '{!doc.Id}';'{!doc.First_Name__c}' ; '{!doc.Name}' ; '{!doc.Email__c}' ; '{!doc.Country__c}';
     </apex:repeat>
 </apex:page>
 

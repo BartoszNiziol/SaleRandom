@@ -21,8 +21,6 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
             WHERE Doctor__c IN :doctorsToAddIdList AND Hospital__c IN :hospitalsToAddIdList
     ];
 
-    System.debug('pairing Contracts : '+ pairingContracts);
-
     for (Contract__c matchingContract : pairingContracts) {
         if (doctorsHospitalsIdToContracts.containsKey(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c))) {
             doctorsHospitalsIdToContracts.get(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c))

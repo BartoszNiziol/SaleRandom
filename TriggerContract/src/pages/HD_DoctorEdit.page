@@ -25,6 +25,7 @@
     </style>
 
     <div style="float:left;"> <img src="/img/icon/custom51_100/stethoscope32.png" height="40px" style="margin-right:10px;"/></div>
+    <c:loading_component></c:loading_component>
     <div id ="doctorTitlePrefix">{!$Label.Doctor_Label}</div>
     <div id="bigHead"></div>
     <apex:pageBlock>

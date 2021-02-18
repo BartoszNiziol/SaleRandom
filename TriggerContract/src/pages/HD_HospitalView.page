@@ -122,5 +122,8 @@
       mymap.setView([lat, lng]);
   };
     </script>
+    <apex:relatedList list="histories">
+        <apex:facet name="header">Hospital History</apex:facet>
+    </apex:relatedList>
 
 </apex:page>
