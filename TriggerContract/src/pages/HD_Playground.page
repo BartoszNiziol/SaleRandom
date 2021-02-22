@@ -1,24 +1,10 @@
 <apex:page id="HD_Playground" standardController="Doctor__c" extensions="HD_PlygroundController">
 
-
-    <!--    <apex:includeScript value="{!$Resource.jQuery}"/>-->
-    <!--    <apex:includeScript value="{!$Resource.jQueryUI}"/>-->
-    <!--    <apex:includeScript value="{!$Resource.CropperZip}" />-->
-    <!--    <apex:includeScript value="{!$Resource.CropperJs}" />-->
-    <!--    <apex:stylesheet value="{!$Resource.CropperCss}"/>-->
-
-    <!--    <link rel="stylesheet" href="https://unpkg.com/bootstrap@4/dist/css/bootstrap.min.css" crossorigin="anonymous"/>-->
-    <!--    <link rel="stylesheet" href="https://fengyuanchen.github.io/cropperjs"/>-->
-
     <apex:includeScript value="{!$Resource.jQuery}"/>
     <apex:includeScript value="{!$Resource.jQueryUI}"/>
     <apex:stylesheet value="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.js"></script>
-
-    <!--    <script src="https://unpkg.com/jquery@3/dist/jquery.min.js" crossorigin="anonymous" type="module"></script>-->
-    <!--    <script src="https://unpkg.com/bootstrap@4/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" type="module" ></script>-->
-    <!--    <script src="https://fengyuanchen.github.io/cropperjs" type="module"  crossorigin="anonymous" ></script>-->
 
     <style>
     .label {
@@ -42,18 +28,26 @@
      max-width: 100%;
 }
 
-
     </style>
+    <apex:form>
+        <apex:image value="/servlet/servlet.FileDownload?file={!ImageId}" rendered="{!NOT(ISBLANK(ImageId))}"/>
 
         <apex:image id="avatar" value="{!$Resource.Default_Portrait}" width="200" height="200"/>
+<!--        <input type="file" class="sr-only" id="input" name="image" accept="image/*" value="Change photo"/>-->
+        <apex:inputFile value="{!attachment.Body}" filename="{!attachment.Name}" accept="image/*" id="input"/>
+        <apex:commandButton id="upload" action="{!upload}" value="upload"/>
 
-        <input type="file" class="sr-only" id="input" name="image" accept="image/*" value="Change photo"/>
-
-
-    <apex:form>
         <apex:commandButton id="opener" onClick="showModal();" reRender="mainPanel"
                             value="Open Dialog"/>
     </apex:form>
+
+
+
+<!--    <apex:form>-->
+<!--        <apex:commandButton id="checkBlob" value="checkBlob" action="{!showBlob}"/>-->
+<!--    </apex:form>-->
+
+
     <div id="dialogBox" title="Cropper" style="display:none;">
         <div class="modal-body">
             <div class="img-container">
@@ -93,14 +87,7 @@ function showModal(){
     });
 }
 
-$("avatar").addEventListener("change",)
-
-
-
-
-
 var cropper = $image.data('cropper');
-
 
     </script>
 

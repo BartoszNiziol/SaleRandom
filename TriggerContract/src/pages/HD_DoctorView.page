@@ -38,7 +38,6 @@
         margin-left: 5px;
     }
 
-
         </style>
         <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
                                       style="margin-right:10px;"/></div>
@@ -80,8 +79,8 @@
                 <div style="text-align:center;">
                     <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
                     <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
-                    <apex:commandButton id="opener" onClick="showModal();" reRender="mainPanel"
-                                        value="{!$Label.Hire_Button}"/>
+                    <apex:commandButton id="opener" onClick="showModal();" reRender="mainPanel,finalButtons"
+                                        value="{!$Label.Hire_Button}" status="loadingGif"/>
                 </div>
             </apex:form>
         </apex:pageBlock>
@@ -104,7 +103,8 @@
                             </apex:outputLink>
                             |
                             <apex:commandLink action="{!dismiss}" reRender="contractsBlockPage,ContractsColumn"
-                                              status="loadingGif" style="{!IF(contract.Start_Date__c <= TODAY() && contract.End_Date__c <= TODAY(),'display:none;','display:initial;')}">
+                                              status="loadingGif"
+                                              style="{!IF(contract.Start_Date__c <= TODAY() && contract.End_Date__c <= TODAY(),'display:none;','display:initial;')}">
                                 <apex:param name="test" value="{!contract.Id}" assignTo="{!contractId}"/>
                                 {!$Label.Dismiss_Button}
                             </apex:commandLink>
@@ -121,12 +121,13 @@
         <apex:relatedList list="histories">
             <apex:facet name="header">Doctor History</apex:facet>
         </apex:relatedList>
-        <div id="dialogBox" title="{!$Label.Hire_Label} {!currentDoctor.Name} {!$Label.TO_Label}" style="display:none;">
+        <div id="dialogBox" title="{!$Label.Hire_Label} {!currentDoctor.Name} {!$Label.TO_Label}"
+             style="{!IF(dialogAllowedToClose,"display:initial;","display:none;")}">
             <apex:pageBlock id="searchBlock">
                 <apex:form>
                     <apex:actionRegion>
                         <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Hospitals_Label}"
-                                               collapsible="false">
+                                               collapsible="false" id="searchSection">
                             <apex:inputField value="{!inputFormHospital.Name}" required="true"/>
                             <apex:inputField value="{!inputFormHospital.Country__c}"/>
                             <apex:inputText value="{!inputFormHospital.Email__c}" label="{!$Label.Email_Label}"/>
@@ -146,7 +147,7 @@
                             <apex:pageBlockTable value="{!foundHospitals}" var="hosp">
                                 <apex:column headerValue="{!$Label.Action_Label}" style="height:21px;">
                                     <apex:commandButton action="{!selectHospital}"
-                                                        reRender="ContractDipsplayWrapper, resultBlock"
+                                                        reRender="ContractDipsplayWrapper, resultBlock, finalButtons"
                                                         value=" {!$Label.Select_Label}"
                                                         style="{!IF(selectedHospitalId == hosp.Id,'display:none;','display:initial;')}">
                                         <apex:param value="{!hosp.Id}" name="selectedHospital"
@@ -164,6 +165,8 @@
                                 </apex:column>
                             </apex:pageBlockTable>
                         </apex:pageBlockSection>
+                    </apex:actionRegion>
+                    <apex:actionRegion>
                         <apex:outputPanel id="ContractDipsplayWrapper">
                             <apex:outputPanel id="ContractDisplay"
                                               rendered="{!IF(selectedHospital != null,true,false)}">
@@ -174,20 +177,23 @@
                                     <apex:inputField value="{!newContract.End_Date__c}"/>
                                 </apex:pageBlockSection>
                                 <apex:pageMessages/>
-                                <div style="text-align:center;">
-                                    <apex:commandButton action="{!hire}" value="{!$Label.Hire_Button}"
-                                                        reRender="vievPageBlock,ContractDipsplayWrapper,ContractsColumnWrapper"
-                                                        status="loadingGif"/>
-
-                                    <apex:commandButton action="{!cancel}"
-                                                        reRender="ContractDipsplayWrapper,resultBlock "
-                                                        value="{!$Label.Cancel_Button}" status="loadingGif"/>
-                                </div>
                             </apex:outputPanel>
                         </apex:outputPanel>
                     </apex:actionRegion>
+                    <apex:outputPanel style="text-align:center;" id="finalButtons">
+                        <div style="text-align:center;">
+                    <apex:commandButton action="{!cancel}"
+                                        reRender="ContractDipsplayWrapper,resultBlock,searchSection "
+                                        value="{!$Label.Cancel_Button}" onClick="hideModal()"
+                                        status="loadingGif"/>
+                    <apex:commandButton action="{!hire}" value="{!$Label.Hire_Button}"
+                                        reRender="vievPageBlock,ContractDipsplayWrapper,ContractsColumnWrapper,resultBlock,searchSection,finalButtons"
+                                        status="loadingGif"
+                                        onComplete="{!if(dialogAllowedToClose == true,"hideModal()","empty()")}"
+                                        style="{!IF(selectedHospital == null,'display:none;','display:initial;')}"/>
+                        </div>
+                    </apex:outputPanel>
                 </apex:form>
-
             </apex:pageBlock>
         </div>
         <script type="text/javascript">
@@ -265,9 +271,26 @@ function showModal(){
         height: 600,
         width: 550,
         modal: true,
-    });
+        closeOnEscape: false,
+        closeOnEscape: false,
+                    open: function(event, ui) {
+                        $(".ui-dialog-titlebar-close", ui.dialog).hide();
+                    }
+                });
+            });
+        }
+
+function hideModal(){
+    $(function() {
+        $("#dialogBox").dialog("close");
     });
 }
+
+function empty(){
+
+};
+
+
 
         </script>
     </apex:actionRegion>

@@ -69,6 +69,6 @@
                 </apex:panelGrid>
             </apex:pageBlockSection>
         </apex:pageBlock>
-        <c:loading_component></c:loading_component>
+        <c:HD_SpinnerComponent/>
     </apex:form>
 </apex:page>
