@@ -1,80 +1,107 @@
 <apex:page id="HD_Playground" standardController="Doctor__c" extensions="HD_PlygroundController">
 
+
+    <!--    <apex:includeScript value="{!$Resource.jQuery}"/>-->
+    <!--    <apex:includeScript value="{!$Resource.jQueryUI}"/>-->
+    <!--    <apex:includeScript value="{!$Resource.CropperZip}" />-->
+    <!--    <apex:includeScript value="{!$Resource.CropperJs}" />-->
+    <!--    <apex:stylesheet value="{!$Resource.CropperCss}"/>-->
+
+    <!--    <link rel="stylesheet" href="https://unpkg.com/bootstrap@4/dist/css/bootstrap.min.css" crossorigin="anonymous"/>-->
+    <!--    <link rel="stylesheet" href="https://fengyuanchen.github.io/cropperjs"/>-->
+
     <apex:includeScript value="{!$Resource.jQuery}"/>
     <apex:includeScript value="{!$Resource.jQueryUI}"/>
-    <apex:stylesheet value="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <apex:stylesheet value="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.js"></script>
+
+    <!--    <script src="https://unpkg.com/jquery@3/dist/jquery.min.js" crossorigin="anonymous" type="module"></script>-->
+    <!--    <script src="https://unpkg.com/bootstrap@4/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" type="module" ></script>-->
+    <!--    <script src="https://fengyuanchen.github.io/cropperjs" type="module"  crossorigin="anonymous" ></script>-->
+
+    <style>
+    .label {
+      cursor: pointer;
+    }
+
+    .progress {
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .alert {
+      display: none;
+    }
+
+    .img-container img {
+      max-width: 100%;
+    }
+    #theImage {
+     display: block;
+     max-width: 100%;
+}
 
 
-        <apex:outputPanel rendered="true" id="mainPanel">
-            <apex:form>
-            <apex:commandButton id="opener" onClick="showModal();" reRender="mainPanel"
-                                value="Open"></apex:commandButton>
-            </apex:form>
-        </apex:outputPanel>
-            <div id="dialogBox" title="{!$Label.Hire_Label} DOCTORNAMEHERE {!$Label.TO_Label}" style="display:none;">
-                <apex:pageBlock id="searchBlock">
-                    <apex:pageMessages></apex:pageMessages>
-                    <apex:form>
-                    <apex:actionRegion>
-                    <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Hospitals_Label}" collapsible="false">
-                        <apex:inputField value="{!inputFormHospital.Name}" required="true"/>
-                        <apex:inputField value="{!inputFormHospital.Country__c}"/>
-                        <apex:inputText value="{!inputFormHospital.Email__c}" label="{!$Label.Email_Label}"/>
-                    </apex:pageBlockSection>
-                    <div align="center">
+    </style>
 
-                            <apex:commandButton action="{!searchHospital}"
-                                                value="{!$Label.Search_Button}" status="loadingGif"
-                                                reRender="resultBlock,searchBlock"/>
-                            <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" status="loadingGif"
-                                                onClick="this.form.reset();" immediate="true"
-                                                reRender="searchBlock,resultBlock,mainPanel" id="clearButton"/>
+        <apex:image id="avatar" value="{!$Resource.Default_Portrait}" width="200" height="200"/>
 
-                    </div>
-                        </apex:actionRegion>
-                        <apex:actionRegion>
-                    <apex:pageBlockSection title="{!$Label.Results_Label}" id="resultBlock" columns="1">
-                        <apex:pageBlockTable value="{!foundHospitals}" var="hosp">
-                            <apex:column headerValue="{!$Label.Action_Label}">
-                                <apex:outputLink target="_blank" value="{!URLFOR($Action.Hospital__c.View,hosp.Id)}">
-                                    {!$Label.Select_Label}
-                                </apex:outputLink>
-                            </apex:column>
-                            <apex:column headerValue="{!$Label.Hospital_Name_Label}">
-                                {! hosp.Name}
-                            </apex:column>
-                            <apex:column headerValue="{!$Label.Email_Label}">
-                                {! hosp.Email__c}
-                            </apex:column>
-                            <apex:column headerValue="{!$Label.Country_Label}">
-                                {! hosp.Country__c}
-                            </apex:column>
-                        </apex:pageBlockTable>
+        <input type="file" class="sr-only" id="input" name="image" accept="image/*" value="Change photo"/>
 
-                    </apex:pageBlockSection>
-                    </apex:actionRegion>
-                    </apex:form>
-                </apex:pageBlock>
+
+    <apex:form>
+        <apex:commandButton id="opener" onClick="showModal();" reRender="mainPanel"
+                            value="Open Dialog"/>
+    </apex:form>
+    <div id="dialogBox" title="Cropper" style="display:none;">
+        <div class="modal-body">
+            <div class="img-container">
+                <img id="image" src="https://avatars0.githubusercontent.com/u/3456749"/>
             </div>
-<!--        </apex:outputPanel>-->
-<!--    </apex:form>-->
-    <c:loading_component></c:loading_component>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="crop">Crop</button>
+        </div>
+    </div>
+    <script>
 
-    <script language="JavaScript">
-        let $ = jQuery.noConflict();
+var $image = $('#image');
+
+$image.cropper({
+  aspectRatio: 16 / 9,
+  crop: function(event) {
+    console.log(event.detail.x);
+    console.log(event.detail.y);
+    console.log(event.detail.width);
+    console.log(event.detail.height);
+    console.log(event.detail.rotate);
+    console.log(event.detail.scaleX);
+    console.log(event.detail.scaleY);
+  }
+});
 
 function showModal(){
     $(function() {
         $("#dialogBox").dialog({
         autoOpen: true,
         height: 600,
-        width: 450,
+        width: 550,
         modal: true,
     });
-
-
     });
 }
 
+$("avatar").addEventListener("change",)
+
+
+
+
+
+var cropper = $image.data('cropper');
+
+
     </script>
+
 </apex:page>

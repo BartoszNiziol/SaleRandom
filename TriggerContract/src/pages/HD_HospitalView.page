@@ -79,10 +79,9 @@
                         {!$Label.View_Label}
                     </apex:outputLink>
                 </apex:column>
-                <apex:column headerValue="{!$Label.Contract_Id_Label}" value="{!contract.Id}"></apex:column>
-                <apex:column headerValue="{!$Label.Doctor_Label}" value="{!contract.Doctor__r.Name} {!contract.Doctor__r.First_Name__c}"></apex:column>
-                <apex:column headerValue="{!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"></apex:column>
-                <apex:column headerValue="{!$Label.End_Date_Label}" value="{!contract.End_Date__c}"></apex:column>
+                <apex:column headerValue="{!$Label.Doctor_Label}" value="{!contract.Doctor__r.Name} {!contract.Doctor__r.First_Name__c}"/>
+                <apex:column headerValue="{!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"/>
+                <apex:column headerValue="{!$Label.End_Date_Label}" value="{!contract.End_Date__c}"/>
             </apex:pageBlockTable>
         </apex:form>
     </apex:pageBlock>
