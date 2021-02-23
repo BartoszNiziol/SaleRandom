@@ -160,7 +160,7 @@
              style="{!IF(dialogAllowedToClose,"display:initial;","display:none;")}">
             <apex:pageBlock id="searchBlock">
                 <apex:form>
-                    <apex:actionFunction name="sendClearToController" action="{!fullClear}" reRender="searchBlock"/>
+                    <apex:actionFunction name="sendClearToController" action="{!fullClear}" reRender="searchBlock"  immediate="true"/>
                     <apex:actionRegion>
                         <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Hospitals_Label}"
                                                collapsible="false" id="searchSection">
@@ -217,7 +217,7 @@
                                 <apex:pageMessages/>
                             </apex:outputPanel>
                         </apex:outputPanel>
-                    </apex:actionRegion>
+
                     <apex:outputPanel style="text-align:center;" id="finalButtons">
                         <div style="text-align:center;">
                             <apex:commandButton action="{!hire}" value="{!$Label.Hire_Button}"
@@ -227,12 +227,12 @@
                                                 style="{!IF(selectedHospital == null,'display:none;','display:initial;')}"/>
 
                             <apex:commandButton action="{!cancel}"
-                                                reRender="ContractDipsplayWrapper,resultBlock,searchSection "
+                                                reRender="ContractDipsplayWrapper,resultBlock,searchSection,searchBlock "
                                                 value="{!$Label.Cancel_Button}" onClick="hideModal()"
-                                                status="loadingGif"/>
-
+                                                status="loadingGif" immediate="true"/>
                         </div>
                     </apex:outputPanel>
+                    </apex:actionRegion>
                 </apex:form>
             </apex:pageBlock>
         </div>
@@ -461,8 +461,9 @@ function showModal(){
         width: 550,
         modal: true,
         closeOnEscape: false,
-                    open: function(event, ui) {
-                        $(".ui-dialog-titlebar-close", ui.dialog).hide();
+                open: function(event, ui) {
+//                        $dialog(".ui-dialog-titlebar-close", ui.dialog).hide();
+                            sendClearToController()
                     }
                 });
             });
@@ -477,9 +478,5 @@ function hideModal(){
 function sendClearToController(){
     console.log('clear')
 }
-
-
-
         </script>
-
 </apex:page>
