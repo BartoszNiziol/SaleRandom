@@ -49,6 +49,9 @@
      display: block;
      max-width: 100%;
 }
+.message ul,.messageText{
+            color:red;
+        }
         </style>
 
         <div>
@@ -67,15 +70,25 @@
                 </div>
             </div>
         </div>
-<!--        <apex:actionFunction name="reciveBlob" action="{!setBlobFromCropping}">-->
-<!--            <apex:param value="blob" assignTo="{!cropperImage}"></apex:param>-->
-<!--        </apex:actionFunction>-->
+    <apex:form>
+
+
+        <apex:actionRegion>
+
+            <apex:actionFunction name="reciveBlob" action="{!blobFromCropping}" reRender="contractsBlockPage,errors" immediate="true" onComplete="oncompleteAlert()">
+                <apex:param value="" assignTo="{!croppedImageAsString}" name="blob"/>
+            </apex:actionFunction>
+
+        </apex:actionRegion>
+    </apex:form>
         <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
                                       style="margin-right:10px;"/></div>
         <div id="doctorTitlePrefix">{!$Label.Doctor_Label}</div>
         <div id="bigHead"></div>
         <apex:pageBlock id="vievPageBlock">
             <apex:form>
+                <apex:image value="/servlet/servlet.FileDownload?file={!imageId}" rendered="{!NOT(ISBLANK(ImageId))}" style="height:100px;width:100px;"/>
+                <apex:commandButton  value="{RNDR}" reRender="vievPageBlock"/>
                 <c:HD_SpinnerComponent/>
                 <apex:facet name="header">
                     <div class="PageFacet">{!$Label.Doctor_Detail_Label}</div>
@@ -86,7 +99,9 @@
                     <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
                     <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
                 </div>
+                <apex:actionRegion>
                 <apex:pageBlockSection title="{!$Label.Details_Label}" columns="2">
+
                     <apex:outputField value="{!Doctor__c.First_Name__c}"/>
                     <apex:outputField value="{!Doctor__c.Phone_Number__c}">
                         <apex:commandbutton onClick="ClipBoard('{!$Component.copytext}', '{!$Component.holdtext}');"
@@ -95,6 +110,7 @@
                     <apex:outputField value="{!Doctor__c.Name}"/>
                     <apex:outputField value="{!Doctor__c.Email__c}"/>
                 </apex:pageBlockSection>
+                    </apex:actionRegion>
                 <apex:pageBlockSection title="{!$Label.Address_Label}">
                     <apex:outputField value="{!Doctor__c.City__c}"/>
                     <apex:outputField value="{!Doctor__c.Country__c}"/>
@@ -161,6 +177,7 @@
             <apex:pageBlock id="searchBlock">
                 <apex:form>
                     <apex:actionFunction name="sendClearToController" action="{!fullClear}" reRender="searchBlock"  immediate="true"/>
+
                     <apex:actionRegion>
                         <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Hospitals_Label}"
                                                collapsible="false" id="searchSection">
@@ -214,7 +231,7 @@
                                     <apex:inputField value="{!newContract.Start_Date__c}" required="true"/>
                                     <apex:inputField value="{!newContract.End_Date__c}"/>
                                 </apex:pageBlockSection>
-                                <apex:pageMessages/>
+
                             </apex:outputPanel>
                         </apex:outputPanel>
 
@@ -231,7 +248,9 @@
                                                 value="{!$Label.Cancel_Button}" onClick="hideModal()"
                                                 status="loadingGif" immediate="true"/>
                         </div>
+                        <apex:messages/>
                     </apex:outputPanel>
+
                     </apex:actionRegion>
                 </apex:form>
             </apex:pageBlock>
@@ -301,6 +320,9 @@ let $ = jQuery.noConflict();
     });
     });
 }
+function oncompleteAlert(){
+    alert('completed')
+}
 
  document.getElementById('crop').addEventListener('click', function () {
 
@@ -317,16 +339,11 @@ let $ = jQuery.noConflict();
           canvas.toBlob(function (blob) {
             var formData = new FormData();
             formData.append('avatar', blob, 'avatar.jpg');
-            console.log('blb*********'+ blob);
-            console.log('initialAvatarURL*********'+ initialAvatarURL);
-            console.log('ccanvas.toDataURL();*********'+ canvas.toDataURL());
-
-            document.getElementById('imageHolder').src = initialAvatarURL ;
+           // reciveBlob(blob.toString());
+            reciveBlob(canvas.toDataURL());
             });
 
-            function reciveBlob(blob){
-                let myBlob = blob;
-            }
+
 
     }
 

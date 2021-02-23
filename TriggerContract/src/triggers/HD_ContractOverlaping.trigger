@@ -16,7 +16,7 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
 
     for(Contract__c contractToAdd :Trigger.new){
         if(contractToAdd.End_Date__c != null){
-            if(contractToAdd.End_Date__c<contractToAdd.Start_Date__c || contractToAdd.End_Date__c < System.today()){
+            if(contractToAdd.End_Date__c<contractToAdd.Start_Date__c || contractToAdd.End_Date__c < System.today() ){
                 contractsWithError.put(contractToAdd,'Contract Error, Check End Date');
             }
         }
@@ -89,6 +89,15 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
                 }
             }
         }
+    }
+
+    for(Contract__c contractToAdd :Trigger.new){
+        if(contractToAdd.End_Date__c != null){
+            if(contractToAdd.End_Date__c<contractToAdd.Start_Date__c || contractToAdd.End_Date__c < System.today() ){
+                contractsWithError.put(contractToAdd,'Contract Error, Check End Date');
+            }
+        }
+
     }
 
     for (Contract__c contract : contractsWithError.keySet()){

@@ -3,7 +3,7 @@
  */
 
 public with sharing class HD_DoctorVievController {
-
+    public String croppedImageAsString{get;set;}
     public HD_ContractHandler helper;
     public HD_HospitalHandler hospitalSearchHelper;
     public List<Contract__c> availableContracts { get; set; }
@@ -105,29 +105,41 @@ public with sharing class HD_DoctorVievController {
 
     public void  upload(){
         System.debug('attechmentbodyBegin--------------'+ doctorImageAttachment.Body);
+        doctorImageAttachment.Body = cropperImage;
         doctorImageAttachment.OwnerId = UserInfo.getUserId();
         doctorImageAttachment.ParentId = parentId;
         doctorImageAttachment.Name ='ProfileImage';
+        System.debug('myInser--------------'+ doctorImageAttachment);
         insert doctorImageAttachment;
         System.debug('attachment' + doctorImageAttachment);
         doctorImageAttachment = new Attachment();
     }
 
-//    public Id getImageId(){
-//        Id result = null;
-//        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :parentId ORDER BY CreatedDate];
-//        if(images.size()>0)
-//        {
-//            result=images[0].Id;
-//        }
-//        return result;
-//    }
+    public void blobFromCropping(){
+        System.debug('croppedImageAsString======================='+ croppedImageAsString);
+        cropp();
+        upload();
+    }
 
-//    public void cropp(){
-//        System.debug('uploadedImage-----------------'+ uploadedImage);
-//        cropperImage = uploadedImage;
-//        System.debug('cropperImage-----------------'+ cropperImage);
-//    }
+    public Id getImageId(){
+        Id result = null;
+        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :parentId ORDER BY CreatedDate DESC ];
+        if(images.size()>0)
+        {
+            result=images[0].Id;
+        }
+        return result;
+    }
+
+    public void cropp(){
+
+
+        String[] parts = croppedImageAsString.split(',');
+        System.debug('cropperImage-----------------'+ parts[1]);
+        cropperImage = EncodingUtil.base64Decode(parts[1]);
+        System.debug('cropperImageAfrerEncoding-------------------'+ cropperImage);
+
+    }
 
 //    public void check(){
 //        System.debug('cropperImage************'+ cropperImage);
