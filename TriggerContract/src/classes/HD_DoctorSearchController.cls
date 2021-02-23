@@ -4,7 +4,7 @@ public with sharing class HD_DoctorSearchController {
 
     public Doctor__c inputFormDoctor { get; set; }
     public List<Doctor__c> foundDoctors { get; set; }
-    public HD_DoctorSearchHandler searchHelper { get; set; }
+    public HD_DoctorHandler searchHelper { get; set; }
     public String sortDirection = 'ASC';
     public String actualSortExpression = 'Name';
     public ApexPages.StandardSetController setController { get; set; }
@@ -12,7 +12,7 @@ public with sharing class HD_DoctorSearchController {
 
     public HD_DoctorSearchController() {
         inputFormDoctor = new Doctor__c();
-        searchHelper = new HD_DoctorSearchHandler();
+        searchHelper = new HD_DoctorHandler();
     }
 
     public void spin() {

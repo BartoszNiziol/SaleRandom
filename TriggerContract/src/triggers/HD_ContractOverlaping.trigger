@@ -13,11 +13,22 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
         doctorsToAddIdList.add(contractToAdd.Doctor__c);
         hospitalsToAddIdList.add(contractToAdd.Hospital__c);
     }
+
+    for(Contract__c contractToAdd :Trigger.new){
+        if(contractToAdd.End_Date__c != null){
+            if(contractToAdd.End_Date__c<contractToAdd.Start_Date__c){
+                contractsWithError.put(contractToAdd,'Contract cannot end before start');
+            }
+        }
+
+    }
+
     List<Contract__c> matchingToNewContracts = [
             SELECT Id,Start_Date__c,End_Date__c,Doctor__r.First_Name__c,Doctor__r.Name,Hospital__r.Name
             FROM Contract__c
             WHERE Doctor__c IN :doctorsToAddIdList AND Hospital__c IN :hospitalsToAddIdList
     ];
+
     for (Contract__c matchingContract : matchingToNewContracts) {
         if (oldDoctorsHospitalsIdToContracts.containsKey(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c))) {
             oldDoctorsHospitalsIdToContracts.get(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c))

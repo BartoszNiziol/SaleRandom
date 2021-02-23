@@ -5,7 +5,7 @@
 public with sharing class HD_DoctorVievController {
 
     public HD_ContractHandler helper;
-    public HD_HospitalSearchHandler hospitalSearchHelper;
+    public HD_HospitalHandler hospitalSearchHelper;
     public List<Contract__c> availableContracts { get; set; }
     public List<Hospital__c> foundHospitals { get; set; }
     public Hospital__c inputFormHospital { get; set; }
@@ -30,7 +30,7 @@ public with sharing class HD_DoctorVievController {
 
     public HD_DoctorVievController(ApexPages.StandardController standardController) {
         parentId = standardController.getId();
-        hospitalSearchHelper = new HD_HospitalSearchHandler();
+        hospitalSearchHelper = new HD_HospitalHandler();
         availableContracts = new List<Contract__c>();
         currentDoctor = (Doctor__c) standardController.getRecord();
         helper = new HD_ContractHandler();
@@ -43,7 +43,7 @@ public with sharing class HD_DoctorVievController {
 
     public void dismiss() {
         Contract__c actualContract = [SELECT Doctor__c,Start_Date__c,End_Date__c FROM Contract__c WHERE Id = :contractToDismissId];
-        helper.updateContractsByDate(actualContract);
+        helper.dismissConditionVerification(actualContract);
         getContracts();
     }
 
@@ -59,6 +59,14 @@ public with sharing class HD_DoctorVievController {
     public void clear() {
         foundHospitals = new List<Hospital__c>();
         inputFormHospital = new Hospital__c();
+      //  selectedHospitalId = null;
+        newContract.Start_Date__c = null;
+        newContract.End_Date__c = null;
+    }
+    public void fullClear() {
+        System.debug('poszedl clear');
+        foundHospitals = new List<Hospital__c>();
+        inputFormHospital = new Hospital__c();
         selectedHospital = null;
         selectedHospitalId = null;
         newContract.Start_Date__c = null;
@@ -71,7 +79,7 @@ public with sharing class HD_DoctorVievController {
     }
 
     public void cancel() {
-        clear();
+        fullClear();
         dialogAllowedToClose = false;
     }
 
@@ -84,7 +92,7 @@ public with sharing class HD_DoctorVievController {
             contract.Start_Date__c = newContract.Start_Date__c;
             contract.End_Date__c = newContract.End_Date__c;
             insert contract;
-            clear();
+            fullClear();
             dialogAllowedToClose = true;
             System.debug(dialogAllowedToClose);
         }catch (Exception e){
@@ -95,15 +103,15 @@ public with sharing class HD_DoctorVievController {
         return null;
     }
 
-//    public void  upload(){
-//        System.debug('attechmentbodyBegin--------------'+ doctorImageAttachment.Body);
-//        doctorImageAttachment.OwnerId = UserInfo.getUserId();
-//        doctorImageAttachment.ParentId = parentId;
-//        doctorImageAttachment.Name ='ProfileImage';
-//        insert doctorImageAttachment;
-//        System.debug('attachment' + doctorImageAttachment);
-//        doctorImageAttachment = new Attachment();
-//    }
+    public void  upload(){
+        System.debug('attechmentbodyBegin--------------'+ doctorImageAttachment.Body);
+        doctorImageAttachment.OwnerId = UserInfo.getUserId();
+        doctorImageAttachment.ParentId = parentId;
+        doctorImageAttachment.Name ='ProfileImage';
+        insert doctorImageAttachment;
+        System.debug('attachment' + doctorImageAttachment);
+        doctorImageAttachment = new Attachment();
+    }
 
 //    public Id getImageId(){
 //        Id result = null;

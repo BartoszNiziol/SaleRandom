@@ -1,6 +1,6 @@
 
 
-public with sharing class HD_DoctorSearchHandler {
+public with sharing class HD_DoctorHandler {
 
 
     public List<Doctor__c> queryDoctors(String firstName, String lastName, String email, String country, String orderBy, String order) {

@@ -4,17 +4,19 @@
 
 public with sharing class HD_ContractHandler {
 
-    public void updateContractsByDate(Contract__c actualContract) {
-        if (actualContract.End_Date__c != null) {
-            if (actualContract.Start_Date__c < System.today() && actualContract.End_Date__c <= System.today()) {
+    public void dismissConditionVerification(Contract__c actualContract) {
 
-            } else if (actualContract.Start_Date__c <= System.today() && (actualContract.End_Date__c > System.today())) {
+        if (actualContract.End_Date__c != null) {
+
+
+            if (actualContract.Start_Date__c <= System.today() && (actualContract.End_Date__c > System.today()) ) {
                 actualContract.End_Date__c = System.today();
                 update actualContract;
             } else if (actualContract.Start_Date__c > System.today() && actualContract.End_Date__c > System.today()) {
                 delete actualContract;
             }
         } else {
+
             if (actualContract.Start_Date__c <= System.today()) {
                 actualContract.End_Date__c = System.today();
                 update actualContract;

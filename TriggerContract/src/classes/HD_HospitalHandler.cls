@@ -2,7 +2,7 @@
  * Created by BRITENET on 18.02.2021.
  */
 
-public with sharing class HD_HospitalSearchHandler {
+public with sharing class HD_HospitalHandler {
 
     public List<Hospital__c> queryHospitals(String name, String email, String country) {
 
