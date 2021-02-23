@@ -44,47 +44,66 @@
     #theImage {
      display: block;
      max-width: 100%;
-
-
 }
+
         </style>
-        <apex:form>
-            <apex:actionFunction action="{!upload}" name="upload"/>
-<!--            <apex:image value="/servlet/servlet.FileDownload?file={!ImageId}"  rendered="{!NOT(ISBLANK(ImageId))}"  id ="theImage" style="width:100px;  height:100px;"/>-->
+        <!--        <div class="container">-->
+        <!--            <h1>Upload cropped image to server</h1>-->
+        <!--            <label class="label" data-toggle="tooltip" title="Change your avatar">-->
+        <!--                <img class="rounded" id="avatar" src="https://avatars0.githubusercontent.com/u/3456749?s=160" alt="avatar"/>-->
+        <!--                <input type="file" class="sr-only" id="input" name="image" accept="image/*"/>-->
+        <!--            </label>-->
+        <!--            <div class="progress">-->
+        <!--                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>-->
+        <!--            </div>-->
+        <!--            <div class="alert" role="alert"></div>-->
+        <!--            <div class="modal fade" id="dialogCroppBox" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">-->
+        <!--                <div class="modal-dialog" role="document">-->
+        <!--                    <div class="modal-content">-->
+        <!--                        <div class="modal-header">-->
+        <!--                            <h5 class="modal-title" id="modalLabel">Crop the image</h5>-->
+        <!--                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+        <!--                                <span aria-hidden="true">&times;</span>-->
+        <!--                            </button>-->
+        <!--                        </div>-->
+        <!--                        <div class="modal-body">-->
+        <!--                            <div class="img-container">-->
+        <!--                                <img id="image" src="https://avatars0.githubusercontent.com/u/3456749"/>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                        <div class="modal-footer">-->
+        <!--                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>-->
+        <!--                            <button type="button" class="btn btn-primary" id="crop">Crop</button>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
 
+                <div >
+                    <label class="label" data-toggle="tooltip" title="Change your avatar">
+                        <img class="rounded" id="avatar" src="https://avatars0.githubusercontent.com/u/3456749?s=160" alt="avatar"/>
+                        <input type="file" class="sr-only" id="input" name="image" accept="image/*"/>
+                    </label>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                    <div id="dialogCroppBox" title="Cropper" style="display:none;">
+                        <div class="modal-body">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <div class="img-container">
+                                <img id="image" src="https://avatars0.githubusercontent.com/u/3456749 "/>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="crop">Crop</button>
+                        </div>
+                    </div>
 
-<!--            <apex:image id="avatar" value="{!$Resource.Default_Portrait}" width="200" height="200"/>-->
-            <!--        <input type="file" class="sr-only" id="input" name="image" accept="image/*" value="Change photo"/>-->
-            <apex:inputFile value="{!uploadedImage}" filename="uploadedImage" accept="image/*" id="input" onChange=""/>
-            <apex:commandButton id="upload" action="{!cropp}" value="upload"/>
-
-
-<!--            <apex:inputFile value="{!attachment.Body}" filename="{!attachment.Name}" accept="image/*" id="input" onChange=""/>-->
-<!--            <apex:commandButton id="upload" action="{!upload}" value="upload"/>-->
-        </apex:form>
-        <apex:form >
-            <apex:image id="image" value="data:image,base64,{!cropperImage}" style="height:100px; width:100px;"/>
-                <apex:commandButton reRender="image" action="{!check}"/>
-        </apex:form>
-
-    <apex:form >
-            <apex:commandButton id="opener" onClick="showCroppModal();" reRender="mainPanel"
-                                value="Open Dialog"/>
-
-        <div id="dialogCroppBox" title="Cropper" style="display:none;">
-            <div class="modal-body">
-                <div class="img-container">
-                    <img id="image" src="https://avatars0.githubusercontent.com/u/3456749 "/>
-<!--                    <apex:image id="image" value="data:image;base64,{!cropperImage}" style="height:100px; width:100px;"/>-->
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="crop">Crop</button>
-            </div>
-        </div>
-    </apex:form>
-
 
 
         <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
@@ -107,7 +126,7 @@
                     <apex:outputField value="{!Doctor__c.First_Name__c}"/>
                     <apex:outputField value="{!Doctor__c.Phone_Number__c}">
                         <apex:commandbutton onClick="ClipBoard('{!$Component.copytext}', '{!$Component.holdtext}');"
-                                            rerender="copytext" value="Copy to Clipboard"/>
+                                            rerender="copytext" value="{!$Label.Copy_to_Clipboard_Label}"/>
                     </apex:outputField>
                     <apex:outputField value="{!Doctor__c.Name}"/>
                     <apex:outputField value="{!Doctor__c.Email__c}"/>
@@ -152,8 +171,10 @@
                             |
                             <apex:commandLink action="{!dismiss}" reRender="contractsBlockPage,ContractsColumn"
                                               status="loadingGif"
-                                              style="{!IF(contract.Start_Date__c <= TODAY() && contract.End_Date__c <= TODAY(),'display:none;','display:initial;')}">
-                                <apex:param name="test" value="{!contract.Id}" assignTo="{!contractId}"/>
+                                              style="{!IF(contract.End_Date__c != null,
+                                              IF(contract.Start_Date__c <= TODAY() && contract.End_Date__c <= TODAY(),'display:none;','display:initial;')
+                                              ,'display:initial;' )}">
+                                <apex:param name="test" value="{!contract.Id}" assignTo="{!contractToDismissId}"/>
                                 {!$Label.Dismiss_Button}
                             </apex:commandLink>
                             >
@@ -218,7 +239,7 @@
                         <apex:outputPanel id="ContractDipsplayWrapper">
                             <apex:outputPanel id="ContractDisplay"
                                               rendered="{!IF(selectedHospital != null,true,false)}">
-                                <apex:pageBlockSection collapsible="false" columns="2" title="New Contract">
+                                <apex:pageBlockSection collapsible="false" columns="2" title="{!$Label.New_Contract_Label}">
                                     <apex:outputField value="{!selectedHospital.Name}"/>
                                     <apex:outputField value="{!currentDoctor.Name}"/>
                                     <apex:inputField value="{!newContract.Start_Date__c}" required="true"/>
@@ -230,15 +251,15 @@
                     </apex:actionRegion>
                     <apex:outputPanel style="text-align:center;" id="finalButtons">
                         <div style="text-align:center;">
-                    <apex:commandButton action="{!cancel}"
-                                        reRender="ContractDipsplayWrapper,resultBlock,searchSection "
-                                        value="{!$Label.Cancel_Button}" onClick="hideModal()"
-                                        status="loadingGif"/>
-                    <apex:commandButton action="{!hire}" value="{!$Label.Hire_Button}"
-                                        reRender="vievPageBlock,ContractDipsplayWrapper,ContractsColumnWrapper,resultBlock,searchSection,finalButtons"
-                                        status="loadingGif"
-                                        onComplete="{!if(dialogAllowedToClose == true,"hideModal()","empty()")}"
-                                        style="{!IF(selectedHospital == null,'display:none;','display:initial;')}"/>
+                            <apex:commandButton action="{!cancel}"
+                                                reRender="ContractDipsplayWrapper,resultBlock,searchSection "
+                                                value="{!$Label.Cancel_Button}" onClick="hideModal()"
+                                                status="loadingGif"/>
+                            <apex:commandButton action="{!hire}" value="{!$Label.Hire_Button}"
+                                                reRender="vievPageBlock,ContractDipsplayWrapper,ContractsColumnWrapper,resultBlock,searchSection,finalButtons"
+                                                status="loadingGif"
+                                                onComplete="{!if(dialogAllowedToClose == true,"hideModal()","empty()")}"
+                                                style="{!IF(selectedHospital == null,'display:none;','display:initial;')}"/>
                         </div>
                     </apex:outputPanel>
                 </apex:form>
@@ -248,7 +269,137 @@
 
 let $ = jQuery.noConflict();
 
-    var $image = $('#image');
+      var avatar = document.getElementById('avatar');
+      var image = document.getElementById('#image');
+      var input = document.getElementById('input');
+      var $progress = $('.progress');
+      var $progressBar = $('.progress-bar');
+      var $alert = $('.alert');
+      var $modal = $('#modal');
+      var cropper;
+      var $image = $('#image');
+
+      $('[data-toggle="tooltip"]').tooltip();
+
+      input.addEventListener('change', function (e) {
+        var files = e.target.files;
+        var done = function (url) {
+          input.value = '';
+          image.src = url;
+          $alert.hide();
+         // $modal.modal('show');
+        };
+        showCroppModal();
+        var reader;
+        var file;
+        var url;
+
+        if (files && files.length > 0) {
+          file = files[0];
+
+          if (URL) {
+            done(URL.createObjectURL(file));
+          } else if (FileReader) {
+            reader = new FileReader();
+            reader.onload = function (e) {
+              done(reader.result);
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+      });
+
+      function showCroppModal(){
+    $(function() {
+        $("#dialogCroppBox").dialog({
+        autoOpen: true,
+        height: 600,
+        width: 550,
+        modal: true,
+        function (){
+            Console.debug('aaaaaaa');
+            cropper = new Cropper(image,{
+                aspectRatio :1,
+                viewMode: 3,
+            });
+        }
+    });
+    });
+}
+
+      $modal.on('shown.bs.modal', function () {
+        cropper = new Cropper(image, {
+          aspectRatio: 1,
+          viewMode: 3,
+        });
+      }).on('hidden.bs.modal', function () {
+        cropper.destroy();
+        cropper = null;
+      });
+
+      document.getElementById('crop').addEventListener('click', function () {
+        var initialAvatarURL;
+        var canvas;
+
+        $modal.modal('hide');
+
+        if (cropper) {
+          canvas = cropper.getCroppedCanvas({
+            width: 160,
+            height: 160,
+          });
+          initialAvatarURL = avatar.src;
+         avatar.src = canvas.toDataURL();
+         $progress.show();
+        $alert.removeClass('alert-success alert-warning');
+          canvas.toBlob(function (blob) {
+            var formData = new FormData();
+
+            formData.append('avatar', blob, 'avatar.jpg');
+            $.ajax('https://jsonplaceholder.typicode.com/posts', {
+              method: 'POST',
+              data: formData,
+              processData: false,
+              contentType: false,
+
+              xhr: function () {
+                var xhr = new XMLHttpRequest();
+
+                xhr.upload.onprogress = function (e) {
+                  var percent = '0';
+                  var percentage = '0%';
+
+                  if (e.lengthComputable) {
+                    percent = Math.round((e.loaded / e.total) * 100);
+                    percentage = percent + '%';
+                    $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
+                  }
+                };
+
+                return xhr;
+              },
+
+              success: function () {
+                $alert.show().addClass('alert-success').text('Upload success');
+              },
+
+              error: function () {
+                avatar.src = initialAvatarURL;
+                $alert.show().addClass('alert-warning').text('Upload error');
+              },
+
+              complete: function () {
+                $progress.hide();
+              },
+            });
+          });
+        }
+      });
+
+
+
+
+
     document.getElementById("bigHead").innerHTML ="{!Doctor__c.Name}"
 
     $(document).ready(function() {
@@ -313,7 +464,6 @@ let $ = jQuery.noConflict();
           document.body.removeChild(aux);
         }
 
-
 function showModal(){
     $(function() {
         $("#dialogBox").dialog({
@@ -336,42 +486,21 @@ function hideModal(){
     });
 }
 
-function upload(){
-    console.debug('aaaaaaaaa');
-    uploadPhoto();
-}
 
-function empty(){
+//$image.cropper({
+//  aspectRatio: 16 / 9,
+//  crop: function(event) {
+//    console.log(event.detail.x);
+//    console.log(event.detail.y);
+//    console.log(event.detail.width);
+//    console.log(event.detail.height);
+//    console.log(event.detail.rotate);
+//    console.log(event.detail.scaleX);
+//    console.log(event.detail.scaleY);
+//  }
+//});
 
-};
-
-$image.cropper({
-  aspectRatio: 16 / 9,
-  crop: function(event) {
-    console.log(event.detail.x);
-    console.log(event.detail.y);
-    console.log(event.detail.width);
-    console.log(event.detail.height);
-    console.log(event.detail.rotate);
-    console.log(event.detail.scaleX);
-    console.log(event.detail.scaleY);
-  }
-});
-
-function showCroppModal(){
-    $(function() {
-        $("#dialogCroppBox").dialog({
-        autoOpen: true,
-        height: 600,
-        width: 550,
-        modal: true,
-    });
-    });
-}
-
-var cropper = $image.data('cropper');
-
-
+//var cropper = $image.data('cropper');
         </script>
     </apex:actionRegion>
 </apex:page>

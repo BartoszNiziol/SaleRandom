@@ -4,7 +4,7 @@
 
 trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
 
-    Map<String, List<Contract__c>> doctorsHospitalsIdToContracts = new Map<String, List< Contract__c>>();
+    Map<String, List<Contract__c>> oldDoctorsHospitalsIdToContracts = new Map<String, List< Contract__c>>();
     List<Id> doctorsToAddIdList = new List<Id>();
     List<Id> hospitalsToAddIdList = new List<Id>();
     Map<Contract__c,String> contractsWithError = new Map<Contract__c,String>();
@@ -19,11 +19,11 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
             WHERE Doctor__c IN :doctorsToAddIdList AND Hospital__c IN :hospitalsToAddIdList
     ];
     for (Contract__c matchingContract : matchingToNewContracts) {
-        if (doctorsHospitalsIdToContracts.containsKey(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c))) {
-            doctorsHospitalsIdToContracts.get(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c))
+        if (oldDoctorsHospitalsIdToContracts.containsKey(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c))) {
+            oldDoctorsHospitalsIdToContracts.get(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c))
                     .add(matchingContract);
         } else {
-            doctorsHospitalsIdToContracts.put(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c), new List<Contract__c>{
+            oldDoctorsHospitalsIdToContracts.put(String.valueOf(matchingContract.Doctor__c) + String.valueOf(matchingContract.Hospital__c), new List<Contract__c>{
                     matchingContract
             });
         }
@@ -35,7 +35,7 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
         String doctorHospitalToAddIds = String.valueOf(contractsToAdd.Doctor__c) + String.valueOf(contractsToAdd.Hospital__c);
 
         List<Contract__c> contactsWithSameDoctorANDHospitalASContractsToAdd =
-                doctorsHospitalsIdToContracts.get(doctorHospitalToAddIds);
+                oldDoctorsHospitalsIdToContracts.get(doctorHospitalToAddIds);
 
         if (contactsWithSameDoctorANDHospitalASContractsToAdd != null) {
 

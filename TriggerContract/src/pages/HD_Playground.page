@@ -91,5 +91,42 @@ function showModal(){
 var cropper = $image.data('cropper');
 
     </script>
+<!--    <apex:form>-->
+<!--        <apex:actionFunction action="{!upload}" name="upload"/>-->
+        <!--            <apex:image value="/servlet/servlet.FileDownload?file={!ImageId}"  rendered="{!NOT(ISBLANK(ImageId))}"  id ="theImage" style="width:100px;  height:100px;"/>-->
+
+
+        <!--            <apex:image id="avatar" value="{!$Resource.Default_Portrait}" width="200" height="200"/>-->
+        <!--        <input type="file" class="sr-only" id="input" name="image" accept="image/*" value="Change photo"/>-->
+<!--        <apex:inputFile value="{!uploadedImage}" filename="uploadedImage" accept="image/*" id="input" onChange=""/>-->
+<!--        <apex:commandButton id="upload" action="{!cropp}" value="upload"/>-->
+
+
+        <!--            <apex:inputFile value="{!attachment.Body}" filename="{!attachment.Name}" accept="image/*" id="input" onChange=""/>-->
+        <!--            <apex:commandButton id="upload" action="{!upload}" value="upload"/>-->
+<!--    </apex:form>-->
+<!--    <apex:form >-->
+<!--        <apex:image id="image" value="data:image,base64,{!cropperImage}" style="height:100px; width:100px;"/>-->
+<!--        <apex:commandButton reRender="image" action="{!check}"/>-->
+<!--    </apex:form>-->
+
+<!--    <apex:form >-->
+<!--        <apex:commandButton id="opener" onClick="showCroppModal();" reRender="mainPanel"-->
+<!--                            value="Open Dialog"/>-->
+
+<!--        <div id="dialogCroppBox" title="Cropper" style="display:none;">-->
+<!--            <div class="modal-body">-->
+<!--                <div class="img-container">-->
+<!--                    <img id="image" src="https://avatars0.githubusercontent.com/u/3456749 "/>-->
+
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="modal-footer">-->
+<!--                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>-->
+<!--                <button type="button" class="btn btn-primary" id="crop">Crop</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </apex:form>-->
 
 </apex:page>
+
