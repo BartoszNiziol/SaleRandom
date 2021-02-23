@@ -16,8 +16,21 @@ public with sharing class HD_DoctorVievController {
     public String contractId { get; set; }
     public Contract__c newContract { get; set; }
     public Boolean dialogAllowedToClose {get; set;}
+    public Attachment attachment {
+        get {
+            if (attachment == null)
+                attachment = new Attachment();
+            return attachment;
+        }
+        set;
+    }
+    public Id parentId{get;set;}
+    public Blob cropperImage{get;set;}
+    public Blob uploadedImage{get;set;}
+
 
     public HD_DoctorVievController(ApexPages.StandardController standardController) {
+        parentId = standardController.getId();
         hospitalSearchHelper = new HD_HospitalSearchHandler();
         availableContracts = new List<Contract__c>();
         currentDoctor = (Doctor__c) standardController.getRecord();
@@ -77,8 +90,38 @@ public with sharing class HD_DoctorVievController {
 
         }
         availableContracts = [SELECT Doctor__c,Start_Date__c,End_Date__c,Hospital__r.Name FROM Contract__c WHERE Doctor__c = :currentDoctor.Id];
-
         return null;
+    }
+
+    public void  upload(){
+        System.debug('attechmentbodyBegin--------------'+ attachment.Body);
+        attachment.OwnerId = UserInfo.getUserId();
+        attachment.ParentId = parentId;
+        attachment.Name ='ProfileImage';
+        insert attachment;
+        System.debug('attachment' +attachment);
+        attachment = new Attachment();
+    }
+
+    public Id getImageId(){
+        Id result = null;
+        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :parentId ORDER BY CreatedDate];
+        if(images.size()>0)
+        {
+            result=images[0].Id;
+        }
+        return result;
+    }
+
+    public void cropp(){
+        System.debug('uploadedImage-----------------'+ uploadedImage);
+        cropperImage = uploadedImage;
+        System.debug('cropperImage-----------------'+ cropperImage);
+    }
+
+    public void check(){
+        System.debug('cropperImage************'+ cropperImage);
+        System.debug('uploadedIamge***********'+ uploadedImage);
     }
 
 

@@ -34,7 +34,8 @@
 
         <apex:image id="avatar" value="{!$Resource.Default_Portrait}" width="200" height="200"/>
 <!--        <input type="file" class="sr-only" id="input" name="image" accept="image/*" value="Change photo"/>-->
-        <apex:inputFile value="{!attachment.Body}" filename="{!attachment.Name}" accept="image/*" id="input"/>
+
+        <apex:inputFile value="{!attachment.Body}" filename="{!attachment.Name}" accept="image/*" id="input" onChange="upload"/>
         <apex:commandButton id="upload" action="{!upload}" value="upload"/>
 
         <apex:commandButton id="opener" onClick="showModal();" reRender="mainPanel"

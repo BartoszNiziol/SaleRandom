@@ -13,7 +13,6 @@ public without sharing class HD_PlygroundController {
         set;
     }
     public Id parentId{get;set;}
-    public Id imageId{get;set;}
 
     public HD_PlygroundController(ApexPages.StandardController standardController){
             parentId = standardController.getId();
