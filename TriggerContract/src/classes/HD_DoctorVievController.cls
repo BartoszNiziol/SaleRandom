@@ -141,10 +141,11 @@ public with sharing class HD_DoctorVievController {
 
     }
 
-//    public void check(){
-//        System.debug('cropperImage************'+ cropperImage);
-//        System.debug('uploadedIamge***********'+ uploadedImage);
-//    }
+    public void empty(){
+
+    }
+
+
 
 
 }

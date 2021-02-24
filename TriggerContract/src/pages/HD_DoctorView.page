@@ -54,7 +54,7 @@
         }
         </style>
 
-        <div>
+        <div id="dialogChangePhoto" style="display:none;">
             <label class="label" data-toggle="tooltip" title="Change your avatar">
                 <img class="rounded" id="avatar" src="https://avatars0.githubusercontent.com/u/3456749?s=160" alt="avatar"/>
                 <input type="file" class="sr-only" id="input" name="image" accept="image/*"/>
@@ -70,12 +70,16 @@
                 </div>
             </div>
         </div>
+
+
     <apex:form>
+        <apex:commandButton id="changePhoto" onClick="showChangePhotoModal();" action="{!empty}" status="loadingGif" reRender="dialogCroppBox"
+                            value="Change Photo" />
 
 
         <apex:actionRegion>
 
-            <apex:actionFunction name="reciveBlob" action="{!blobFromCropping}" reRender="contractsBlockPage,errors" immediate="true" onComplete="oncompleteAlert()">
+            <apex:actionFunction name="reciveBlob" action="{!blobFromCropping}" reRender="contractsBlockPage,errors,photoPanel" immediate="true" onComplete="hideCroppModal(); hideChangePhotoModal()">
                 <apex:param value="" assignTo="{!croppedImageAsString}" name="blob"/>
             </apex:actionFunction>
 
@@ -87,8 +91,10 @@
         <div id="bigHead"></div>
         <apex:pageBlock id="vievPageBlock">
             <apex:form>
+                <apex:outputPanel id="photoPanel">
                 <apex:image value="/servlet/servlet.FileDownload?file={!imageId}" rendered="{!NOT(ISBLANK(ImageId))}" style="height:100px;width:100px;"/>
-                <apex:commandButton  value="{RNDR}" reRender="vievPageBlock"/>
+                </apex:outputPanel>
+<!--                <apex:commandButton  value="{Change Photo}" reRender="vievPageBlock" />-->
                 <c:HD_SpinnerComponent/>
                 <apex:facet name="header">
                     <div class="PageFacet">{!$Label.Doctor_Detail_Label}</div>
@@ -320,6 +326,11 @@ let $ = jQuery.noConflict();
     });
     });
 }
+function hideCroppModal(){
+    $(function() {
+        $("#dialogCroppBox").dialog("close");
+    });
+}
 function oncompleteAlert(){
     alert('completed')
 }
@@ -489,6 +500,25 @@ function showModal(){
 function hideModal(){
     $(function() {
         $("#dialogBox").dialog("close");
+    });
+}
+
+function showChangePhotoModal(){
+    $(function() {
+        $("#dialogChangePhoto").dialog({
+        autoOpen: true,
+        height: 200,
+        width: 200,
+        modal: true,
+        closeOnEscape: false
+
+                });
+            });
+        }
+
+function hideChangePhotoModal(){
+    $(function() {
+        $("#dialogChangePhoto").dialog("close");
     });
 }
 
