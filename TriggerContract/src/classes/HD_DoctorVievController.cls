@@ -4,7 +4,7 @@
 
 public with sharing class HD_DoctorVievController {
     public String croppedImageAsString{get;set;}
-    public HD_ContractHandler helper;
+    public HD_ContractHandler contractHandler;
     public HD_HospitalHandler hospitalSearchHelper;
     public List<Contract__c> availableContracts { get; set; }
     public List<Hospital__c> foundHospitals { get; set; }
@@ -15,7 +15,7 @@ public with sharing class HD_DoctorVievController {
     public Contract__c contract { get; set; }
     public String contractToDismissId { get; set; }
     public Contract__c newContract { get; set; }
-    public Boolean dialogAllowedToClose {get; set;}
+    public Boolean hireDialogAllowedToClose {get; set;}
     public Id AttachmentParentId {get;set;}
     public Blob cropperImage{get;set;}
    // public Blob uploadedImage{get;set;}
@@ -33,17 +33,17 @@ public with sharing class HD_DoctorVievController {
         hospitalSearchHelper = new HD_HospitalHandler();
         availableContracts = new List<Contract__c>();
         currentDoctor = (Doctor__c) standardController.getRecord();
-        helper = new HD_ContractHandler();
+        contractHandler = new HD_ContractHandler();
         inputFormHospital = new Hospital__c();
         foundHospitals = new List<Hospital__c>();
         newContract = new Contract__c();
         getContracts();
-        dialogAllowedToClose = false;
+        hireDialogAllowedToClose = false;
     }
 
     public void dismiss() {
         Contract__c actualContract = [SELECT Doctor__c,Start_Date__c,End_Date__c FROM Contract__c WHERE Id = :contractToDismissId];
-        helper.dismissConditionVerification(actualContract);
+        contractHandler.dismissConditionVerification(actualContract);
         getContracts();
     }
 
@@ -52,19 +52,16 @@ public with sharing class HD_DoctorVievController {
     }
 
     public void searchHospital() {
-
         foundHospitals = hospitalSearchHelper.queryHospitals(inputFormHospital.Name, inputFormHospital.Email__c, inputFormHospital.Country__c);
     }
 
     public void clear() {
         foundHospitals = new List<Hospital__c>();
         inputFormHospital = new Hospital__c();
-      //  selectedHospitalId = null;
         newContract.Start_Date__c = null;
         newContract.End_Date__c = null;
     }
     public void fullClear() {
-        System.debug('poszedl clear');
         foundHospitals = new List<Hospital__c>();
         inputFormHospital = new Hospital__c();
         selectedHospital = null;
@@ -78,14 +75,14 @@ public with sharing class HD_DoctorVievController {
         System.debug('selectedHospital after query' + selectedHospital);
     }
 
-    public void cancel() {
+    public void cancelHire() {
         fullClear();
-        dialogAllowedToClose = false;
+        hireDialogAllowedToClose = false;
     }
 
     public PageReference hire() {
         try {
-            dialogAllowedToClose = false;
+            hireDialogAllowedToClose = false;
             Contract__c contract = new Contract__c();
             contract.Doctor__c = currentDoctor.Id;
             contract.Hospital__c = selectedHospital.Id;
@@ -93,27 +90,25 @@ public with sharing class HD_DoctorVievController {
             contract.End_Date__c = newContract.End_Date__c;
             insert contract;
             fullClear();
-            dialogAllowedToClose = true;
-            System.debug(dialogAllowedToClose);
+            hireDialogAllowedToClose = true;
+            System.debug(hireDialogAllowedToClose);
         }catch (Exception e){
-            dialogAllowedToClose = false;
+            hireDialogAllowedToClose = false;
             ApexPages.addMessages(e);
         }
         availableContracts = [SELECT Doctor__c,Start_Date__c,End_Date__c,Hospital__r.Name FROM Contract__c WHERE Doctor__c = :currentDoctor.Id];
         return null;
     }
 
-    public void  upload(){
-        System.debug('attechmentbodyBegin--------------'+ doctorImageAttachment.Body);
+    public void uploadAttachment(){
+
         doctorImageAttachment.Body = cropperImage;
         doctorImageAttachment.OwnerId = UserInfo.getUserId();
         doctorImageAttachment.ParentId = AttachmentParentId;
         doctorImageAttachment.Name ='ProfileImage';
-        System.debug('myInser--------------'+ doctorImageAttachment);
         List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :AttachmentParentId];
         delete images;
         insert doctorImageAttachment;
-        System.debug('attachment' + doctorImageAttachment);
         doctorImageAttachment = new Attachment();
     }
 
@@ -123,9 +118,8 @@ public with sharing class HD_DoctorVievController {
     }
 
     public void blobFromCropping(){
-        System.debug('croppedImageAsString======================='+ croppedImageAsString);
         cropp();
-        upload();
+        uploadAttachment();
     }
 
     public Id getImageId(){
@@ -140,13 +134,8 @@ public with sharing class HD_DoctorVievController {
     }
 
     public void cropp(){
-
-
         String[] parts = croppedImageAsString.split(',');
-        System.debug('cropperImage-----------------'+ parts[1]);
         cropperImage = EncodingUtil.base64Decode(parts[1]);
-        System.debug('cropperImageAfrerEncoding-------------------'+ cropperImage);
-
     }
 
     public void empty(){

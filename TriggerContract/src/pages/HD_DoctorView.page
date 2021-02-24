@@ -191,7 +191,7 @@
 
     <div id="dialogBox"
          title="{!$Label.Hire_Label} {!currentDoctor.First_Name__c} {!currentDoctor.Name} {!$Label.TO_Label}"
-         style="{!IF(dialogAllowedToClose,"display:initial;","display:none;")}">
+         style="{!IF(hireDialogAllowedToClose,"display:initial;","display:none;")}">
         <apex:pageBlock id="searchBlock">
             <apex:form>
                 <apex:actionFunction name="sendClearToController" action="{!fullClear}" reRender="searchBlock"
@@ -259,10 +259,10 @@
                             <apex:commandButton action="{!hire}" value="{!$Label.Hire_Button}"
                                                 reRender="vievPageBlock,ContractDipsplayWrapper,ContractsColumnWrapper,resultBlock,searchSection,finalButtons"
                                                 status="loadingGif"
-                                                onComplete="{!if(dialogAllowedToClose == true,"hideModal()","empty()")}"
+                                                onComplete="{!if(hireDialogAllowedToClose == true,"hideModal()","empty()")}"
                                                 style="{!IF(selectedHospital == null,'display:none;','display:initial;')}"/>
 
-                            <apex:commandButton action="{!cancel}"
+                            <apex:commandButton action="{!cancelHire}"
                                                 reRender="ContractDipsplayWrapper,resultBlock,searchSection,searchBlock "
                                                 value="{!$Label.Cancel_Button}" onClick="hideModal()"
                                                 status="loadingGif" immediate="true"/>
@@ -274,35 +274,25 @@
             </apex:form>
         </apex:pageBlock>
     </div>
+
     <script type="text/javascript">
-
-let $ = jQuery.noConflict();
+       let $ = jQuery.noConflict();
        let $cropper = jQuery.noConflict();
-      let avatar = document.getElementById('avatar');
-      let image = document.getElementById('doctorImage');
-      let input = document.getElementById('input');
- //     var $progress = $('.progress');
- //     var $progressBar = $('.progress-bar');
-   //   var $alert = $('.alert');
-     // var $modal = $('#modal');
-      let cropper;
-      //var $image = $('#image');
-
-     // $('[data-toggle="tooltip"]').tooltip();
+       let avatar = document.getElementById('avatar');
+       let image = document.getElementById('doctorImage');
+       let input = document.getElementById('input');
 
       input.addEventListener('change', function (e) {
-        var files = e.target.files;
-        var done = function (url) {
+        let files = e.target.files;
+        let done = function (url) {
           input.value = '';
           image.src = url;
-       //   $alert.hide();
           showCroppModal();
-         // $modal.modal('show');
         };
 
-        var reader;
-        var file;
-        var url;
+        let reader;
+        let file;
+        let url;
 
         if (files && files.length > 0) {
           file = files[0];
@@ -339,6 +329,7 @@ let $ = jQuery.noConflict();
     });
     });
 }
+
 function hideCroppModal(){
     $(function() {
         $("#dialogCroppBox").dialog("close");
@@ -350,8 +341,8 @@ function oncompleteAlert(){
 
  document.getElementById('crop').addEventListener('click', function () {
 
-        var initialAvatarURL;
-        var canvas;
+        let initialAvatarURL;
+        let canvas;
         if (cropper) {
           canvas = cropper.getCroppedCanvas({
             width: 160,
@@ -361,74 +352,12 @@ function oncompleteAlert(){
           avatar.src = canvas.toDataURL();
 
           canvas.toBlob(function (blob) {
-            var formData = new FormData();
+            let formData = new FormData();
             formData.append('avatar', blob, 'avatar.jpg');
-           // reciveBlob(blob.toString());
             reciveBlob(canvas.toDataURL());
             });
-
-
-
     }
-
 });
-
-
-
-//      $modal.on('shown.bs.modal', function () {
-//        cropper = new Cropper(image, {
-//          aspectRatio: 1,
-//          viewMode: 3,
-//        });
-//      }).on('hidden.bs.modal', function () {
-//        cropper.destroy();
-//        cropper = null;
-//      });
-
-
-//            $.ajax('https://jsonplaceholder.typicode.com/posts', {
-//              method: 'POST',
-//              data: formData,
-//              processData: false,
-//              contentType: false,
-//
-       //     xhr: function () {
-       //        var xhr = new XMLHttpRequest();
-
-         //     xhr.upload.onprogress = function (e) {
-//                  var percent = '0';
-//                  var percentage = '0%';
-//
-//                  if (e.lengthComputable) {
-//                    percent = Math.round((e.loaded / e.total) * 100);
-//                    percentage = percent + '%';
-//                    $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
-//                  }
-//                };
-//
-//                return xhr;
-//              },
-//
-//              success: function () {
-//                $alert.show().addClass('alert-success').text('Upload success');
-//              },
-//
-//              error: function () {
-//                avatar.src = initialAvatarURL;
-//                $alert.show().addClass('alert-warning').text('Upload error');
-//              },
-//
-//              complete: function () {
-//                $progress.hide();
-//              },
-//            });
-//          });
-//        }
-//      });
-
-
-
-
 
     document.getElementById("bigHead").innerHTML ="{!Doctor__c.Name}"
 
@@ -503,7 +432,6 @@ function showModal(){
         modal: true,
         closeOnEscape: false,
                 open: function(event, ui) {
-//                        $dialog(".ui-dialog-titlebar-close", ui.dialog).hide();
                             sendClearToController()
                     }
                 });
