@@ -1,6 +1,5 @@
 <apex:page id="BNDoctorViewG" standardController="Doctor__c" extensions="HD_DoctorVievController">
 
-
     <apex:includeScript
             value="https://maps.google.com/maps/api/js?key=AIzaSyBCiCk7ro-LGeUEXt4dp8Vyw0_ndvNiExM&sensor=false"/>
     <apex:includeScript
@@ -8,8 +7,6 @@
     <apex:includeScript value="{!$Resource.jQuery}"/>
     <apex:includeScript value="{!$Resource.jQueryUI}"/>
     <apex:stylesheet value="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
-    <!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.css" rel="stylesheet"/>-->
-    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.js"></script>-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
 
@@ -58,10 +55,9 @@
     <div id="dialogChangePhoto" style="display:none;">
         <label class="label" data-toggle="tooltip" title="Change your avatar">
             <img class="rounded" id="avatar" src="https://avatars0.githubusercontent.com/u/3456749?s=160" alt="avatar"/>
-            <input type="file" class="sr-only" id="input" name="image" accept="image/png, image/jpeg" size="1000000"/>
+            <input type="file" class="sr-only" id="input" name="image" accept="image/png, image/jpeg" data-max-size="2048"/>
         </label>
         <div id="dialogCroppBox" title="Cropper" style="display:none;">
-
             <div class="img-container">
                 <img id="doctorImage" src="https://avatars0.githubusercontent.com/u/3456749 "/>
             </div>
@@ -74,10 +70,7 @@
 
 
     <apex:form>
-
-
         <apex:actionRegion>
-
             <apex:actionFunction name="reciveBlob" action="{!blobFromCropping}"
                                  reRender="contractsBlockPage,errors,photoPanel" immediate="true"
                                  onComplete="hideCroppModal(); hideChangePhotoModal()">
@@ -188,7 +181,6 @@
     <apex:relatedList list="histories">
         <apex:facet name="header">Doctor History</apex:facet>
     </apex:relatedList>
-
     <div id="dialogBox"
          title="{!$Label.Hire_Label} {!currentDoctor.First_Name__c} {!currentDoctor.Name} {!$Label.TO_Label}"
          style="{!IF(hireDialogAllowedToClose,"display:initial;","display:none;")}">
@@ -253,7 +245,6 @@
 
                         </apex:outputPanel>
                     </apex:outputPanel>
-
                     <apex:outputPanel style="text-align:center;" id="finalButtons">
                         <div style="text-align:center;">
                             <apex:commandButton action="{!hire}" value="{!$Label.Hire_Button}"
@@ -318,8 +309,8 @@
         modal: true,
         open: function (){
             cropper = new Cropper(image,{
-                aspectRatio :1,
-                viewMode: 3,
+               // aspectRatio :1,
+                viewMode: 2,
             });
         },
         close : function() {
@@ -448,8 +439,8 @@ function showChangePhotoModal(){
     $(function() {
         $("#dialogChangePhoto").dialog({
         autoOpen: true,
-        height: 200,
-        width: 200,
+        height: 250,
+        width: 255,
         modal: true,
         closeOnEscape: false
 
@@ -466,6 +457,36 @@ function hideChangePhotoModal(){
 function sendClearToController(){
     console.log('clear')
 }
+
+//var uploadField = document.getElementById("input");
+//
+//uploadField.onchange = function() {
+//    if(this.files.size > 1024){
+//       alert("File is too big!");
+//       this.value = "";
+//    };
+//};
+
+
+//$(function(){
+//    var fileInput = $('#input');
+//    var maxSize = fileInput.data('max-size');
+//    $('.label').change(function(e){
+//        if(fileInput.get(0).files.length){
+//            var fileSize = fileInput.get(0).files[0].size; // in bytes
+//            if(fileSize>maxSize){
+//                alert('file size is more then' + maxSize + ' bytes');
+//                return false;
+//            }else{
+//                alert('file size is correct- '+fileSize+' bytes');
+//            }
+//        }else{
+//            alert('choose file, please');
+//            return false;
+//        }
+//
+//    });
+//});
 
     </script>
 </apex:page>
