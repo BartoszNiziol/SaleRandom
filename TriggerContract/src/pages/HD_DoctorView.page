@@ -53,10 +53,12 @@
     </style>
 
     <div id="dialogChangePhoto" style="display:none;">
+
         <label class="label" data-toggle="tooltip" title="Change your avatar">
             <img class="rounded" id="avatar" src="https://avatars0.githubusercontent.com/u/3456749?s=160" alt="avatar"/>
-            <input type="file" class="sr-only" id="input" name="image" accept="image/png, image/jpeg" data-max-size="2048"/>
+            <input type="file" class="sr-only" id="input" name="image" accept="image/png, image/jpeg"/>
         </label>
+
         <div id="dialogCroppBox" title="Cropper" style="display:none;">
             <div class="img-container">
                 <img id="doctorImage" src="https://avatars0.githubusercontent.com/u/3456749 "/>
@@ -71,8 +73,10 @@
 
     <apex:form>
         <apex:actionRegion>
+            <apex:actionFunction name="sizeLimitError" action="{!invokeSizeError}" onComplete="hideCroppModal();"> </apex:actionFunction>
+            <apex:actionFunction name="typeFileError" action="{!invokeFileTypeError}" onComplete="hideCroppModal();"> </apex:actionFunction>
             <apex:actionFunction name="reciveBlob" action="{!blobFromCropping}"
-                                 reRender="contractsBlockPage,errors,photoPanel" immediate="true"
+                                 reRender="contractsBlockPage,errors,photoPanel,detailSection" immediate="true"
                                  onComplete="hideCroppModal(); hideChangePhotoModal()">
                 <apex:param value="" assignTo="{!croppedImageAsString}" name="blob"/>
             </apex:actionFunction>
@@ -85,21 +89,7 @@
     <div id="bigHead"></div>
     <apex:pageBlock id="vievPageBlock">
         <apex:form>
-            <apex:outputPanel id="photoPanel">
-                <apex:image value="{!IF(ISBLANK(ImageId)
-                ,$Resource.Default_Portrait
-                ,( "/servlet/servlet.FileDownload?file=" +imageId))}"
-                            style="height:100px;width:100px;"/>
 
-            <apex:commandButton id="changePhoto" onClick="showChangePhotoModal();" action="{!empty}" status="loadingGif"
-                                reRender="dialogCroppBox"
-                                value="{!IF(ISBLANK(ImageId)
-                                    ,"Add Photo"
-                                     ,"Change Photo")}"/>
-            <apex:commandButton id="deletePhotp" action="{!deletePhoto}" status="loadingGif"
-                                reRender="dialogCroppBox,photoPanel"
-                                value="Delete Photo"/>
-            </apex:outputPanel>
             <c:HD_SpinnerComponent/>
             <apex:facet name="header">
                 <div class="PageFacet">{!$Label.Doctor_Detail_Label}</div>
@@ -111,13 +101,34 @@
                 <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
             </div>
             <apex:actionRegion>
-                <apex:pageBlockSection title="{!$Label.Details_Label}" columns="2">
+                <apex:pageBlockSection title="{!$Label.Details_Label}" columns="3" id ="detailSection">
+                    <apex:pageBlockSectionItem id="photoSection">
+                        <apex:image value="{!IF(ISBLANK(ImageId)
+                ,$Resource.Default_Portrait
+                ,( "/servlet/servlet.FileDownload?file=" +imageId))}"
+                                    style="height:140px;width:140px;"/>
+                    </apex:pageBlockSectionItem>
 
                     <apex:outputField value="{!Doctor__c.First_Name__c}"/>
                     <apex:outputField value="{!Doctor__c.Phone_Number__c}">
                         <apex:commandbutton onClick="ClipBoard('{!$Component.copytext}', '{!$Component.holdtext}');"
                                             rerender="copytext" value="{!$Label.Copy_to_Clipboard_Label}"/>
                     </apex:outputField>
+
+                    <apex:pageBlockSectionItem id="buttonSection" >
+                        <apex:outputPanel style="text-align:left;">
+                        <apex:commandButton id="changePhoto" onClick="showChangePhotoModal();" action="{!empty}" status="loadingGif"
+                                            reRender="dialogCroppBox,detailSection"
+                                            value="{!IF(ISBLANK(ImageId)
+                                    ,"Add Photo"
+                                     ,"Change Photo")}"/>
+                        <apex:commandButton id="deletePhotp" action="{!deletePhoto}" status="loadingGif"
+                                            reRender="dialogCroppBox,detailSection"
+                                            value="Delete Photo"/>
+
+                        </apex:outputPanel>
+
+                    </apex:pageBlockSectionItem>
                     <apex:outputField value="{!Doctor__c.Name}"/>
                     <apex:outputField value="{!Doctor__c.Email__c}"/>
                 </apex:pageBlockSection>
@@ -143,8 +154,7 @@
         </apex:form>
     </apex:pageBlock>
     <apex:pageBlock id="contractsBlockPage">
-        <apex:outputPanel rendered="true" id="mainPanel">
-        </apex:outputPanel>
+
         <apex:facet name="header">
             <div class="PageFacet">{!$Label.Contracts_Label}</div>
         </apex:facet>
@@ -275,6 +285,7 @@
 
       input.addEventListener('change', function (e) {
         let files = e.target.files;
+        console.log(files);
         let done = function (url) {
           input.value = '';
           image.src = url;
@@ -298,7 +309,33 @@
             reader.readAsDataURL(file);
           }
         }
-      });
+
+        let fileSize = file.size;
+        let fileName = file.name;
+
+        let splitedName = fileName.split('.');
+
+        console.log(fileName);
+
+         if(fileSize >  1048576){
+           alert("File is too big!");
+           sizeLimitError();
+
+         }else if (!( splitedName[1] == 'jpg' || splitedName[1] == 'png')){
+             console.log(splitedName[1]);
+             alert("Wrong file type");
+             typeFileError();
+         }
+});
+
+
+
+
+
+
+
+
+
 
       function showCroppModal(){
     $cropper(function() {
@@ -457,15 +494,6 @@ function hideChangePhotoModal(){
 function sendClearToController(){
     console.log('clear')
 }
-
-//var uploadField = document.getElementById("input");
-//
-//uploadField.onchange = function() {
-//    if(this.files.size > 1024){
-//       alert("File is too big!");
-//       this.value = "";
-//    };
-//};
 
 
 //$(function(){

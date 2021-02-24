@@ -142,6 +142,15 @@ public with sharing class HD_DoctorVievController {
 
     }
 
+    public void invokeSizeError(){
+        ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, 'Image size over 1MB');
+        ApexPages.addMessage(myMsg);
+    }
+    public void invokeFileTypeError(){
+        ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, 'Wrong type of file');
+        ApexPages.addMessage(myMsg);
+    }
+
 
 
 
