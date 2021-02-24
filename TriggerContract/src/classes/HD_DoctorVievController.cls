@@ -110,6 +110,8 @@ public with sharing class HD_DoctorVievController {
         doctorImageAttachment.ParentId = parentId;
         doctorImageAttachment.Name ='ProfileImage';
         System.debug('myInser--------------'+ doctorImageAttachment);
+        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :parentId ];
+        delete images;
         insert doctorImageAttachment;
         System.debug('attachment' + doctorImageAttachment);
         doctorImageAttachment = new Attachment();
@@ -124,6 +126,7 @@ public with sharing class HD_DoctorVievController {
     public Id getImageId(){
         Id result = null;
         List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :parentId ORDER BY CreatedDate DESC ];
+        System.debug('all attachments-------------' + images);
         if(images.size()>0)
         {
             result=images[0].Id;

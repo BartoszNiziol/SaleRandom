@@ -73,8 +73,7 @@
 
 
     <apex:form>
-        <apex:commandButton id="changePhoto" onClick="showChangePhotoModal();" action="{!empty}" status="loadingGif" reRender="dialogCroppBox"
-                            value="Change Photo" />
+
 
 
         <apex:actionRegion>
@@ -94,7 +93,8 @@
                 <apex:outputPanel id="photoPanel">
                 <apex:image value="/servlet/servlet.FileDownload?file={!imageId}" rendered="{!NOT(ISBLANK(ImageId))}" style="height:100px;width:100px;"/>
                 </apex:outputPanel>
-<!--                <apex:commandButton  value="{Change Photo}" reRender="vievPageBlock" />-->
+                <apex:commandButton id="changePhoto" onClick="showChangePhotoModal();" action="{!empty}" status="loadingGif" reRender="dialogCroppBox"
+                                    value="Change Photo" />
                 <c:HD_SpinnerComponent/>
                 <apex:facet name="header">
                     <div class="PageFacet">{!$Label.Doctor_Detail_Label}</div>
