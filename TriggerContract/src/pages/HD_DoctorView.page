@@ -1,4 +1,4 @@
-<apex:page id="BNDoctorViewG" standardController="Doctor__c" extensions="HD_DoctorVievController">
+<apex:page id="BNDoctorViewG" standardController="Doctor__c" extensions="HD_DoctorViewController">
 
     <apex:includeScript
             value="https://maps.google.com/maps/api/js?key=AIzaSyBCiCk7ro-LGeUEXt4dp8Vyw0_ndvNiExM&sensor=false"/>
@@ -188,20 +188,35 @@
     <apex:relatedList list="histories">
         <apex:facet name="header">Doctor History</apex:facet>
     </apex:relatedList>
+
+
+
+
+
+
+
+
+
+
+
+
     <div id="dialogBox"
          title="{!$Label.Hire_Label} {!currentDoctor.First_Name__c} {!currentDoctor.Name} {!$Label.TO_Label}"
          style="{!IF(hireDialogAllowedToClose,"display:initial;","display:none;")}">
         <apex:pageBlock id="searchBlock">
             <apex:form>
+
                 <apex:actionFunction name="sendClearToController" action="{!fullClear}" reRender="searchBlock"
                                      immediate="true"/>
                 <apex:actionRegion>
+
                     <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Hospitals_Label}"
                                            collapsible="false" id="searchSection">
                         <apex:inputField value="{!inputFormHospital.Name}" required="true"/>
                         <apex:inputField value="{!inputFormHospital.Country__c}"/>
                         <apex:inputText value="{!inputFormHospital.Email__c}" label="{!$Label.Email_Label}"/>
                     </apex:pageBlockSection>
+
                     <div align="center">
                         <apex:commandButton action="{!searchHospital}"
                                             value="{!$Label.Search_Button}" status="loadingGif"
@@ -211,7 +226,10 @@
                                             reRender="searchBlock,resultBlock,mainPanel" id="clearButton"/>
                     </div>
                 </apex:actionRegion>
+                </apex:form>
+            <apex:form>
                 <apex:actionRegion>
+
                     <apex:pageBlockSection title="{!$Label.Results_Label}" id="resultBlock" collapsible="false"
                                            columns="1">
                         <apex:pageBlockTable value="{!foundHospitals}" var="hosp">
@@ -235,12 +253,15 @@
                                 {! hosp.Country__c}
                             </apex:column>
                         </apex:pageBlockTable>
+
                     </apex:pageBlockSection>
+
                 </apex:actionRegion>
                 <apex:actionRegion>
                     <apex:outputPanel id="ContractDipsplayWrapper">
                         <apex:outputPanel id="ContractDisplay"
                                           rendered="{!IF(selectedHospital != null,true,false)}">
+
                             <apex:pageBlockSection collapsible="false" columns="2"
                                                    title="{!$Label.New_Contract_Label}">
                                 <apex:outputField value="{!selectedHospital.Name}"/>
@@ -248,6 +269,7 @@
                                 <apex:inputField value="{!newContract.Start_Date__c}" required="true"/>
                                 <apex:inputField value="{!newContract.End_Date__c}"/>
                             </apex:pageBlockSection>
+
                         </apex:outputPanel>
                     </apex:outputPanel>
                     <apex:outputPanel style="text-align:center;" id="finalButtons">
@@ -311,12 +333,12 @@
         console.log(fileName);
 
          if(fileSize >  1048576){
-           alert("File is too big!");
+           alert("File is too big. Max size: 1MB");
            sizeLimitError();
 
          }else if (!( splitedName[1] == 'jpg' || splitedName[1] == 'png')){
              console.log(splitedName[1]);
-             alert("Wrong file type");
+             alert("Wrong file type. Possible types: jpg,png");
              typeFileError();
          }
 });

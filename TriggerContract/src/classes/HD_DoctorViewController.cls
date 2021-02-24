@@ -2,7 +2,7 @@
  * Created by BRITENET on 17.02.2021.
  */
 
-public with sharing class HD_DoctorVievController {
+public with sharing class HD_DoctorViewController {
     public HD_ContractHandler contractHandler;
     public HD_HospitalHandler hospitalSearchHelper;
     public String croppedImageAsString{get;set;}
@@ -27,7 +27,7 @@ public with sharing class HD_DoctorVievController {
         set;
     }
 
-    public HD_DoctorVievController(ApexPages.StandardController standardController) {
+    public HD_DoctorViewController(ApexPages.StandardController standardController) {
         AttachmentParentId = standardController.getId();
         hospitalSearchHelper = new HD_HospitalHandler();
         availableContracts = new List<Contract__c>();
@@ -57,8 +57,8 @@ public with sharing class HD_DoctorVievController {
     public void clear() {
         foundHospitals = new List<Hospital__c>();
         inputFormHospital = new Hospital__c();
-        newContract.Start_Date__c = null;
-        newContract.End_Date__c = null;
+//        newContract.Start_Date__c = null;
+//        newContract.End_Date__c = null;
     }
     public void fullClear() {
         foundHospitals = new List<Hospital__c>();
@@ -125,7 +125,7 @@ public with sharing class HD_DoctorVievController {
         Id result = null;
         List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :AttachmentParentId ORDER BY CreatedDate DESC ];
         System.debug('all attachments-------------' + images);
-        if(images.size()>0)
+        if(!images.isEmpty())
         {
             result=images[0].Id;
         }
