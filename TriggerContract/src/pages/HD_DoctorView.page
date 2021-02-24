@@ -51,18 +51,19 @@
         }
 
 
+
     </style>
 
     <div id="dialogChangePhoto" style="display:none;">
         <label class="label">
             <apex:messages/>
-            <img class="rounded" id="avatar" src="https://avatars0.githubusercontent.com/u/3456749?s=160" alt="avatar"/>
+            <img class="rounded" id="avatar" src="{!$Resource.Default_Portrait}" alt="avatar" style="height:180px;width:180px; display: block;margin-left: auto; margin-right: auto;"/>
             <input type="file" class="sr-only" id="input" name="image" accept="image/png, image/jpeg"/>
         </label>
     </div>
-    <div id="dialogCroppBox" title="{!$Label.Cropper_Label}" style="display:none;">
+    <div id="dialogCroppBox" title="{!$Resource.Default_Portrait}" style="display:none;">
         <div class="img-container">
-            <img id="doctorImage" src="https://avatars0.githubusercontent.com/u/3456749 "/>
+            <img id="doctorImage" src="$Resource.Default_Portrait "/>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -100,21 +101,20 @@
                 <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
             </div>
             <apex:actionRegion>
-                <apex:pageBlockSection title="{!$Label.Details_Label}" columns="3" id="detailSection">
+                <apex:pageBlockSection title="{!$Label.Details_Label}" columns="3" id="detailSection" >
                     <apex:pageBlockSectionItem id="photoSection">
                         <apex:image value="{!IF(ISBLANK(ImageId)
                 ,$Resource.Default_Portrait
-                ,( "/servlet/servlet.FileDownload?file=" +imageId))}"
+                ,( $Label.Image_From_ImageId +imageId))}"
                                     style="height:140px;width:140px;"/>
                     </apex:pageBlockSectionItem>
-
-                    <apex:outputField value="{!Doctor__c.First_Name__c}"/>
+                    <apex:outputField value="{!Doctor__c.First_Name__c}"  />
                     <apex:outputField value="{!Doctor__c.Phone_Number__c}">
                         <apex:commandbutton onClick="ClipBoard('{!$Component.copytext}', '{!$Component.holdtext}');"
-                                            rerender="copytext" value="{!$Label.Copy_to_Clipboard_Label}"/>
+                                            rerender="copytext" value="{!$Label.Copy_to_Clipboard_Label}" />
                     </apex:outputField>
                     <apex:pageBlockSectionItem id="buttonSection">
-                        <apex:outputPanel style="text-align:left;">
+                        <apex:outputPanel style="text-align:left; height:200px ">
                             <apex:commandButton id="changePhoto" onClick="showChangePhotoModal();" action="{!empty}"
                                                 status="loadingGif"
                                                 reRender="dialogCroppBox,detailSection"
@@ -123,7 +123,7 @@
                                      ,$Label.Change_Photo)}"/>
                             <apex:commandButton id="deletePhotp" action="{!deletePhoto}" status="loadingGif"
                                                 reRender="dialogCroppBox,detailSection"
-                                                value="Delete Photo"/>
+                                                value="{!$Label.Delete_Photo}"/>
                         </apex:outputPanel>
                     </apex:pageBlockSectionItem>
                     <apex:outputField value="{!Doctor__c.Name}"/>
@@ -330,7 +330,7 @@
         modal: true,
         open: function (){
             cropper = new Cropper(image,{
-               // aspectRatio :1,
+                aspectRatio :1,
                 viewMode: 2,
             });
         },
@@ -349,6 +349,50 @@ function hideCroppModal(){
 }
 function oncompleteAlert(){
     alert('completed')
+}
+
+function showModal(){
+    $(function() {
+        $("#dialogBox").dialog({
+        autoOpen: true,
+        height: 600,
+        width: 550,
+        modal: true,
+        closeOnEscape: false,
+                open: function(event, ui) {
+                            sendClearToController()
+                    }
+                });
+            });
+        }
+
+function hideModal(){
+    $(function() {
+        $("#dialogBox").dialog("close");
+    });
+}
+
+function showChangePhotoModal(){
+    $(function() {
+        $("#dialogChangePhoto").dialog({
+        autoOpen: true,
+        height: 250,
+        width: 255,
+        modal: true,
+        closeOnEscape: false
+
+                });
+            });
+        }
+
+function hideChangePhotoModal(){
+    $(function() {
+        $("#dialogChangePhoto").dialog("close");
+    });
+}
+
+function sendClearToController(){
+    console.log('clear')
 }
 
  document.getElementById('crop').addEventListener('click', function () {
@@ -435,71 +479,6 @@ function oncompleteAlert(){
           document.body.removeChild(aux);
         }
 
-function showModal(){
-    $(function() {
-        $("#dialogBox").dialog({
-        autoOpen: true,
-        height: 600,
-        width: 550,
-        modal: true,
-        closeOnEscape: false,
-                open: function(event, ui) {
-                            sendClearToController()
-                    }
-                });
-            });
-        }
-
-function hideModal(){
-    $(function() {
-        $("#dialogBox").dialog("close");
-    });
-}
-
-function showChangePhotoModal(){
-    $(function() {
-        $("#dialogChangePhoto").dialog({
-        autoOpen: true,
-        height: 250,
-        width: 255,
-        modal: true,
-        closeOnEscape: false
-
-                });
-            });
-        }
-
-function hideChangePhotoModal(){
-    $(function() {
-        $("#dialogChangePhoto").dialog("close");
-    });
-}
-
-function sendClearToController(){
-    console.log('clear')
-}
-
-
-//$(function(){
-//    var fileInput = $('#input');
-//    var maxSize = fileInput.data('max-size');
-//    $('.label').change(function(e){
-//        if(fileInput.get(0).files.length){
-//            var fileSize = fileInput.get(0).files[0].size; // in bytes
-//            if(fileSize>maxSize){
-//                alert('file size is more then' + maxSize + ' bytes');
-//                return false;
-//            }else{
-//                alert('file size is correct- '+fileSize+' bytes');
-//            }
-//        }else{
-//            alert('choose file, please');
-//            return false;
-//        }
-//
-//    });
-//});
-
-
     </script>
+
 </apex:page>

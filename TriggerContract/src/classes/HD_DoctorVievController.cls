@@ -3,9 +3,9 @@
  */
 
 public with sharing class HD_DoctorVievController {
-    public String croppedImageAsString{get;set;}
     public HD_ContractHandler contractHandler;
     public HD_HospitalHandler hospitalSearchHelper;
+    public String croppedImageAsString{get;set;}
     public List<Contract__c> availableContracts { get; set; }
     public List<Hospital__c> foundHospitals { get; set; }
     public Hospital__c inputFormHospital { get; set; }
@@ -18,7 +18,6 @@ public with sharing class HD_DoctorVievController {
     public Boolean hireDialogAllowedToClose {get; set;}
     public Id AttachmentParentId {get;set;}
     public Blob cropperImage{get;set;}
-   // public Blob uploadedImage{get;set;}
     public Attachment doctorImageAttachment {
         get {
             if (doctorImageAttachment == null)
@@ -138,18 +137,17 @@ public with sharing class HD_DoctorVievController {
         cropperImage = EncodingUtil.base64Decode(parts[1]);
     }
 
-    public void empty(){
-
-    }
-
     public void invokeSizeError(){
         ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, 'Image size over 1MB');
         ApexPages.addMessage(myMsg);
     }
+
     public void invokeFileTypeError(){
         ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, 'Wrong type of file');
         ApexPages.addMessage(myMsg);
     }
+
+    public void empty(){}
 
 
 
