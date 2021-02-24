@@ -15,6 +15,7 @@ public with sharing class HD_ContractHandler {
             } else if (actualContract.Start_Date__c > System.today() && actualContract.End_Date__c > System.today()) {
                 delete actualContract;
             }
+
         } else {
 
             if (actualContract.Start_Date__c <= System.today()) {

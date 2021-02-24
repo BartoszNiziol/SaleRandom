@@ -50,37 +50,36 @@
             color:red;
         }
 
+
     </style>
 
     <div id="dialogChangePhoto" style="display:none;">
-
-        <label class="label" data-toggle="tooltip" title="Change your avatar">
+        <label class="label">
+            <apex:messages/>
             <img class="rounded" id="avatar" src="https://avatars0.githubusercontent.com/u/3456749?s=160" alt="avatar"/>
             <input type="file" class="sr-only" id="input" name="image" accept="image/png, image/jpeg"/>
         </label>
-
-        <div id="dialogCroppBox" title="Cropper" style="display:none;">
-            <div class="img-container">
-                <img id="doctorImage" src="https://avatars0.githubusercontent.com/u/3456749 "/>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="crop">Crop</button>
-            </div>
+    </div>
+    <div id="dialogCroppBox" title="{!$Label.Cropper_Label}" style="display:none;">
+        <div class="img-container">
+            <img id="doctorImage" src="https://avatars0.githubusercontent.com/u/3456749 "/>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="crop">Crop</button>
         </div>
     </div>
-
-
     <apex:form>
         <apex:actionRegion>
-            <apex:actionFunction name="sizeLimitError" action="{!invokeSizeError}" onComplete="hideCroppModal();"> </apex:actionFunction>
-            <apex:actionFunction name="typeFileError" action="{!invokeFileTypeError}" onComplete="hideCroppModal();"> </apex:actionFunction>
+            <apex:actionFunction name="sizeLimitError" action="{!invokeSizeError}" onComplete="hideCroppModal();"
+                                 reRender="dialogChangePhoto" status="loadingGif"></apex:actionFunction>
+            <apex:actionFunction name="typeFileError" action="{!invokeFileTypeError}" onComplete="hideCroppModal();"
+                                 reRender="dialogChangePhoto" status="loadingGif"></apex:actionFunction>
             <apex:actionFunction name="reciveBlob" action="{!blobFromCropping}"
                                  reRender="contractsBlockPage,errors,photoPanel,detailSection" immediate="true"
                                  onComplete="hideCroppModal(); hideChangePhotoModal()">
                 <apex:param value="" assignTo="{!croppedImageAsString}" name="blob"/>
             </apex:actionFunction>
-
         </apex:actionRegion>
     </apex:form>
     <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
@@ -101,7 +100,7 @@
                 <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
             </div>
             <apex:actionRegion>
-                <apex:pageBlockSection title="{!$Label.Details_Label}" columns="3" id ="detailSection">
+                <apex:pageBlockSection title="{!$Label.Details_Label}" columns="3" id="detailSection">
                     <apex:pageBlockSectionItem id="photoSection">
                         <apex:image value="{!IF(ISBLANK(ImageId)
                 ,$Resource.Default_Portrait
@@ -114,20 +113,18 @@
                         <apex:commandbutton onClick="ClipBoard('{!$Component.copytext}', '{!$Component.holdtext}');"
                                             rerender="copytext" value="{!$Label.Copy_to_Clipboard_Label}"/>
                     </apex:outputField>
-
-                    <apex:pageBlockSectionItem id="buttonSection" >
+                    <apex:pageBlockSectionItem id="buttonSection">
                         <apex:outputPanel style="text-align:left;">
-                        <apex:commandButton id="changePhoto" onClick="showChangePhotoModal();" action="{!empty}" status="loadingGif"
-                                            reRender="dialogCroppBox,detailSection"
-                                            value="{!IF(ISBLANK(ImageId)
-                                    ,"Add Photo"
-                                     ,"Change Photo")}"/>
-                        <apex:commandButton id="deletePhotp" action="{!deletePhoto}" status="loadingGif"
-                                            reRender="dialogCroppBox,detailSection"
-                                            value="Delete Photo"/>
-
+                            <apex:commandButton id="changePhoto" onClick="showChangePhotoModal();" action="{!empty}"
+                                                status="loadingGif"
+                                                reRender="dialogCroppBox,detailSection"
+                                                value="{!IF(ISBLANK(ImageId)
+                                    ,$Label.Add_Photo
+                                     ,$Label.Change_Photo)}"/>
+                            <apex:commandButton id="deletePhotp" action="{!deletePhoto}" status="loadingGif"
+                                                reRender="dialogCroppBox,detailSection"
+                                                value="Delete Photo"/>
                         </apex:outputPanel>
-
                     </apex:pageBlockSectionItem>
                     <apex:outputField value="{!Doctor__c.Name}"/>
                     <apex:outputField value="{!Doctor__c.Email__c}"/>
@@ -198,7 +195,6 @@
             <apex:form>
                 <apex:actionFunction name="sendClearToController" action="{!fullClear}" reRender="searchBlock"
                                      immediate="true"/>
-
                 <apex:actionRegion>
                     <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Hospitals_Label}"
                                            collapsible="false" id="searchSection">
@@ -223,7 +219,7 @@
                                          style="height:21px; text-align:center;">
                                 <apex:commandButton action="{!selectHospital}"
                                                     reRender="ContractDipsplayWrapper, resultBlock, finalButtons"
-                                                    value=" {!$Label.Select_Label}"
+                                                    value="{!$Label.Select_Label}"
                                                     style="{!IF(selectedHospitalId == hosp.Id,'display:none;','display:initial;')}">
                                     <apex:param value="{!hosp.Id}" name="selectedHospital"
                                                 assignTo="{!selectedHospitalId}"/>
@@ -252,7 +248,6 @@
                                 <apex:inputField value="{!newContract.Start_Date__c}" required="true"/>
                                 <apex:inputField value="{!newContract.End_Date__c}"/>
                             </apex:pageBlockSection>
-
                         </apex:outputPanel>
                     </apex:outputPanel>
                     <apex:outputPanel style="text-align:center;" id="finalButtons">
@@ -262,7 +257,6 @@
                                                 status="loadingGif"
                                                 onComplete="{!if(hireDialogAllowedToClose == true,"hideModal()","empty()")}"
                                                 style="{!IF(selectedHospital == null,'display:none;','display:initial;')}"/>
-
                             <apex:commandButton action="{!cancelHire}"
                                                 reRender="ContractDipsplayWrapper,resultBlock,searchSection,searchBlock "
                                                 value="{!$Label.Cancel_Button}" onClick="hideModal()"
@@ -270,7 +264,6 @@
                         </div>
                         <apex:messages/>
                     </apex:outputPanel>
-
                 </apex:actionRegion>
             </apex:form>
         </apex:pageBlock>
@@ -327,15 +320,6 @@
              typeFileError();
          }
 });
-
-
-
-
-
-
-
-
-
 
       function showCroppModal(){
     $cropper(function() {
@@ -515,6 +499,7 @@ function sendClearToController(){
 //
 //    });
 //});
+
 
     </script>
 </apex:page>
