@@ -16,9 +16,9 @@ public with sharing class HD_DoctorVievController {
     public String contractToDismissId { get; set; }
     public Contract__c newContract { get; set; }
     public Boolean dialogAllowedToClose {get; set;}
-    public Id parentId{get;set;}
+    public Id AttachmentParentId {get;set;}
     public Blob cropperImage{get;set;}
-    public Blob uploadedImage{get;set;}
+   // public Blob uploadedImage{get;set;}
     public Attachment doctorImageAttachment {
         get {
             if (doctorImageAttachment == null)
@@ -29,7 +29,7 @@ public with sharing class HD_DoctorVievController {
     }
 
     public HD_DoctorVievController(ApexPages.StandardController standardController) {
-        parentId = standardController.getId();
+        AttachmentParentId = standardController.getId();
         hospitalSearchHelper = new HD_HospitalHandler();
         availableContracts = new List<Contract__c>();
         currentDoctor = (Doctor__c) standardController.getRecord();
@@ -107,14 +107,19 @@ public with sharing class HD_DoctorVievController {
         System.debug('attechmentbodyBegin--------------'+ doctorImageAttachment.Body);
         doctorImageAttachment.Body = cropperImage;
         doctorImageAttachment.OwnerId = UserInfo.getUserId();
-        doctorImageAttachment.ParentId = parentId;
+        doctorImageAttachment.ParentId = AttachmentParentId;
         doctorImageAttachment.Name ='ProfileImage';
         System.debug('myInser--------------'+ doctorImageAttachment);
-        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :parentId ];
+        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :AttachmentParentId];
         delete images;
         insert doctorImageAttachment;
         System.debug('attachment' + doctorImageAttachment);
         doctorImageAttachment = new Attachment();
+    }
+
+    public void deletePhoto(){
+        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :AttachmentParentId];
+        delete images;
     }
 
     public void blobFromCropping(){
@@ -125,7 +130,7 @@ public with sharing class HD_DoctorVievController {
 
     public Id getImageId(){
         Id result = null;
-        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :parentId ORDER BY CreatedDate DESC ];
+        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :AttachmentParentId ORDER BY CreatedDate DESC ];
         System.debug('all attachments-------------' + images);
         if(images.size()>0)
         {

@@ -13,7 +13,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
 
-        <style>
+    <style>
 
     .PageFacet{
        padding-top: 9px;
@@ -52,60 +52,72 @@
 .message ul,.messageText{
             color:red;
         }
-        </style>
 
-        <div id="dialogChangePhoto" style="display:none;">
-            <label class="label" data-toggle="tooltip" title="Change your avatar">
-                <img class="rounded" id="avatar" src="https://avatars0.githubusercontent.com/u/3456749?s=160" alt="avatar"/>
-                <input type="file" class="sr-only" id="input" name="image" accept="image/*"/>
-            </label>
-            <div id="dialogCroppBox" title="Cropper" style="display:none;">
+    </style>
 
-                <div class="img-container">
-                    <img id="doctorImage" src="https://avatars0.githubusercontent.com/u/3456749 "/>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="crop">Crop</button>
-                </div>
+    <div id="dialogChangePhoto" style="display:none;">
+        <label class="label" data-toggle="tooltip" title="Change your avatar">
+            <img class="rounded" id="avatar" src="https://avatars0.githubusercontent.com/u/3456749?s=160" alt="avatar"/>
+            <input type="file" class="sr-only" id="input" name="image" accept="image/png, image/jpeg" size="1000000"/>
+        </label>
+        <div id="dialogCroppBox" title="Cropper" style="display:none;">
+
+            <div class="img-container">
+                <img id="doctorImage" src="https://avatars0.githubusercontent.com/u/3456749 "/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="crop">Crop</button>
             </div>
         </div>
+    </div>
 
 
     <apex:form>
 
 
-
         <apex:actionRegion>
 
-            <apex:actionFunction name="reciveBlob" action="{!blobFromCropping}" reRender="contractsBlockPage,errors,photoPanel" immediate="true" onComplete="hideCroppModal(); hideChangePhotoModal()">
+            <apex:actionFunction name="reciveBlob" action="{!blobFromCropping}"
+                                 reRender="contractsBlockPage,errors,photoPanel" immediate="true"
+                                 onComplete="hideCroppModal(); hideChangePhotoModal()">
                 <apex:param value="" assignTo="{!croppedImageAsString}" name="blob"/>
             </apex:actionFunction>
 
         </apex:actionRegion>
     </apex:form>
-        <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
-                                      style="margin-right:10px;"/></div>
-        <div id="doctorTitlePrefix">{!$Label.Doctor_Label}</div>
-        <div id="bigHead"></div>
-        <apex:pageBlock id="vievPageBlock">
-            <apex:form>
-                <apex:outputPanel id="photoPanel">
-                <apex:image value="/servlet/servlet.FileDownload?file={!imageId}" rendered="{!NOT(ISBLANK(ImageId))}" style="height:100px;width:100px;"/>
-                </apex:outputPanel>
-                <apex:commandButton id="changePhoto" onClick="showChangePhotoModal();" action="{!empty}" status="loadingGif" reRender="dialogCroppBox"
-                                    value="Change Photo" />
-                <c:HD_SpinnerComponent/>
-                <apex:facet name="header">
-                    <div class="PageFacet">{!$Label.Doctor_Detail_Label}</div>
-                </apex:facet>
-                <apex:inputtextarea ID="holdtext" STYLE="display:none;"/>
-                <apex:outputpanel ID="copytext" STYLE="display:none">{!Doctor__c.Phone_Number__c}</apex:outputpanel>
-                <div style="text-align:center; height:30px;">
-                    <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
-                    <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
-                </div>
-                <apex:actionRegion>
+    <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
+                                  style="margin-right:10px;"/></div>
+    <div id="doctorTitlePrefix">{!$Label.Doctor_Label}</div>
+    <div id="bigHead"></div>
+    <apex:pageBlock id="vievPageBlock">
+        <apex:form>
+            <apex:outputPanel id="photoPanel">
+                <apex:image value="{!IF(ISBLANK(ImageId)
+                ,$Resource.Default_Portrait
+                ,( "/servlet/servlet.FileDownload?file=" +imageId))}"
+                            style="height:100px;width:100px;"/>
+
+            <apex:commandButton id="changePhoto" onClick="showChangePhotoModal();" action="{!empty}" status="loadingGif"
+                                reRender="dialogCroppBox"
+                                value="{!IF(ISBLANK(ImageId)
+                                    ,"Add Photo"
+                                     ,"Change Photo")}"/>
+            <apex:commandButton id="deletePhotp" action="{!deletePhoto}" status="loadingGif"
+                                reRender="dialogCroppBox,photoPanel"
+                                value="Delete Photo"/>
+            </apex:outputPanel>
+            <c:HD_SpinnerComponent/>
+            <apex:facet name="header">
+                <div class="PageFacet">{!$Label.Doctor_Detail_Label}</div>
+            </apex:facet>
+            <apex:inputtextarea ID="holdtext" STYLE="display:none;"/>
+            <apex:outputpanel ID="copytext" STYLE="display:none">{!Doctor__c.Phone_Number__c}</apex:outputpanel>
+            <div style="text-align:center; height:30px;">
+                <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
+                <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
+            </div>
+            <apex:actionRegion>
                 <apex:pageBlockSection title="{!$Label.Details_Label}" columns="2">
 
                     <apex:outputField value="{!Doctor__c.First_Name__c}"/>
@@ -116,130 +128,131 @@
                     <apex:outputField value="{!Doctor__c.Name}"/>
                     <apex:outputField value="{!Doctor__c.Email__c}"/>
                 </apex:pageBlockSection>
-                    </apex:actionRegion>
-                <apex:pageBlockSection title="{!$Label.Address_Label}">
-                    <apex:outputField value="{!Doctor__c.City__c}"/>
-                    <apex:outputField value="{!Doctor__c.Country__c}"/>
-                    <apex:outputField value="{!Doctor__c.Street__c}"/>
-                </apex:pageBlockSection>
-                <apex:pageBlockSection columns="1">
-                    <div id="map"></div>
-                </apex:pageBlockSection>
-                <apex:pageBlockSection title="{!$Label.Other_Label}" columns="1">
-                    <apex:outputField value="{!Doctor__c.Birthday_Date__c}"/>
-                    <apex:outputField value="{!Doctor__c.License_Number__c}"/>
-                </apex:pageBlockSection>
-                <div style="text-align:center;">
-                    <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
-                    <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
-                    <apex:commandButton id="opener" onClick="showModal();" reRender="mainPanel,finalButtons"
-                                        value="{!$Label.Hire_Button}" status="loadingGif"/>
-                </div>
-            </apex:form>
-        </apex:pageBlock>
-        <apex:pageBlock id="contractsBlockPage">
-            <apex:outputPanel rendered="true" id="mainPanel">
-            </apex:outputPanel>
-            <apex:facet name="header">
-                <div class="PageFacet">{!$Label.Contracts_Label}</div>
-            </apex:facet>
-            <apex:form>
-                <apex:outputPanel id="ContractsColumnWrapper">
-                    <apex:pageBlockTable value="{!availableContracts}" var="contract" id="ContractsColumn">
-                        <apex:column headerValue="{!$Label.Action_Label}">
-                            <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.Edit,contract.Id)}">
-                                {!$Label.Edit_Label}
-                            </apex:outputLink>
-                            |
-                            <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.View,contract.Id)}">
-                                {!$Label.View_Label}
-                            </apex:outputLink>
-                            |
-                            <apex:commandLink action="{!dismiss}" reRender="contractsBlockPage,ContractsColumn"
-                                              status="loadingGif"
-                                              style="{!IF(contract.End_Date__c != null,
+            </apex:actionRegion>
+            <apex:pageBlockSection title="{!$Label.Address_Label}">
+                <apex:outputField value="{!Doctor__c.City__c}"/>
+                <apex:outputField value="{!Doctor__c.Country__c}"/>
+                <apex:outputField value="{!Doctor__c.Street__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1">
+                <div id="map"></div>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Other_Label}" columns="1">
+                <apex:outputField value="{!Doctor__c.Birthday_Date__c}"/>
+                <apex:outputField value="{!Doctor__c.License_Number__c}"/>
+            </apex:pageBlockSection>
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
+                <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
+                <apex:commandButton id="opener" onClick="showModal();" reRender="mainPanel,finalButtons"
+                                    value="{!$Label.Hire_Button}" status="loadingGif"/>
+            </div>
+        </apex:form>
+    </apex:pageBlock>
+    <apex:pageBlock id="contractsBlockPage">
+        <apex:outputPanel rendered="true" id="mainPanel">
+        </apex:outputPanel>
+        <apex:facet name="header">
+            <div class="PageFacet">{!$Label.Contracts_Label}</div>
+        </apex:facet>
+        <apex:form>
+            <apex:outputPanel id="ContractsColumnWrapper">
+                <apex:pageBlockTable value="{!availableContracts}" var="contract" id="ContractsColumn">
+                    <apex:column headerValue="{!$Label.Action_Label}">
+                        <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.Edit,contract.Id)}">
+                            {!$Label.Edit_Label}
+                        </apex:outputLink>
+                        |
+                        <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.View,contract.Id)}">
+                            {!$Label.View_Label}
+                        </apex:outputLink>
+                        |
+                        <apex:commandLink action="{!dismiss}" reRender="contractsBlockPage,ContractsColumn"
+                                          status="loadingGif"
+                                          style="{!IF(contract.End_Date__c != null,
                                               IF(contract.Start_Date__c <= TODAY() && contract.End_Date__c <= TODAY(),'display:none;','display:initial;')
                                               ,'display:initial;' )}">
-                                <apex:param name="test" value="{!contract.Id}" assignTo="{!contractToDismissId}"/>
-                                {!$Label.Dismiss_Button}
-                            </apex:commandLink>
-                            >
-                        </apex:column>
-                        <apex:column headerValue=" {!$Label.Hospital_Name_Label}"
-                                     value="{!contract.Hospital__r.Name}"/>
-                        <apex:column headerValue=" {!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"/>
-                        <apex:column headerValue=" {!$Label.End_Date_Label}" value="{!contract.End_Date__c}"/>
-                    </apex:pageBlockTable>
-                </apex:outputPanel>
-            </apex:form>
-        </apex:pageBlock>
-        <apex:relatedList list="histories">
-            <apex:facet name="header">Doctor History</apex:facet>
-        </apex:relatedList>
+                            <apex:param name="test" value="{!contract.Id}" assignTo="{!contractToDismissId}"/>
+                            {!$Label.Dismiss_Button}
+                        </apex:commandLink>
+                        >
+                    </apex:column>
+                    <apex:column headerValue=" {!$Label.Hospital_Name_Label}"
+                                 value="{!contract.Hospital__r.Name}"/>
+                    <apex:column headerValue=" {!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"/>
+                    <apex:column headerValue=" {!$Label.End_Date_Label}" value="{!contract.End_Date__c}"/>
+                </apex:pageBlockTable>
+            </apex:outputPanel>
+        </apex:form>
+    </apex:pageBlock>
+    <apex:relatedList list="histories">
+        <apex:facet name="header">Doctor History</apex:facet>
+    </apex:relatedList>
 
-        <div id="dialogBox"
-             title="{!$Label.Hire_Label} {!currentDoctor.First_Name__c} {!currentDoctor.Name} {!$Label.TO_Label}"
-             style="{!IF(dialogAllowedToClose,"display:initial;","display:none;")}">
-            <apex:pageBlock id="searchBlock">
-                <apex:form>
-                    <apex:actionFunction name="sendClearToController" action="{!fullClear}" reRender="searchBlock"  immediate="true"/>
+    <div id="dialogBox"
+         title="{!$Label.Hire_Label} {!currentDoctor.First_Name__c} {!currentDoctor.Name} {!$Label.TO_Label}"
+         style="{!IF(dialogAllowedToClose,"display:initial;","display:none;")}">
+        <apex:pageBlock id="searchBlock">
+            <apex:form>
+                <apex:actionFunction name="sendClearToController" action="{!fullClear}" reRender="searchBlock"
+                                     immediate="true"/>
 
-                    <apex:actionRegion>
-                        <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Hospitals_Label}"
-                                               collapsible="false" id="searchSection">
-                            <apex:inputField value="{!inputFormHospital.Name}" required="true"/>
-                            <apex:inputField value="{!inputFormHospital.Country__c}"/>
-                            <apex:inputText value="{!inputFormHospital.Email__c}" label="{!$Label.Email_Label}"/>
-                        </apex:pageBlockSection>
-                        <div align="center">
-                            <apex:commandButton action="{!searchHospital}"
-                                                value="{!$Label.Search_Button}" status="loadingGif"
-                                                reRender="resultBlock,searchBlock"/>
-                            <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" status="loadingGif"
-                                                onClick="this.form.reset();" immediate="true"
-                                                reRender="searchBlock,resultBlock,mainPanel" id="clearButton"/>
-                        </div>
-                    </apex:actionRegion>
-                    <apex:actionRegion>
-                        <apex:pageBlockSection title="{!$Label.Results_Label}" id="resultBlock" collapsible="false"
-                                               columns="1">
-                            <apex:pageBlockTable value="{!foundHospitals}" var="hosp">
-                                <apex:column headerValue="{!$Label.Action_Label}"
-                                             style="height:21px; text-align:center;">
-                                    <apex:commandButton action="{!selectHospital}"
-                                                        reRender="ContractDipsplayWrapper, resultBlock, finalButtons"
-                                                        value=" {!$Label.Select_Label}"
-                                                        style="{!IF(selectedHospitalId == hosp.Id,'display:none;','display:initial;')}">
-                                        <apex:param value="{!hosp.Id}" name="selectedHospital"
-                                                    assignTo="{!selectedHospitalId}"/>
-                                    </apex:commandButton>
-                                </apex:column>
-                                <apex:column headerValue="{!$Label.Hospital_Name_Label}">
-                                    {! hosp.Name}
-                                </apex:column>
-                                <apex:column headerValue="{!$Label.Email_Label}">
-                                    {! hosp.Email__c}
-                                </apex:column>
-                                <apex:column headerValue="{!$Label.Country_Label}">
-                                    {! hosp.Country__c}
-                                </apex:column>
-                            </apex:pageBlockTable>
-                        </apex:pageBlockSection>
-                    </apex:actionRegion>
-                    <apex:actionRegion>
-                        <apex:outputPanel id="ContractDipsplayWrapper">
-                            <apex:outputPanel id="ContractDisplay"
-                                              rendered="{!IF(selectedHospital != null,true,false)}">
-                                <apex:pageBlockSection collapsible="false" columns="2"
-                                                       title="{!$Label.New_Contract_Label}">
-                                    <apex:outputField value="{!selectedHospital.Name}"/>
-                                    <apex:outputField value="{!currentDoctor.Name}"/>
-                                    <apex:inputField value="{!newContract.Start_Date__c}" required="true"/>
-                                    <apex:inputField value="{!newContract.End_Date__c}"/>
-                                </apex:pageBlockSection>
+                <apex:actionRegion>
+                    <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Hospitals_Label}"
+                                           collapsible="false" id="searchSection">
+                        <apex:inputField value="{!inputFormHospital.Name}" required="true"/>
+                        <apex:inputField value="{!inputFormHospital.Country__c}"/>
+                        <apex:inputText value="{!inputFormHospital.Email__c}" label="{!$Label.Email_Label}"/>
+                    </apex:pageBlockSection>
+                    <div align="center">
+                        <apex:commandButton action="{!searchHospital}"
+                                            value="{!$Label.Search_Button}" status="loadingGif"
+                                            reRender="resultBlock,searchBlock"/>
+                        <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" status="loadingGif"
+                                            onClick="this.form.reset();" immediate="true"
+                                            reRender="searchBlock,resultBlock,mainPanel" id="clearButton"/>
+                    </div>
+                </apex:actionRegion>
+                <apex:actionRegion>
+                    <apex:pageBlockSection title="{!$Label.Results_Label}" id="resultBlock" collapsible="false"
+                                           columns="1">
+                        <apex:pageBlockTable value="{!foundHospitals}" var="hosp">
+                            <apex:column headerValue="{!$Label.Action_Label}"
+                                         style="height:21px; text-align:center;">
+                                <apex:commandButton action="{!selectHospital}"
+                                                    reRender="ContractDipsplayWrapper, resultBlock, finalButtons"
+                                                    value=" {!$Label.Select_Label}"
+                                                    style="{!IF(selectedHospitalId == hosp.Id,'display:none;','display:initial;')}">
+                                    <apex:param value="{!hosp.Id}" name="selectedHospital"
+                                                assignTo="{!selectedHospitalId}"/>
+                                </apex:commandButton>
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.Hospital_Name_Label}">
+                                {! hosp.Name}
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.Email_Label}">
+                                {! hosp.Email__c}
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.Country_Label}">
+                                {! hosp.Country__c}
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSection>
+                </apex:actionRegion>
+                <apex:actionRegion>
+                    <apex:outputPanel id="ContractDipsplayWrapper">
+                        <apex:outputPanel id="ContractDisplay"
+                                          rendered="{!IF(selectedHospital != null,true,false)}">
+                            <apex:pageBlockSection collapsible="false" columns="2"
+                                                   title="{!$Label.New_Contract_Label}">
+                                <apex:outputField value="{!selectedHospital.Name}"/>
+                                <apex:outputField value="{!currentDoctor.Name}"/>
+                                <apex:inputField value="{!newContract.Start_Date__c}" required="true"/>
+                                <apex:inputField value="{!newContract.End_Date__c}"/>
+                            </apex:pageBlockSection>
 
-                            </apex:outputPanel>
                         </apex:outputPanel>
+                    </apex:outputPanel>
 
                     <apex:outputPanel style="text-align:center;" id="finalButtons">
                         <div style="text-align:center;">
@@ -257,11 +270,11 @@
                         <apex:messages/>
                     </apex:outputPanel>
 
-                    </apex:actionRegion>
-                </apex:form>
-            </apex:pageBlock>
-        </div>
-        <script type="text/javascript">
+                </apex:actionRegion>
+            </apex:form>
+        </apex:pageBlock>
+    </div>
+    <script type="text/javascript">
 
 let $ = jQuery.noConflict();
        let $cropper = jQuery.noConflict();
@@ -525,5 +538,6 @@ function hideChangePhotoModal(){
 function sendClearToController(){
     console.log('clear')
 }
-        </script>
+
+    </script>
 </apex:page>
