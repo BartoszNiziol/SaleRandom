@@ -173,15 +173,16 @@
                         </apex:column>
                         <apex:column headerValue="Start Date">
                             <apex:inputField rendered="{!selectedDoctorIdToContractWrapper[doc].isOpenForEdit}"
-                                             value="{!selectedDoctorIdToContractWrapper[doc].contract.Start_Date__c}"/>
+                                             value="{!inputFormContract.Start_Date__c}" required="true"/>
                             <apex:outputField rendered="{!NOT(selectedDoctorIdToContractWrapper[doc].isOpenForEdit)}"
                                               value="{!selectedDoctorIdToContractWrapper[doc].contract.Start_Date__c}"/>
                         </apex:column>
                         <apex:column headerValue="End Date">
                             <apex:inputField rendered="{!selectedDoctorIdToContractWrapper[doc].isOpenForEdit}"
-                                             value="{!selectedDoctorIdToContractWrapper[doc].contract.End_Date__c}"/>
+                                             value="{!inputFormContract.End_Date__c}"/>
                             <apex:outputField rendered="{!NOT(selectedDoctorIdToContractWrapper[doc].isOpenForEdit)}"
                                               value="{!selectedDoctorIdToContractWrapper[doc].contract.End_Date__c}"/>
+                            <apex:messages />
                         </apex:column>
                         <apex:column headerValue="Status">
                             <apex:outputText value="{!selectedDoctorIdToContractWrapper[doc].status}"/>

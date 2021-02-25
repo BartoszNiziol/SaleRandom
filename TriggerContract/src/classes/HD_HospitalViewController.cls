@@ -17,6 +17,7 @@ public with sharing class HD_HospitalViewController {
     public Id templateId { get; set; }
     public Map<Id, HD_ContractWrapper> selectedDoctorIdToContractWrapper { get; set; }
     public Id currentEditedId {get;set;}
+    public Contract__c inputFormContract{get;set;}
 
 
     public HD_HospitalViewController(ApexPages.StandardController standardController) {
@@ -26,6 +27,7 @@ public with sharing class HD_HospitalViewController {
         foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
         selectedDoctors = new List<HD_DoctorSelectWrapper>();
         selectedDoctorIdToContractWrapper = new Map<Id, HD_ContractWrapper>();
+        inputFormContract = new Contract__c();
     }
     public void searchDoctors() {
 
@@ -85,8 +87,13 @@ public with sharing class HD_HospitalViewController {
         foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
     }
     public void template() {
-        System.debug('templateId');
-        System.debug(templateId);
+
+        HD_ContractWrapper tempContract = selectedDoctorIdToContractWrapper.get(templateId);
+        Integer beforeClearMapSize = selectedDoctorIdToContractWrapper.size();
+        selectedDoctorIdToContractWrapper.clear();
+        for(Integer i =0; i<beforeClearMapSize; i++){
+            selectedDoctorIdToContractWrapper.put(templateId,tempContract);
+        }
     }
     public void cancelDialog(){
 
@@ -101,7 +108,26 @@ public with sharing class HD_HospitalViewController {
         selectedDoctorIdToContractWrapper.get(currentEditedId).isOpenForEdit = true;
 
     }
+
     public void saveEditedContract(){
+
+        try {
+            if (inputFormContract.End_Date__c<System.today()) {
+                throw new DateException('End Date in past');
+            }
+            if (inputFormContract.Start_Date__c > inputFormContract.End_Date__c) {
+                throw new DateException('End Date Before Start Date');
+            }
+
+
+            selectedDoctorIdToContractWrapper.get(currentEditedId).contract.Start_Date__c = inputFormContract.Start_Date__c;
+            selectedDoctorIdToContractWrapper.get(currentEditedId).contract.End_Date__c = inputFormContract.End_Date__c;
+            selectedDoctorIdToContractWrapper.get(currentEditedId).isOpenForEdit = false;
+
+        }catch (DateException e){
+            ApexPages.addMessages(e);
+
+        }
 
     }
 
