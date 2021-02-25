@@ -28,6 +28,16 @@ public with sharing class HD_DoctorHandler {
 
         return Database.query(query);
     }
+    public List<Doctor__c> queryDoctorsOR (String firstName, String lastName, String email, String country) {
+        String query = 'SELECT ID,First_Name__c,Name,Email__c,Country__c ' +
+                ' FROM Doctor__c ' +
+                ' WHERE First_Name__c LIKE \'' + dynamicQueryLikeGeneratorOR(firstName) + '\'' +
+                ' OR Name LIKE \'' + dynamicQueryLikeGeneratorOR(lastName) + '\'' +
+                ' OR Email__c LIKE \'' + dynamicQueryLikeGeneratorOR(email) + '\'' +
+                ' OR Country__c LIKE \'' + dynamicQueryLikeGeneratorOR(country) + '\'';
+
+        return Database.query(query);
+    }
 
     public String queryDoctorsString(String firstName, String lastName, String email, String country, String orderBy, String order) {
         String orderByLine = '';
@@ -50,6 +60,13 @@ public with sharing class HD_DoctorHandler {
             fieldLike = + '%'+field+'%';
         } else {
             fieldLike = '%';
+        }
+        return fieldLike;
+    }
+    private String dynamicQueryLikeGeneratorOR(String field) {
+        String fieldLike;
+        if ((field != null) && (field != '')) {
+            fieldLike = + '%'+field+'%';
         }
         return fieldLike;
     }

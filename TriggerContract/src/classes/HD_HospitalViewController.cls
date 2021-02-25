@@ -9,41 +9,81 @@ public with sharing class HD_HospitalViewController {
     public List<Doctor__c> foundDoctors{get;set;}
     public Id selectedDoctorId{get;set;}
     public List<Id> selectedDoctorsIds {get;set;}
-    public List<Doctor__c> selectedDoctors{get;set;}
+    public List<DoctorSelectWrapper> foundWrappedDoctors {get;set;}
+    public List<DoctorSelectWrapper> selectedDoctors {get;set;}
     public List<Contract__c> newContracts {get;set;}
     public HD_DoctorHandler doctorHandler;
+    public Id  doctorRemoveId{get;set;}
+    public Id templateId {get;set;}
 
 
     public HD_HospitalViewController(ApexPages.StandardController standardController){
         doctorHandler = new HD_DoctorHandler();
         currentHospital =(Hospital__c) standardController.getRecord();
         inputFormDoctor = new Doctor__c();
-        selectedDoctors = new List<Doctor__c>();
+        foundWrappedDoctors = new List<DoctorSelectWrapper>();
+        selectedDoctors = new List<DoctorSelectWrapper>();
     }
     public void searchDoctors(){
 
-        foundDoctors = doctorHandler.queryDoctors(inputFormDoctor.First_Name__c, inputFormDoctor.Name, inputFormDoctor.Email__c, inputFormDoctor.Country__c);
-    }
-    public void clear(){
+        foundWrappedDoctors = new List<DoctorSelectWrapper>();
 
+        foundDoctors = doctorHandler.queryDoctorsOR(inputFormDoctor.First_Name__c, inputFormDoctor.Name, inputFormDoctor.Email__c, inputFormDoctor.Country__c);
+        for (Doctor__c doc : foundDoctors){
+            DoctorSelectWrapper requestedToAddDoctor= new DoctorSelectWrapper(doc);
+
+            if (selectedDoctors.contains(requestedToAddDoctor)) {
+                requestedToAddDoctor.isSelected = true;
+            }
+            foundWrappedDoctors.add(requestedToAddDoctor);
+        }
     }
     public void selectDoctor(){
-
+        for(DoctorSelectWrapper doctor:foundWrappedDoctors){
+            if (doctor.doctor.Id == selectedDoctorId) {
+                    doctor.isSelected = true;
+            }
+        }
         Doctor__c selectedDoctor = [SELECT Id,First_Name__c,Name FROM Doctor__c WHERE Id =:selectedDoctorId LIMIT 1];
-        if(!selectedDoctors.contains(selectedDoctor)){
-            selectedDoctors.add(selectedDoctor);
-
-         //   selectedDoctorsIds.add(selectedDoctorId);
-        }
-
+            selectedDoctors.add(new DoctorSelectWrapper(selectedDoctor,true));
+        System.debug('selectedDoctors');
+        System.debug(selectedDoctors);
     }
-    public Boolean isInSelectedDoctorsList(Id doctorId){
+    public void remove(){
+            List<Integer> indexesToRemove = new List<Integer>();
 
-        if(selectedDoctorsIds.contains(doctorId)){
-            return true;
+        for(DoctorSelectWrapper doctor : foundWrappedDoctors){
+            if(doctor.doctor.Id == doctorRemoveId){
+                doctor.isSelected = false;
+            }
         }
-       return false;
+        for(DoctorSelectWrapper doctor : selectedDoctors){
+            if(doctor.doctor.Id == doctorRemoveId){
+                indexesToRemove.add(selectedDoctors.indexOf(doctor));
+            }
+        }
+        for(Integer i : indexesToRemove){
+            selectedDoctors.remove(i);
+        }
     }
+
+    public void clear(){
+        inputFormDoctor.First_Name__c = null;
+        inputFormDoctor.Name = null;
+        inputFormDoctor.Email__c = null;
+        inputFormDoctor.Country__c = null;
+        foundWrappedDoctors = new List<DoctorSelectWrapper>();
+    }
+    public void template(){
+
+
+        for (DoctorSelectWrapper doc : selectedDoctors){
+
+
+
+        }
+    }
+
 
 
 

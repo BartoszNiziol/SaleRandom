@@ -93,7 +93,7 @@
     <div id="multiHireDialog" style="display:none" title="Hire Doctors To {!Hospital__c.Name}">
         <apex:pageBlock id = "multiHirePageBlock">
             <apex:form>
-            <apex:pageBlockSection title="Search For Doctors" id ="DoctorSearchSection" columns="2">
+                <apex:pageBlockSection title="Search For Doctors" id ="DoctorSearchSection" columns="2">
                     <apex:inputField value="{!inputFormDoctor.First_Name__c}" />
                     <apex:inputText value="{!inputFormDoctor.Email__c}" label="{!$Label.Email_Label}"/>
                     <apex:inputField value="{!inputFormDoctor.Name}" required="true"/>
@@ -101,51 +101,61 @@
             </apex:pageBlockSection>
                 <div align="center">
                     <apex:commandButton action="{!searchDoctors}"
-                                        value="{!$Label.Search_Button}" status="loadingGif" reRender="resultsDoctorsSection"/>
-                    <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" status="loadingGif" id="clearButton"/>
+                                        value="{!$Label.Search_Button}" status="loadingGif" reRender="resultsDoctorsSection,DoctorSearchSection"/>
+                    <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}"
+                                        status="loadingGif" id="clearButton" reRender="DoctorSearchSection,resultDoctorTable"
+                                        immediate="true" />
                 </div>
 
             </apex:form>
             <apex:form>
             <apex:pageBlockSection title="Results" columns="1" id ="resultsDoctorsSection">
-
-                <apex:pageBlockTable value="{!foundDoctors}" var="doc" >
-
+                <apex:pageBlockTable value="{!foundWrappedDoctors}" var="doc" id="resultDoctorTable" >
                     <apex:column headerValue="{!$Label.Action_Label}"
                                  style="height:21px; text-align:center;">
-                        <apex:commandButton action="{!selectDoctor}" reRender="resultsDoctorsSection"
+                        <apex:commandButton action="{!selectDoctor}" reRender="resultsDoctorsSection,NewContractTable"
                                             value="{!$Label.Select_Label}"
-                                            style="{!IF(selectedDoctorId == doc.Id,'display:none;','display:initial;')}">
-                            <apex:param value="{!doc.Id}" name="selectedDoctorId"
+                                            style="{!IF(doc.isSelected,'display:none;','display:initial;')}">
+                            <apex:param value="{!doc.doctor.Id}" name="selectedDoctorId"
                                         assignTo="{!selectedDoctorId}"/>
                         </apex:commandButton>
-
                     </apex:column>
-
                     <apex:column headerValue="Fullname">
-                        {!doc.First_Name__c} {! doc.Name}
+                        {!doc.doctor.First_Name__c} {! doc.doctor.Name}
                     </apex:column>
                     <apex:column headerValue="{!$Label.Email_Label}">
-                        {! doc.Email__c}
+                        {! doc.doctor.Email__c}
                     </apex:column>
                     <apex:column headerValue="{!$Label.Country_Label}">
-                        {! doc.Country__c}
+                        {! doc.doctor.Country__c}
                     </apex:column>
                 </apex:pageBlockTable>
             </apex:pageBlockSection>
             </apex:form>
             <apex:form >
                 <apex:pageBlockSection title="New Contracts" columns="1">
-                    <apex:pageBlockTable value="{!selectedDoctors}" var="doc">
+                    <apex:pageBlockTable value="{!selectedDoctors}" var="doc" id="NewContractTable">
                         <apex:column headerValue="{!$Label.Action_Label}">
                             <apex:commandButton value="Edit"/>
-                            <apex:commandButton value="Template"/>
-                            <apex:commandButton value="Remove"/>
+                            <apex:commandButton value="Template" action="{!template}" reRender="NewContractTable">
+                                <apex:param value="{!doc.doctor.Id}" name="selectedDoctorId"
+                                            assignTo="{!templateId}"/>
+                            </apex:commandButton>
+                            <apex:commandButton value="Remove" action="{!remove}" reRender="NewContractTable,resultsDoctorsSection">
+                                <apex:param value="{!doc.doctor.Id}" name="selectedDoctorId"
+                                            assignTo="{!doctorRemoveId}"/>
+                            </apex:commandButton>
                         </apex:column>
-                        <apex:column headerValue="Full Name" value="{!doc.First_Name__c}{!doc.Name}"/>
+                        <apex:column headerValue="Full Name" >
+                            {!doc.doctor.First_Name__c} {!doc.doctor.Name}
+                        </apex:column>
                         <apex:column headerValue="Start Date">
+                            <apex:input type="date" rendered="{!doc.isOpenForEdit}" value="{!doc.newContractStartDate}"/>
+                            <apex:outputText rendered="{!NOT(doc.isOpenForEdit)}"  value="{!doc.newContractStartDate}"/>
                         </apex:column>
                         <apex:column headerValue="End Date">
+                            <apex:inputField rendered="{!doc.isOpenForEdit}"  value="{!doc.newContractEndDate}"/>
+                            <apex:outputField rendered="{!NOT(doc.isOpenForEdit)}"  value="{!doc.newContractEndDate}"/>
                         </apex:column>
                         <apex:column headerValue="Status" >
                         </apex:column>
@@ -165,8 +175,8 @@
     $(function() {
         $("#multiHireDialog").dialog({
         autoOpen: true,
-        height: 600,
-        width: 550,
+        height: 700,
+        width: 650,
         modal: true,
         closeOnEscape: false,
                 open: function(event, ui) {
