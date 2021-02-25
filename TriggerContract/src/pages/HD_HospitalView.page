@@ -87,6 +87,7 @@
                 <apex:column headerValue="{!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"/>
                 <apex:column headerValue="{!$Label.End_Date_Label}" value="{!contract.End_Date__c}"/>
             </apex:pageBlockTable>
+            <apex:commandButton value="debug" action="{!debug}"/>
         </apex:form>
     </apex:pageBlock>
 
