@@ -239,7 +239,7 @@
                                 <apex:commandButton action="{!selectHospital}"
                                                     reRender="ContractDipsplayWrapper, resultBlock, finalButtons"
                                                     value="{!$Label.Select_Label}"
-                                                    style="{!IF(selectedHospitalId == hosp.Id,'display:none;','display:initial;')}">
+                                                    style="{!IF( selectedHospitalId == hosp.Id,'display:none;','display:initial;')}">
                                     <apex:param value="{!hosp.Id}" name="selectedHospital"
                                                 assignTo="{!selectedHospitalId}"/>
                                 </apex:commandButton>
