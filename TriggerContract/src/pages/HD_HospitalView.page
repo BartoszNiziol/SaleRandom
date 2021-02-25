@@ -108,16 +108,20 @@
             </apex:form>
             <apex:form>
             <apex:pageBlockSection title="Results" columns="1" id ="resultsDoctorsSection">
+
                 <apex:pageBlockTable value="{!foundDoctors}" var="doc" >
+
                     <apex:column headerValue="{!$Label.Action_Label}"
                                  style="height:21px; text-align:center;">
-                        <apex:commandButton action="{!selectDoctor}"
+                        <apex:commandButton action="{!selectDoctor}" reRender="resultsDoctorsSection"
                                             value="{!$Label.Select_Label}"
                                             style="{!IF(selectedDoctorId == doc.Id,'display:none;','display:initial;')}">
-                            <apex:param value="{!doc.Id}" name="selectedDoctor"
+                            <apex:param value="{!doc.Id}" name="selectedDoctorId"
                                         assignTo="{!selectedDoctorId}"/>
                         </apex:commandButton>
+
                     </apex:column>
+
                     <apex:column headerValue="Fullname">
                         {!doc.First_Name__c} {! doc.Name}
                     </apex:column>
@@ -132,14 +136,13 @@
             </apex:form>
             <apex:form >
                 <apex:pageBlockSection title="New Contracts" columns="1">
-                    <apex:pageBlockTable value="{!newContracts}" var="doc">
+                    <apex:pageBlockTable value="{!selectedDoctors}" var="doc">
                         <apex:column headerValue="{!$Label.Action_Label}">
                             <apex:commandButton value="Edit"/>
                             <apex:commandButton value="Template"/>
                             <apex:commandButton value="Remove"/>
                         </apex:column>
-                        <apex:column headerValue="Fullname">
-                        </apex:column>
+                        <apex:column headerValue="Full Name" value="{!doc.First_Name__c}{!doc.Name}"/>
                         <apex:column headerValue="Start Date">
                         </apex:column>
                         <apex:column headerValue="End Date">
@@ -151,6 +154,9 @@
             </apex:form>
         </apex:pageBlock>
     </div>
+    <apex:relatedList list="histories">
+        <apex:facet name="header">Hospital History</apex:facet>
+    </apex:relatedList>
 
     <script type="text/javascript">
      let $ = jQuery.noConflict();
@@ -217,8 +223,6 @@ function hideMultiHireDialog(){
 //
 //  };
     </script>
-    <apex:relatedList list="histories">
-        <apex:facet name="header">Hospital History</apex:facet>
-    </apex:relatedList>
+
 
 </apex:page>

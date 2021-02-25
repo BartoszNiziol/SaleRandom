@@ -223,7 +223,8 @@
                                             reRender="resultBlock,searchBlock"/>
                         <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" status="loadingGif"
                                             onClick="this.form.reset();" immediate="true"
-                                            reRender="searchBlock,resultBlock,mainPanel" id="clearButton"/>
+                                            reRender="resultBlock,mainPanel"
+                                            id="clearButton"/>
                     </div>
                 </apex:actionRegion>
                 </apex:form>

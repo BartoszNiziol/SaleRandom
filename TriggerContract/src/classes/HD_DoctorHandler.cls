@@ -47,7 +47,7 @@ public with sharing class HD_DoctorHandler {
     private String dynamicQueryLikeGenerator(String field) {
         String fieldLike;
         if ((field != null) && (field != '')) {
-            fieldLike = field + '%';
+            fieldLike = + '%'+field+'%';
         } else {
             fieldLike = '%';
         }
