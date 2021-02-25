@@ -49,11 +49,7 @@
 .message ul,.messageText{
             color:red;
         }
-
-
-
     </style>
-
     <div id="dialogChangePhoto" style="display:none;">
         <label class="label">
             <apex:messages/>
@@ -89,7 +85,6 @@
     <div id="bigHead"></div>
     <apex:pageBlock id="vievPageBlock">
         <apex:form>
-
             <c:HD_SpinnerComponent/>
             <apex:facet name="header">
                 <div class="PageFacet">{!$Label.Doctor_Detail_Label}</div>
@@ -188,40 +183,25 @@
     <apex:relatedList list="histories">
         <apex:facet name="header">Doctor History</apex:facet>
     </apex:relatedList>
-
-
-
-
-
-
-
-
-
-
-
-
     <div id="dialogBox"
          title="{!$Label.Hire_Label} {!currentDoctor.First_Name__c} {!currentDoctor.Name} {!$Label.TO_Label}"
          style="{!IF(hireDialogAllowedToClose,"display:initial;","display:none;")}">
         <apex:pageBlock id="searchBlock">
             <apex:form>
-
-                <apex:actionFunction name="sendClearToController" action="{!fullClear}" reRender="searchBlock"
+                <apex:actionFunction name="sendClearToController" action="{!clearDialog}" reRender="searchBlock"
                                      immediate="true"/>
                 <apex:actionRegion>
-
                     <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Hospitals_Label}"
                                            collapsible="false" id="searchSection">
                         <apex:inputField value="{!inputFormHospital.Name}" required="true"/>
                         <apex:inputField value="{!inputFormHospital.Country__c}"/>
                         <apex:inputText value="{!inputFormHospital.Email__c}" label="{!$Label.Email_Label}"/>
                     </apex:pageBlockSection>
-
                     <div align="center">
                         <apex:commandButton action="{!searchHospital}"
                                             value="{!$Label.Search_Button}" status="loadingGif"
                                             reRender="resultBlock,searchBlock"/>
-                        <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" status="loadingGif"
+                        <apex:commandButton action="{!clearSearch}" value="{!$Label.Clear_Button}" status="loadingGif"
                                             onClick="this.form.reset();" immediate="true"
                                             reRender="resultBlock,mainPanel"
                                             id="clearButton"/>
@@ -230,7 +210,6 @@
                 </apex:form>
             <apex:form>
                 <apex:actionRegion>
-
                     <apex:pageBlockSection title="{!$Label.Results_Label}" id="resultBlock" collapsible="false"
                                            columns="1">
                         <apex:pageBlockTable value="{!foundHospitals}" var="hosp">
@@ -239,7 +218,7 @@
                                 <apex:commandButton action="{!selectHospital}"
                                                     reRender="ContractDipsplayWrapper, resultBlock, finalButtons"
                                                     value="{!$Label.Select_Label}"
-                                                    style="{!IF( selectedHospitalId == hosp.Id,'display:none;','display:initial;')}">
+                                                    style="{!IF( selectedHospitalId == hosp.Id ,'display:none;','display:initial;')}">
                                     <apex:param value="{!hosp.Id}" name="selectedHospital"
                                                 assignTo="{!selectedHospitalId}"/>
                                 </apex:commandButton>
@@ -254,15 +233,12 @@
                                 {! hosp.Country__c}
                             </apex:column>
                         </apex:pageBlockTable>
-
                     </apex:pageBlockSection>
-
                 </apex:actionRegion>
                 <apex:actionRegion>
                     <apex:outputPanel id="ContractDipsplayWrapper">
                         <apex:outputPanel id="ContractDisplay"
                                           rendered="{!IF(selectedHospital != null,true,false)}">
-
                             <apex:pageBlockSection collapsible="false" columns="2"
                                                    title="{!$Label.New_Contract_Label}">
                                 <apex:outputField value="{!selectedHospital.Name}"/>
@@ -270,7 +246,6 @@
                                 <apex:inputField value="{!newContract.Start_Date__c}" required="true"/>
                                 <apex:inputField value="{!newContract.End_Date__c}"/>
                             </apex:pageBlockSection>
-
                         </apex:outputPanel>
                     </apex:outputPanel>
                     <apex:outputPanel style="text-align:center;" id="finalButtons">

@@ -46,8 +46,6 @@ public with sharing class HD_HospitalViewController {
         }
         Doctor__c selectedDoctor = [SELECT Id,First_Name__c,Name FROM Doctor__c WHERE Id =:selectedDoctorId LIMIT 1];
             selectedDoctors.add(new DoctorSelectWrapper(selectedDoctor,true));
-        System.debug('selectedDoctors');
-        System.debug(selectedDoctors);
     }
     public void remove(){
             List<Integer> indexesToRemove = new List<Integer>();

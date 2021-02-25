@@ -54,13 +54,12 @@ public with sharing class HD_DoctorViewController {
         foundHospitals = hospitalSearchHelper.queryHospitals(inputFormHospital.Name, inputFormHospital.Email__c, inputFormHospital.Country__c);
     }
 
-    public void clear() {
+    public void clearSearch() {
         foundHospitals = new List<Hospital__c>();
         inputFormHospital = new Hospital__c();
-//        newContract.Start_Date__c = null;
-//        newContract.End_Date__c = null;
     }
-    public void fullClear() {
+
+    public void clearDialog() {
         foundHospitals = new List<Hospital__c>();
         inputFormHospital = new Hospital__c();
         selectedHospital = null;
@@ -71,11 +70,10 @@ public with sharing class HD_DoctorViewController {
 
     public void selectHospital() {
         selectedHospital = [SELECT Id,Name FROM Hospital__c WHERE Id = :selectedHospitalId];
-        System.debug('selectedHospital after query' + selectedHospital);
     }
 
     public void cancelHire() {
-        fullClear();
+        clearDialog();
         hireDialogAllowedToClose = false;
     }
 
@@ -88,13 +86,14 @@ public with sharing class HD_DoctorViewController {
             contract.Start_Date__c = newContract.Start_Date__c;
             contract.End_Date__c = newContract.End_Date__c;
             insert contract;
-            fullClear();
+            clearDialog();
             hireDialogAllowedToClose = true;
             System.debug(hireDialogAllowedToClose);
         }catch (Exception e){
             hireDialogAllowedToClose = false;
             ApexPages.addMessages(e);
         }
+
         availableContracts = [SELECT Doctor__c,Start_Date__c,End_Date__c,Hospital__r.Name FROM Contract__c WHERE Doctor__c = :currentDoctor.Id];
         return null;
     }

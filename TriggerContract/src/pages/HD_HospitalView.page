@@ -150,12 +150,12 @@
                             {!doc.doctor.First_Name__c} {!doc.doctor.Name}
                         </apex:column>
                         <apex:column headerValue="Start Date">
-                            <apex:input type="date" rendered="{!doc.isOpenForEdit}" value="{!doc.newContractStartDate}"/>
-                            <apex:outputText rendered="{!NOT(doc.isOpenForEdit)}"  value="{!doc.newContractStartDate}"/>
+<!--                            <apex:inputField rendered="{!doc.isOpenForEdit}"/>-->
+<!--                            <apex:outputField rendered="{!NOT(doc.isOpenForEdit)}"/>-->
                         </apex:column>
                         <apex:column headerValue="End Date">
-                            <apex:inputField rendered="{!doc.isOpenForEdit}"  value="{!doc.newContractEndDate}"/>
-                            <apex:outputField rendered="{!NOT(doc.isOpenForEdit)}"  value="{!doc.newContractEndDate}"/>
+<!--                            <apex:inputField rendered="{!doc.isOpenForEdit}" />-->
+<!--                            <apex:outputField rendered="{!NOT(doc.isOpenForEdit)}"/>-->
                         </apex:column>
                         <apex:column headerValue="Status" >
                         </apex:column>
