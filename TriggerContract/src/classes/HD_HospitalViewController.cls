@@ -97,12 +97,11 @@ public with sharing class HD_HospitalViewController {
     }
 
     public void editContract(){
-        System.debug('currentEditedId');
-        System.debug(currentEditedId);
 
-        System.debug('selectedDoctorIdToContractWrapper.get(currentEditedId)');
-        System.debug(selectedDoctorIdToContractWrapper.get(currentEditedId));
         selectedDoctorIdToContractWrapper.get(currentEditedId).isOpenForEdit = true;
+
+    }
+    public void saveEditedContract(){
 
     }
 

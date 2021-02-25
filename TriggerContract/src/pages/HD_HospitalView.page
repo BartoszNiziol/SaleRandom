@@ -32,6 +32,8 @@
         margin-left: 5px;
     }
 
+
+
     </style>
     <c:HD_SpinnerComponent/>
     <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
@@ -143,7 +145,17 @@
                 <apex:pageBlockSection title="New Contracts" columns="1">
                     <apex:pageBlockTable value="{!selectedDoctorIdToContractWrapper}" var="doc" id="NewContractTable">
                         <apex:column headerValue="{!$Label.Action_Label}">
-                            <apex:commandButton value="Edit" action="{!editContract}" reRender="NewContractTable">
+
+                            <apex:commandButton
+                                    value="Save"
+                                    action="{!saveEditedContract}" reRender="NewContractTable"
+                                    rendered="{!IF(selectedDoctorIdToContractWrapper[doc].isOpenForEdit,true,false)}">
+                                <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
+                            </apex:commandButton>
+                            <apex:commandButton
+                                    value="Edit"
+                                    action="{!editContract}" reRender="NewContractTable"
+                                    rendered="{!IF(NOT(selectedDoctorIdToContractWrapper[doc].isOpenForEdit),true,false)}">
                                 <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
                             </apex:commandButton>
                             <apex:commandButton value="Template" action="{!template}" reRender="NewContractTable">
@@ -194,8 +206,8 @@
     $(function() {
         $("#multiHireDialog").dialog({
         autoOpen: true,
-        height: 700,
-        width: 700,
+        height: 750,
+        width: 750,
         modal: true,
         closeOnEscape: false,
                 open: function(event, ui) {
@@ -251,6 +263,8 @@ function hideMultiHireDialog(){
 //      mymap.setView([lat, lng]);
 //
 //  };
+
+
 
     </script>
 
