@@ -9,30 +9,31 @@ public with sharing class HD_HospitalViewController {
     public List<Doctor__c> foundDoctors { get; set; }
     public Id selectedDoctorId { get; set; }
     public List<Id> selectedDoctorsIds { get; set; }
-    public List<DoctorSelectWrapper> foundWrappedDoctors { get; set; }
-    public List<DoctorSelectWrapper> selectedDoctors { get; set; }
+    public List<HD_DoctorSelectWrapper> foundWrappedDoctors { get; set; }
+    public List<HD_DoctorSelectWrapper> selectedDoctors { get; set; }
     public List<Contract__c> newContracts { get; set; }
     public HD_DoctorHandler doctorHandler;
     public Id doctorRemoveId { get; set; }
     public Id templateId { get; set; }
-    public Map<Id, Contract__c> selectedDoctorIdToContract { get; set; }
+    public Map<Id, HD_ContractWrapper> selectedDoctorIdToContractWrapper { get; set; }
+    public Id currentEditedId {get;set;}
 
 
     public HD_HospitalViewController(ApexPages.StandardController standardController) {
         doctorHandler = new HD_DoctorHandler();
         currentHospital = (Hospital__c) standardController.getRecord();
         inputFormDoctor = new Doctor__c();
-        foundWrappedDoctors = new List<DoctorSelectWrapper>();
-        selectedDoctors = new List<DoctorSelectWrapper>();
-        selectedDoctorIdToContract = new Map<Id, Contract__c>();
+        foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
+        selectedDoctors = new List<HD_DoctorSelectWrapper>();
+        selectedDoctorIdToContractWrapper = new Map<Id, HD_ContractWrapper>();
     }
     public void searchDoctors() {
 
-        foundWrappedDoctors = new List<DoctorSelectWrapper>();
+        foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
 
         foundDoctors = doctorHandler.queryDoctorsOR(inputFormDoctor.First_Name__c, inputFormDoctor.Name, inputFormDoctor.Email__c, inputFormDoctor.Country__c);
         for (Doctor__c doc : foundDoctors) {
-            DoctorSelectWrapper requestedToAddDoctor = new DoctorSelectWrapper(doc);
+            HD_DoctorSelectWrapper requestedToAddDoctor = new HD_DoctorSelectWrapper(doc);
 
             if (selectedDoctors.contains(requestedToAddDoctor)) {
                 requestedToAddDoctor.isSelected = true;
@@ -41,25 +42,30 @@ public with sharing class HD_HospitalViewController {
         }
     }
     public void selectDoctor() {
-        for (DoctorSelectWrapper doctor : foundWrappedDoctors) {
+        for (HD_DoctorSelectWrapper doctor : foundWrappedDoctors) {
             if (doctor.doctor.Id == selectedDoctorId) {
                 doctor.isSelected = true;
             }
         }
         Doctor__c selectedDoctor = [SELECT Id,First_Name__c,Name FROM Doctor__c WHERE Id = :selectedDoctorId LIMIT 1];
-        selectedDoctors.add(new DoctorSelectWrapper(selectedDoctor, true));
+        selectedDoctors.add(new HD_DoctorSelectWrapper(selectedDoctor, true));
+
         Contract__c freshContract = new Contract__c();
-        selectedDoctorIdToContract.put(selectedDoctorId, freshContract);
+        freshContract.Doctor__r = selectedDoctor;
+        freshContract.Hospital__r = currentHospital;
+        HD_ContractWrapper contractWrapper = new HD_ContractWrapper(freshContract);
+
+        selectedDoctorIdToContractWrapper.put(selectedDoctorId, contractWrapper);
     }
     public void remove() {
 
         List<Integer> indexesToRemove = new List<Integer>();
-        for (DoctorSelectWrapper doctor : foundWrappedDoctors) {
+        for (HD_DoctorSelectWrapper doctor : foundWrappedDoctors) {
             if (doctor.doctor.Id == doctorRemoveId) {
                 doctor.isSelected = false;
             }
         }
-        for (DoctorSelectWrapper doctor : selectedDoctors) {
+        for (HD_DoctorSelectWrapper doctor : selectedDoctors) {
             if (doctor.doctor.Id == doctorRemoveId) {
                 indexesToRemove.add(selectedDoctors.indexOf(doctor));
             }
@@ -68,7 +74,7 @@ public with sharing class HD_HospitalViewController {
             selectedDoctors.remove(i);
         }
 
-        selectedDoctorIdToContract.remove(doctorRemoveId);
+        selectedDoctorIdToContractWrapper.remove(doctorRemoveId);
     }
 
     public void clear() {
@@ -76,19 +82,33 @@ public with sharing class HD_HospitalViewController {
         inputFormDoctor.Name = null;
         inputFormDoctor.Email__c = null;
         inputFormDoctor.Country__c = null;
-        foundWrappedDoctors = new List<DoctorSelectWrapper>();
+        foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
     }
     public void template() {
-
-
-        for (DoctorSelectWrapper doc : selectedDoctors) {
-
-
-        }
+        System.debug('templateId');
+        System.debug(templateId);
     }
+    public void cancelDialog(){
+
+    }
+    public void hire(){
+
+
+    }
+
+    public void editContract(){
+        System.debug('currentEditedId');
+        System.debug(currentEditedId);
+
+        System.debug('selectedDoctorIdToContractWrapper.get(currentEditedId)');
+        System.debug(selectedDoctorIdToContractWrapper.get(currentEditedId));
+        selectedDoctorIdToContractWrapper.get(currentEditedId).isOpenForEdit = true;
+
+    }
+
     public void debug (){
             System.debug('selectedDoctorIdToContract');
-            System.debug(selectedDoctorIdToContract);
+            System.debug(selectedDoctorIdToContractWrapper);
     }
 
 

@@ -31,6 +31,7 @@
         font-size: 15px;
         margin-left: 5px;
     }
+
     </style>
     <c:HD_SpinnerComponent/>
     <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
@@ -47,15 +48,15 @@
                 <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
             </div>
             <apex:pageBlockSection title="{!$Label.Details_Label}" columns="2">
-                <apex:outputField value="{!Hospital__c.Name}" />
-                <apex:outputField value="{!Hospital__c.Phone_Number__c}" />
-                <apex:outputField value="{!Hospital__c.Web_Page__c}" />
-                <apex:outputField value="{!Hospital__c.Email__c}" />
+                <apex:outputField value="{!Hospital__c.Name}"/>
+                <apex:outputField value="{!Hospital__c.Phone_Number__c}"/>
+                <apex:outputField value="{!Hospital__c.Web_Page__c}"/>
+                <apex:outputField value="{!Hospital__c.Email__c}"/>
             </apex:pageBlockSection>
             <apex:pageBlockSection title="{!$Label.Address_Label}">
                 <apex:outputField value="{!Hospital__c.City__c}"/>
                 <apex:outputField value="{!Hospital__c.Country__c}"/>
-                <apex:outputField value="{!Hospital__c.Street__c}" />
+                <apex:outputField value="{!Hospital__c.Street__c}"/>
             </apex:pageBlockSection>
             <apex:pageBlockSection columns="1">
                 <div id="mapid"></div>
@@ -83,7 +84,8 @@
                         {!$Label.View_Label}
                     </apex:outputLink>
                 </apex:column>
-                <apex:column headerValue="{!$Label.Doctor_Label}" value="{!contract.Doctor__r.Name} {!contract.Doctor__r.First_Name__c}"/>
+                <apex:column headerValue="{!$Label.Doctor_Label}"
+                             value="{!contract.Doctor__r.Name} {!contract.Doctor__r.First_Name__c}"/>
                 <apex:column headerValue="{!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"/>
                 <apex:column headerValue="{!$Label.End_Date_Label}" value="{!contract.End_Date__c}"/>
             </apex:pageBlockTable>
@@ -92,76 +94,92 @@
     </apex:pageBlock>
 
     <div id="multiHireDialog" style="display:none" title="Hire Doctors To {!Hospital__c.Name}">
-        <apex:pageBlock id = "multiHirePageBlock">
+        <apex:pageBlock id="multiHirePageBlock">
             <apex:form>
-                <apex:pageBlockSection title="Search For Doctors" id ="DoctorSearchSection" columns="2">
-                    <apex:inputField value="{!inputFormDoctor.First_Name__c}" />
+                <apex:pageBlockSection title="Search For Doctors" id="DoctorSearchSection" columns="2">
+                    <apex:inputField value="{!inputFormDoctor.First_Name__c}"/>
                     <apex:inputText value="{!inputFormDoctor.Email__c}" label="{!$Label.Email_Label}"/>
                     <apex:inputField value="{!inputFormDoctor.Name}" required="true"/>
                     <apex:inputField value="{!inputFormDoctor.Country__c}"/>
-            </apex:pageBlockSection>
+                </apex:pageBlockSection>
                 <div align="center">
                     <apex:commandButton action="{!searchDoctors}"
-                                        value="{!$Label.Search_Button}" status="loadingGif" reRender="resultsDoctorsSection,DoctorSearchSection"/>
+                                        value="{!$Label.Search_Button}" status="loadingGif"
+                                        reRender="resultsDoctorsSection,DoctorSearchSection"/>
                     <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}"
-                                        status="loadingGif" id="clearButton" reRender="DoctorSearchSection,resultDoctorTable"
-                                        immediate="true" />
+                                        status="loadingGif" id="clearButton"
+                                        reRender="DoctorSearchSection,resultDoctorTable"
+                                        immediate="true"/>
                 </div>
 
             </apex:form>
             <apex:form>
-            <apex:pageBlockSection title="Results" columns="1" id ="resultsDoctorsSection">
-                <apex:pageBlockTable value="{!foundWrappedDoctors}" var="doc" id="resultDoctorTable" >
-                    <apex:column headerValue="{!$Label.Action_Label}"
-                                 style="height:21px; text-align:center;">
-                        <apex:commandButton action="{!selectDoctor}" reRender="resultsDoctorsSection,NewContractTable"
-                                            value="{!$Label.Select_Label}"
-                                            style="{!IF(doc.isSelected,'display:none;','display:initial;')}">
-                            <apex:param value="{!doc.doctor.Id}" name="selectedDoctorId"
-                                        assignTo="{!selectedDoctorId}"/>
-                        </apex:commandButton>
-                    </apex:column>
-                    <apex:column headerValue="Fullname">
-                        {!doc.doctor.First_Name__c} {! doc.doctor.Name}
-                    </apex:column>
-                    <apex:column headerValue="{!$Label.Email_Label}">
-                        {! doc.doctor.Email__c}
-                    </apex:column>
-                    <apex:column headerValue="{!$Label.Country_Label}">
-                        {! doc.doctor.Country__c}
-                    </apex:column>
-                </apex:pageBlockTable>
-            </apex:pageBlockSection>
-            </apex:form>
-            <apex:form >
-                <apex:pageBlockSection title="New Contracts" columns="1">
-                    <apex:pageBlockTable value="{!selectedDoctors}" var="doc" id="NewContractTable">
-                        <apex:column headerValue="{!$Label.Action_Label}">
-                            <apex:commandButton value="Edit"/>
-                            <apex:commandButton value="Template" action="{!template}" reRender="NewContractTable">
+                <apex:pageBlockSection title="Results" columns="1" id="resultsDoctorsSection">
+                    <apex:pageBlockTable value="{!foundWrappedDoctors}" var="doc" id="resultDoctorTable">
+                        <apex:column headerValue="{!$Label.Action_Label}"
+                                     style="height:21px; text-align:center;">
+                            <apex:commandButton action="{!selectDoctor}"
+                                                reRender="resultsDoctorsSection,NewContractTable"
+                                                value="{!$Label.Select_Label}"
+                                                style="{!IF(doc.isSelected,'display:none;','display:initial;')}">
                                 <apex:param value="{!doc.doctor.Id}" name="selectedDoctorId"
-                                            assignTo="{!templateId}"/>
-                            </apex:commandButton>
-                            <apex:commandButton value="Remove" action="{!remove}" reRender="NewContractTable,resultsDoctorsSection">
-                                <apex:param value="{!doc.doctor.Id}" name="selectedDoctorId"
-                                            assignTo="{!doctorRemoveId}"/>
+                                            assignTo="{!selectedDoctorId}"/>
                             </apex:commandButton>
                         </apex:column>
-                        <apex:column headerValue="Full Name" >
-                            {!doc.doctor.First_Name__c} {!doc.doctor.Name}
+                        <apex:column headerValue="Fullname">
+                            {!doc.doctor.First_Name__c} {! doc.doctor.Name}
                         </apex:column>
-                        <apex:column headerValue="Start Date">
-<!--                            <apex:inputField rendered="{!doc.isOpenForEdit}"/>-->
-<!--                            <apex:outputField rendered="{!NOT(doc.isOpenForEdit)}"/>-->
+                        <apex:column headerValue="{!$Label.Email_Label}">
+                            {! doc.doctor.Email__c}
                         </apex:column>
-                        <apex:column headerValue="End Date">
-<!--                            <apex:inputField rendered="{!doc.isOpenForEdit}" />-->
-<!--                            <apex:outputField rendered="{!NOT(doc.isOpenForEdit)}"/>-->
-                        </apex:column>
-                        <apex:column headerValue="Status" >
+                        <apex:column headerValue="{!$Label.Country_Label}">
+                            {! doc.doctor.Country__c}
                         </apex:column>
                     </apex:pageBlockTable>
                 </apex:pageBlockSection>
+            </apex:form>
+            <apex:form>
+
+                <apex:pageBlockSection title="New Contracts" columns="1">
+                    <apex:pageBlockTable value="{!selectedDoctorIdToContractWrapper}" var="doc" id="NewContractTable">
+                        <apex:column headerValue="{!$Label.Action_Label}">
+                            <apex:commandButton value="Edit" action="{!editContract}" reRender="NewContractTable">
+                                <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
+                            </apex:commandButton>
+                            <apex:commandButton value="Template" action="{!template}" reRender="NewContractTable">
+                                <apex:param value="{!doc}" name="selectedDoctorId"
+                                            assignTo="{!templateId}"/>
+                            </apex:commandButton>
+                            <apex:commandButton value="Remove" action="{!remove}"
+                                                reRender="NewContractTable,resultsDoctorsSection">
+                                <apex:param value="{!doc}" name="selectedDoctorId"
+                                            assignTo="{!doctorRemoveId}"/>
+                            </apex:commandButton>
+                        </apex:column>
+                        <apex:column headerValue="Full Name">
+                            {!selectedDoctorIdToContractWrapper[doc].contract.Doctor__r.First_Name__c}  {!selectedDoctorIdToContractWrapper[doc].contract.Doctor__r.Name}
+                        </apex:column>
+                        <apex:column headerValue="Start Date">
+                            <apex:inputField rendered="{!selectedDoctorIdToContractWrapper[doc].isOpenForEdit}"
+                                             value="{!selectedDoctorIdToContractWrapper[doc].contract.Start_Date__c}"/>
+                            <apex:outputField rendered="{!NOT(selectedDoctorIdToContractWrapper[doc].isOpenForEdit)}"
+                                              value="{!selectedDoctorIdToContractWrapper[doc].contract.Start_Date__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="End Date">
+                            <apex:inputField rendered="{!selectedDoctorIdToContractWrapper[doc].isOpenForEdit}"
+                                             value="{!selectedDoctorIdToContractWrapper[doc].contract.End_Date__c}"/>
+                            <apex:outputField rendered="{!NOT(selectedDoctorIdToContractWrapper[doc].isOpenForEdit)}"
+                                              value="{!selectedDoctorIdToContractWrapper[doc].contract.End_Date__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Status">
+                            <apex:outputText value="{!selectedDoctorIdToContractWrapper[doc].status}"/>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <div style="text-align:center;">
+                    <apex:commandButton value="Hire" action="{!hire}" reRender="NewContractTable"/>
+                    <apex:commandButton value="Cancel" action="{!cancelDialog}" reRender="NewContractTable"/>
+                </div>
             </apex:form>
         </apex:pageBlock>
     </div>
@@ -177,7 +195,7 @@
         $("#multiHireDialog").dialog({
         autoOpen: true,
         height: 700,
-        width: 650,
+        width: 700,
         modal: true,
         closeOnEscape: false,
                 open: function(event, ui) {
@@ -233,6 +251,7 @@ function hideMultiHireDialog(){
 //      mymap.setView([lat, lng]);
 //
 //  };
+
     </script>
 
 
