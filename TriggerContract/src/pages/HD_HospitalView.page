@@ -149,34 +149,15 @@
                     <apex:pageBlockTable value="{!selectedDoctorIdToContractWrapper}" var="doc" id="NewContractTable">
                         <apex:column headerValue="{!$Label.Action_Label}">
                             <apex:commandButton
-
-
-
-
-
-
-
-
-
-
                                     value="Save"
                                     action="{!saveEditedContract}" reRender="NewContractTable,hireCancelButtons"
-                                    rendered="{!IF(selectedDoctorIdToContractWrapper[doc].isOpenForEdit,true,false)}">
+                                    rendered="{!IF(doc = currentEditedId,true,false)}" disabled="{!IF(AND(doc != currentEditedId,currentEditedId != null),true,false)}" >
                                 <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
-
-
-
-
-
-
-
-
-
                             </apex:commandButton>
                             <apex:commandButton
                                     value="Edit"
                                     action="{!editContract}" reRender="NewContractTable , hireCancelButtons"
-                                    rendered="{!IF(NOT(selectedDoctorIdToContractWrapper[doc].isOpenForEdit),true,false)}">
+                                    rendered="{!IF(NOT(doc = currentEditedId),true,false)}" disabled="{!IF(AND(doc != currentEditedId,currentEditedId != null),true,false)}">
                                 <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
                             </apex:commandButton>
                             <apex:commandButton value="Template" action="{!template}" reRender="NewContractTable">
