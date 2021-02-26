@@ -76,7 +76,7 @@
             <div class="PageFacet">{!$Label.Contracts_Label}</div>
         </apex:facet>
         <apex:form>
-            <apex:pageBlockTable value="{!Hospital__c.Contracts__r}" var="contract">
+            <apex:pageBlockTable value="{!Hospital__c.Contracts__r}" var="contract" id="contractsDisplay">
                 <apex:column headerValue="{!$Label.Action_Label}">
                     <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.Edit,contract.Id)}">
                         {!$Label.Edit_Label}
@@ -93,11 +93,15 @@
             </apex:pageBlockTable>
             <apex:commandButton value="debug" action="{!debug}"/>
         </apex:form>
-    </apex:pageBlock>
-
+    </apex:pageBlock >
     <div id="multiHireDialog" style="display:none" title="Hire Doctors To {!Hospital__c.Name}">
+        <apex:actionRegion>
         <apex:pageBlock id="multiHirePageBlock">
             <apex:form>
+
+                <apex:actionFunction name="sendClearToController" action="{!clearDialog}" reRender="multiHirePageBlock"
+                                     immediate="true"  />
+
                 <apex:pageBlockSection title="Search For Doctors" id="DoctorSearchSection" columns="2">
                     <apex:inputField value="{!inputFormDoctor.First_Name__c}"/>
                     <apex:inputText value="{!inputFormDoctor.Email__c}" label="{!$Label.Email_Label}"/>
@@ -110,7 +114,7 @@
                                         reRender="resultsDoctorsSection,DoctorSearchSection"/>
                     <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}"
                                         status="loadingGif" id="clearButton"
-                                        reRender="DoctorSearchSection,resultDoctorTable"
+                                        reRender="DoctorSearchSection,resultDoctorTable,multiHirePageBlock"
                                         immediate="true"/>
                 </div>
 
@@ -141,20 +145,37 @@
                 </apex:pageBlockSection>
             </apex:form>
             <apex:form>
-
                 <apex:pageBlockSection title="New Contracts" columns="1">
                     <apex:pageBlockTable value="{!selectedDoctorIdToContractWrapper}" var="doc" id="NewContractTable">
                         <apex:column headerValue="{!$Label.Action_Label}">
-
                             <apex:commandButton
+
+
+
+
+
+
+
+
+
+
                                     value="Save"
-                                    action="{!saveEditedContract}" reRender="NewContractTable"
+                                    action="{!saveEditedContract}" reRender="NewContractTable,hireCancelButtons"
                                     rendered="{!IF(selectedDoctorIdToContractWrapper[doc].isOpenForEdit,true,false)}">
                                 <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
+
+
+
+
+
+
+
+
+
                             </apex:commandButton>
                             <apex:commandButton
                                     value="Edit"
-                                    action="{!editContract}" reRender="NewContractTable"
+                                    action="{!editContract}" reRender="NewContractTable , hireCancelButtons"
                                     rendered="{!IF(NOT(selectedDoctorIdToContractWrapper[doc].isOpenForEdit),true,false)}">
                                 <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
                             </apex:commandButton>
@@ -182,19 +203,24 @@
                                              value="{!inputFormContract.End_Date__c}"/>
                             <apex:outputField rendered="{!NOT(selectedDoctorIdToContractWrapper[doc].isOpenForEdit)}"
                                               value="{!selectedDoctorIdToContractWrapper[doc].contract.End_Date__c}"/>
-                            <apex:messages />
                         </apex:column>
                         <apex:column headerValue="Status">
                             <apex:outputText value="{!selectedDoctorIdToContractWrapper[doc].status}"/>
                         </apex:column>
                     </apex:pageBlockTable>
                 </apex:pageBlockSection>
+                <apex:outputPanel id="hireCancelButtons">
                 <div style="text-align:center;">
-                    <apex:commandButton value="Hire" action="{!hire}" reRender="NewContractTable"/>
-                    <apex:commandButton value="Cancel" action="{!cancelDialog}" reRender="NewContractTable"/>
+                    <apex:commandButton value="Hire" action="{!hire}" reRender="NewContractTable,contractsDisplay"
+                                        onComplete="{!if(hireDialogAllowedToClose == true,"hideModal()","empty()")}"
+                                        disabled="{!IF(isReadyToHire,false,true)}"/>
+                    <apex:commandButton value="Cancel" action="{!cancelDialog}" reRender="NewContractTable,contractsDisplay" onClick="hideMultiHireDialog();" status="loadingGif" />
                 </div>
+                    <apex:messages />
+                </apex:outputPanel>
             </apex:form>
         </apex:pageBlock>
+        </apex:actionRegion>
     </div>
     <apex:relatedList list="histories">
         <apex:facet name="header">Hospital History</apex:facet>
@@ -212,7 +238,8 @@
         modal: true,
         closeOnEscape: false,
                 open: function(event, ui) {
-//                            sendClearToController()
+                            sendClearToController();
+                             $(".ui-dialog-titlebar-close", ui.dialog).hide();
                     }
                 });
             });

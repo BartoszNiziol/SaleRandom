@@ -266,7 +266,6 @@
             </apex:form>
         </apex:pageBlock>
     </div>
-
     <script type="text/javascript">
        let $ = jQuery.noConflict();
        let $cropper = jQuery.noConflict();
@@ -314,7 +313,7 @@
 
          }else if (!( splitedName[1] == 'jpg' || splitedName[1] == 'png')){
              console.log(splitedName[1]);
-             alert("Wrong file type. Possible types: jpg,png");
+             alert("Wrong file type. Acceptable types: jpg,png");
              typeFileError();
          }
 });
