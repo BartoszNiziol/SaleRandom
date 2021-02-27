@@ -20,11 +20,15 @@ public with sharing class HD_HospitalViewController {
     public Contract__c inputFormContract { get; set; }
     public Boolean isReadyToHire { get; set; }
     public Boolean hireDialogAllowedToClose { get; set; }
+    public Boolean inEditMode{get;set;}
+    public List<Contract__c> currentContracts{get;set;}
 
 
     public HD_HospitalViewController(ApexPages.StandardController standardController) {
+
         doctorHandler = new HD_DoctorHandler();
         currentHospital = (Hospital__c) standardController.getRecord();
+        currentContracts = currentHospital.Contracts__r;
         inputFormDoctor = new Doctor__c();
         foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
         selectedDoctors = new List<HD_DoctorSelectWrapper>();
@@ -33,9 +37,9 @@ public with sharing class HD_HospitalViewController {
         isReadyToHire = false;
         hireDialogAllowedToClose = false;
         foundDoctors = new List<Doctor__c>();
+        inEditMode = false;
     }
     public void searchDoctors() {
-
         foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
         foundDoctors = doctorHandler.queryDoctorsOR(inputFormDoctor.First_Name__c, inputFormDoctor.Name, inputFormDoctor.Email__c, inputFormDoctor.Country__c);
         for (Doctor__c doc : foundDoctors) {
@@ -48,6 +52,8 @@ public with sharing class HD_HospitalViewController {
 
     }
     public void selectDoctor() {
+
+
         for (HD_DoctorSelectWrapper doctor : foundWrappedDoctors) {
             if (doctor.doctor.Id == selectedDoctorId) {
                 doctor.isSelected = true;
@@ -74,7 +80,9 @@ public with sharing class HD_HospitalViewController {
             }
 
         }
-
+        System.debug('isReadyToHire: befor select ' + isReadyToHire);
+        isReadyToHire = false;
+        System.debug('isReadyToHire: after select  ' + isReadyToHire);
 
     }
     public void remove() {
@@ -95,7 +103,7 @@ public with sharing class HD_HospitalViewController {
         }
 
         selectedDoctorIdToContractWrapper.remove(doctorRemoveId);
-
+        isReadyToHire = true;
         Set<Id> selectedDoctorIdToContractWrapperKeySet = selectedDoctorIdToContractWrapper.keySet();
         for (Id key : selectedDoctorIdToContractWrapperKeySet) {
             HD_ContractWrapper wrapedContract = selectedDoctorIdToContractWrapper.get(key);
@@ -115,12 +123,20 @@ public with sharing class HD_HospitalViewController {
         foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
     }
     public void template() {
-
+            System.debug('inEditMode template start: ' + inEditMode);
         HD_ContractWrapper tempContract = selectedDoctorIdToContractWrapper.get(templateId);
-        Integer beforeClearMapSize = selectedDoctorIdToContractWrapper.size();
-        selectedDoctorIdToContractWrapper.clear();
-        for (Integer i = 0; i < beforeClearMapSize; i++) {
-            selectedDoctorIdToContractWrapper.put(templateId, tempContract);
+        Set<Id> selectedDoctorIdToContractWrapperKeySet = selectedDoctorIdToContractWrapper.keySet();
+        for(Id id:selectedDoctorIdToContractWrapperKeySet){
+            selectedDoctorIdToContractWrapper.get(id).contract.Start_Date__c = tempContract.contract.Start_Date__c;
+            selectedDoctorIdToContractWrapper.get(id).contract.End_Date__c = tempContract.contract.End_Date__c;
+        }
+         isReadyToHire = true;
+        for (Id key : selectedDoctorIdToContractWrapperKeySet) {
+            HD_ContractWrapper wrapedContract = selectedDoctorIdToContractWrapper.get(key);
+            if (wrapedContract.contract.Start_Date__c == null) {
+                isReadyToHire = false;
+            }
+
         }
     }
     public void cancelDialog() {
@@ -129,40 +145,46 @@ public with sharing class HD_HospitalViewController {
     public void hire() {
 
 
-        if (isReadyToHire) {
+     //   if (isReadyToHire) {
 
-
+         //   Map<Id,Contract__c> contractsIdToContractToSave = new Map<Id, Contract__c>();
             List<Contract__c> contractsToInsert = new List<Contract__c>();
+
             Set<Id> selectedDoctorsKeySet = selectedDoctorIdToContractWrapper.keySet();
             for (Id id : selectedDoctorsKeySet) {
-
                 Contract__c contract = selectedDoctorIdToContractWrapper.get(id).contract;
-
                 if (!(selectedDoctorIdToContractWrapper.get(id).status == 'success')) {
-
                     contractsToInsert.add(contract);
+                   // contractsIdToContractToSave.put(id,contract);
                 }
-
-
             }
+
             List<Database.SaveResult> saveResults;
             saveResults = Database.insert(contractsToInsert, false);
-
-
             Integer count = 0;
-
-
-            for (Id id : selectedDoctorsKeySet) {
-                if (saveResults.get(count).success) {
-                    selectedDoctorIdToContractWrapper.get(id).status = 'Success';
-                } else {
-                    selectedDoctorIdToContractWrapper.get(id).status = 'Overlaping Error';
-                }
-                count++;
+            for(Database.SaveResult result : saveResults){
+                System.debug('result.errors: ' + result.errors);
             }
 
 
-        }
+            if(selectedDoctorsKeySet.size() > 0 && saveResults.size() > 0) {
+                for (Id id : selectedDoctorsKeySet) {
+                    if (selectedDoctorIdToContractWrapper.get(id).status != 'Success') {
+
+
+                        System.debug('saveResults: ' + saveResults);
+                        if (saveResults.get(count).success) {
+                            selectedDoctorIdToContractWrapper.get(id).status = 'Success';
+                        } else {
+                            selectedDoctorIdToContractWrapper.get(id).status = saveResults.get(count).errors.get(0).message;
+                        }
+                        count++;
+                    }
+                }
+            }
+
+
+
     }
 
     public void editContract() {
@@ -222,6 +244,7 @@ public with sharing class HD_HospitalViewController {
             System.debug(isReadyToHire);
 
             currentEditedId = null;
+            inputFormContract = new Contract__c();
 
         } catch (DateException e) {
             ApexPages.addMessages(e);
@@ -238,8 +261,8 @@ public with sharing class HD_HospitalViewController {
     }
 
     public void debug() {
-        System.debug('selectedDoctorIdToContract');
-        System.debug(selectedDoctorIdToContractWrapper);
+        delete [SELECT Id FROM Contract__c WHERE Hospital__c =: currentHospital.Id];
+
     }
 
 

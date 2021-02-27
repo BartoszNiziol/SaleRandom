@@ -51,7 +51,7 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
         if (contactsWithSameDoctorANDHospitalASContractsToAdd != null) {
 
             for (Contract__c oldContract : contactsWithSameDoctorANDHospitalASContractsToAdd) {
-
+                    errorMessage = System.Label.Overlapping_Error;
                 if (isOverlapped(oldContract, contractsToAdd)) {
                     if(oldContract.End_Date__c != null) {
                         Date startDate = oldContract.Start_Date__c;
