@@ -142,7 +142,7 @@ public with sharing class HD_HospitalViewController {
     public void cancelDialog() {
 
     }
-    public void hire() {
+    public PageReference hire() {
 
 
      //   if (isReadyToHire) {
@@ -183,9 +183,26 @@ public with sharing class HD_HospitalViewController {
                 }
             }
 
+        Integer errorCounter = 0 ;
+        if(saveResults.size()>0) {
 
+            for (Database.SaveResult result : saveResults) {
+                if (result.getErrors().size() > 0) {
+                    errorCounter++;
+                }
+            }
+        }
 
+        if(errorCounter == 0){
+
+            PageReference tempPage = ApexPages.currentPage();
+            tempPage.setRedirect(true);
+            return tempPage;
+
+        }
+        return  null;
     }
+
 
     public void editContract() {
         System.debug('isReadyToHire edit start');

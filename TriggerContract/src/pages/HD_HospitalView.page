@@ -204,7 +204,7 @@
                             <apex:commandButton value="Hire" action="{!hire}"
                                                 reRender="NewContractTable,contractsDisplay"
                                                 onComplete="{!if(hireDialogAllowedToClose == true,"hideModal()","empty()")}"
-                                                disabled="{!IF(isReadyToHire,false,true)}"/>
+                                                disabled="{!IF(isReadyToHire,false,true)}" />
                             <apex:commandButton value="Cancel" action="{!cancelDialog}"
                                                 reRender="NewContractTable,contractsDisplay"
                                                 onClick="hideMultiHireDialog();" status="loadingGif"/>
