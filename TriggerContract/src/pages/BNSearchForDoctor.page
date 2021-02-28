@@ -1,0 +1,55 @@
+<apex:page id="SearchForDoctor" standardController="Doctor__c" extensions="HD_SearchForDoctorController" docType="html-5.0">
+
+    <style>
+    .TitleFacet{
+       font-size: 23px;
+       padding-left: 10px;
+       font-weight: bold;
+       background-color: transparent;
+       color :black;
+    }
+    #SearchForDoctor\:j_id1\:searchBlock\:resultBlock > div.pbSubheader.brandTertiaryBgr.tertiaryPalette{
+        background-color:transparent;
+        color :black;
+    }
+    </style>
+
+    <apex:form >
+        <apex:pageBlock title="Search for doctors" id="searchBlock" >
+            <apex:facet name="header">
+               <div class="TitleFacet" style="height:50px; margin-top:10px;">Search For Doctors</div>
+            </apex:facet>
+            <apex:pageBlockSection columns="2" >
+                <apex:inputField value="{!inputFormDoctor.First_Name__c}"/>
+                <apex:inputText value="{!inputFormDoctor.Email__c}"/>
+                <apex:inputField value="{!inputFormDoctor.Name}" required="true"/>
+                <apex:inputField value="{!inputFormDoctor.Country__c}"/>
+            </apex:pageBlockSection>
+                <div align="center">
+                <apex:commandButton action="{!search}" value="Search" style="" reRender="resultBlock,searchBlock" />
+                <apex:commandButton action="{!clear}" value="Clear" immediate="true" reRender="searchBlock,resultBlock" />
+                </div>
+        <apex:pageBlockSection title="Results" id="resultBlock" columns="1" >
+            <apex:facet name="header" >
+                <div class="TitleFacet">Results</div>
+            </apex:facet>
+                <apex:outputPanel >
+                <apex:pageBlockTable value="{!foundDoctors}" var="docs">
+                    <apex:column headerValue="Action">
+                        <apex:outputLink target="_blank" value="{!URLFOR($Action.Doctor__c.Edit,docs.Id)}">
+                            Edit
+                        </apex:outputLink>
+                        |
+                        <apex:outputLink target="_blank" value="{!URLFOR($Action.Doctor__c.View,docs.Id)}">
+                            View
+                        </apex:outputLink>
+                    </apex:column>
+                    <apex:column value="{! docs.First_Name__c} {! docs.NAME}" headerValue="Full Name"/>
+                    <apex:column value="{! docs.Email__c}" headerValue="Email"/>
+                    <apex:column value="{! docs.Country__c}" headerValue="Country"/>
+                </apex:pageBlockTable>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

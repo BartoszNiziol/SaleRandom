@@ -1,0 +1,135 @@
+<apex:page id="BNDoctorViewG" standardController="Doctor__c">
+    <style>
+.TitleFacet{
+       font-size: 20px;
+       padding-left: 10px;
+       font-weight: bold;
+       background-color: transparent;
+       color :black;
+
+    }
+    .PageFacet{
+         padding-top: 9px;
+        padding-bottom 6 px;
+       font-size: 23px;
+       padding-left: 10px;
+       font-weight: bold;
+       background-color: transparent;
+       color :black;
+
+    }
+    .bPageBlock.apexDefaultPageBlock .pbSubheader
+    {
+        background-color: transparent;
+    }
+
+
+
+
+    </style>
+    <apex:pageBlock >
+
+        <apex:facet name="header">
+            <div class="PageFacet">Doctor Edit</div>
+        </apex:facet>
+        <div style="float:left;"></div>
+        <apex:form >
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Save}" value="Save"/>
+                <apex:commandButton action="{!Cancel}" value="Cancel"/>
+            </div>
+            <apex:pageBlockSection title="Details" columns="2">
+                <apex:facet name="header">
+                    <div class="TitleFacet">Details</div>
+                </apex:facet>
+                <apex:inputField value="{!Doctor__c.First_Name__c}"/>
+                <apex:inputField value="{!Doctor__c.Phone_Number__c}"/>
+                <apex:inputField value="{!Doctor__c.Name}" required="true"/>
+                <apex:inputField value="{!Doctor__c.Email__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Address">
+                <apex:facet name="header">
+                    <div class="TitleFacet">Address</div>
+                </apex:facet>
+                <apex:inputField value="{!Doctor__c.City__c}"/>
+                <apex:inputField value="{!Doctor__c.Country__c}"/>
+                <apex:inputField value="{!Doctor__c.Street__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Other" columns="1">
+                <apex:facet name="header">
+                    <div class="TitleFacet">Other</div>
+                </apex:facet>
+                <apex:inputField value="{!Doctor__c.Birthday_Date__c}"/>
+                <apex:inputField value="{!Doctor__c.License_Number__c}"/>
+            </apex:pageBlockSection>
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Save}" value="Save"/>
+                <apex:commandButton action="{!Cancel}" value="Cancel"/>
+            </div>
+        </apex:form>
+    </apex:pageBlock>
+    <script>
+    $(document).ready(function() {
+
+    var myOptions = {
+    zoom: 15,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    mapTypeControl: false
+    }
+
+    var map;
+    var marker;
+
+    var geocoder = new google.maps.Geocoder();
+
+    var address = "{!Doctor__c.Street__c},{!Doctor__c.City__c}, ,{!Doctor__c.Country__c}";
+    var infowindow = new google.maps.InfoWindow({
+    content: "<b>{!Doctor__c.Name}</b><br>" + address + "  "
+    });
+
+    geocoder.geocode( { address: address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK && results.length) {
+    if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+
+
+    map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+    map.setCenter(results[0].geometry.location);
+
+    marker = new google.maps.Marker({
+    position: results[0].geometry.location,
+    map: map,
+    title: "{!Doctor__c.Name}"
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(map,marker);
+    });
+    google.maps.event.addListener(infowindow, 'closeclick', function() {
+    map.setCenter(marker.getPosition());
+    });
+    }
+    } else {
+    $('#map').css({'height' : '15px'});
+    $('#map').html("Oops! address could not be found, please make sure the address is correct.");
+    resizeIframe();
+    }
+    });
+
+    function resizeIframe() {
+    var me = window.name;
+    if (me) {
+    var iframes = parent.document.getElementsByName(me);
+    if (iframes && iframes.length == 1) {
+    height = document.body.offsetHeight;
+    iframes[0].style.height = height + "px";
+    }
+    }
+    }
+
+    });
+
+
+
+    </script>
+</apex:page>

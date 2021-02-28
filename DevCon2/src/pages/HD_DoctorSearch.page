@@ -1,0 +1,74 @@
+<apex:page id="DoctorSearch" controller="HD_DoctorSearchController" docType="html-5.0">
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
+    <apex:form id="mainForm">
+        <apex:pageBlock id="searchBlock">
+            <apex:pageBlockSection columns="2" title="{!$Label.Search_For_Doctors_Label}">
+                <apex:inputField value="{!inputFormDoctor.First_Name__c}"/>
+                <apex:inputText value="{!inputFormDoctor.Email__c}" id="emailInput"/>
+                <apex:inputField value="{!inputFormDoctor.Name}" required="true"/>
+                <apex:inputField value="{!inputFormDoctor.Country__c}"/>
+            </apex:pageBlockSection>
+            <div align="center">
+                <apex:commandButton action="{!search}" value="{!$Label.Search_Button}" status="loadingGif"
+                                    reRender="resultBlock,searchBlock"/>
+                <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}" status="loadingGif"
+                                    onClick="this.form.reset();" immediate="true"
+                                    reRender="searchBlock,resultBlock,mainForm" id="clearButton"/>
+                <apex:commandButton action="{!exportCsv}" value="{!$Label.Csv_Button}"/>
+                <apex:commandButton action="{!exportXML}" value="{!$Label.XML_Button}"/>
+            </div>
+            <apex:pageBlockSection title="{!$Label.Results_Label}" id="resultBlock" columns="1">
+                <apex:pageBlockTable value="{!foundDoctors}" var="docs">
+                    <apex:column headerValue="{!$Label.Action_Label}">
+                        <apex:outputLink target="_blank" value="{!URLFOR($Action.Doctor__c.Edit,docs.Id)}">
+                            {!$Label.Edit_Label}
+                        </apex:outputLink>
+                        |
+                        <apex:outputLink target="_blank" value="{!URLFOR($Action.Doctor__c.View,docs.Id)}">
+                            {!$Label.View_Label}
+                        </apex:outputLink>
+                    </apex:column>
+                    <apex:column >
+                        {! docs.First_Name__c} {! docs.NAME}
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!search}" status="loadingGif"
+                                              value="{!$Label.Full_Name_Label}{!IF(sortExpression=='Name',IF(sortDirection='ASC','▼','▲'),'')}"
+                                              id="cmdSort" reRender="resultBlock">
+                                <apex:param value="Name" name="column" assignTo="{!sortExpression}"></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
+                    </apex:column>
+                    <apex:column headerValue="">{! docs.Email__c}
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!search}" status="loadingGif"
+                                              value="{!$Label.Email_Label}{!IF(sortExpression=='Email__c',IF(sortDirection='ASC','▼','▲'),'')}"
+                                              reRender="resultBlock">
+                                <apex:param value="Email__c" name="column" assignTo="{!sortExpression}"></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.Country_Label}">{! docs.Country__c}
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!search}" status="loadingGif"
+                                              value="{!$Label.Country_Label}{!IF(sortExpression=='Country__c',IF(sortDirection='ASC','▼','▲'),'')}"
+                                              reRender="resultBlock">
+                                <apex:param value="Country__c" name="column" assignTo="{!sortExpression}"></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
+                    </apex:column>
+                </apex:pageBlockTable>
+                <apex:panelGrid columns="4">
+                    <apex:commandLink action="{!first}" status="loadingGif"
+                                      reRender="resultBlock">{!$Label.First_Label}</apex:commandlink>
+                    <apex:commandLink action="{!previous}" status="loadingGif" reRender="resultBlock"
+                                      rendered="{!hasPrevious}">{!$Label.Previous_Label}</apex:commandlink>
+                    <apex:commandLink action="{!next}" status="loadingGif" reRender="resultBlock"
+                                      rendered="{!hasNext}">{!$Label.Next_Label}</apex:commandlink>
+                    <apex:commandLink action="{!last}" status="loadingGif"
+                                      reRender="resultBlock">{!$Label.Last_Label}</apex:commandlink>
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <c:HD_SpinnerComponent />
+    </apex:form>
+</apex:page>

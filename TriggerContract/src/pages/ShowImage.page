@@ -1,0 +1,8 @@
+<!--
+ - Created by BRITENET on 06.02.2021.
+ -->
+<apex:page >
+
+        <apex:image url="{!URLFOR($Resource.vfimagetest, 'cats/kitten1.jpg')}" />
+
+</apex:page>
