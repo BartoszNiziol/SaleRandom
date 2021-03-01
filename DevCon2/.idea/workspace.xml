@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_DoctorRandomListController.cls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_DoctorRandomListController.cls-meta.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/HD_DoctorRandomList.page" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/HD_DoctorRandomList.page-meta.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/HD_EmptyPage.page" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/HD_EmptyPage.page-meta.xml" afterDir="false" />
+    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="before greying after succes button">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IlluminatedCloud/DevCon/OfflineSymbolTable.zip" beforeDir="false" afterPath="$PROJECT_DIR$/IlluminatedCloud/DevCon/OfflineSymbolTable.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/classes/HD_HospitalViewController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_HospitalViewController.cls" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/HD_HospitalView.page" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/HD_HospitalView.page" afterDir="false" />
     </list>
@@ -68,7 +61,7 @@
                       <entry key="APEXCLASS:EMAILMANAGER" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMISSIONSPECIALIST" value="1614524893000" />
                       <entry key="APEXCLASS:HD_DOCTORRANDOMLISTCONTROLLER" value="1614592459065" />
-                      <entry key="APEXCLASS:HD_HOSPITALVIEWCONTROLLER" value="1614598318456" />
+                      <entry key="APEXCLASS:HD_HOSPITALVIEWCONTROLLER" value="1614598376943" />
                       <entry key="APEXCLASS:HD_PLYGROUNDCONTROLLER" value="1614524893000" />
                       <entry key="APEXCLASS:INET" value="1614524893000" />
                       <entry key="APEXCLASS:INNSERTING" value="1614524893000" />
@@ -96,7 +89,7 @@
                       <entry key="APEXPAGE:DISPLAYUSERINFO" value="1614524894000" />
                       <entry key="APEXPAGE:HD_DOCTORRANDOMLIST" value="1614592463870" />
                       <entry key="APEXPAGE:HD_EMPTYPAGE" value="1614592350455" />
-                      <entry key="APEXPAGE:HD_HOSPITALVIEW" value="1614598132197" />
+                      <entry key="APEXPAGE:HD_HOSPITALVIEW" value="1614598725340" />
                       <entry key="APEXPAGE:HELLOWORLD" value="1614524894000" />
                       <entry key="APEXPAGE:NEWCASELIST" value="1614524894000" />
                       <entry key="APEXPAGE:OPPVIEW" value="1614524894000" />
@@ -251,6 +244,14 @@
       <option name="presentableId" value="Default" />
       <updated>1614516804202</updated>
     </task>
+    <task id="LOCAL-00001" summary="before greying after succes button">
+      <created>1614598402375</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1614598402376</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -267,5 +268,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="before greying after succes button" />
+    <option name="LAST_COMMIT_MESSAGE" value="before greying after succes button" />
   </component>
 </project>

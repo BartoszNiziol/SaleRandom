@@ -21,12 +21,12 @@ public with sharing class HD_HospitalViewController {
     public Boolean isReadyToHire { get; set; }
     public Boolean hireDialogAllowedToClose { get; set; }
     public Boolean inEditMode { get; set; }
-    public List<Contract__c> currentContracts { get; set;}
-    public Map<Id,Boolean> successContract {get;set;}
-
+    public List<Contract__c> currentContracts { get; set; }
+    public Map<String, Boolean> disableButtonsMap { get; set; }
 
 
     public HD_HospitalViewController(ApexPages.StandardController standardController) {
+
 
         doctorHandler = new HD_DoctorHandler();
         currentHospital = (Hospital__c) standardController.getRecord();
@@ -40,8 +40,14 @@ public with sharing class HD_HospitalViewController {
         hireDialogAllowedToClose = false;
         foundDoctors = new List<Doctor__c>();
         inEditMode = false;
-        successContract = new Map<Id, Boolean>();
+        disableButtonsMap = new Map<String, Boolean>();
     }
+
+    public void populatebuttons(){
+
+
+    }
+
     public void searchDoctors() {
         foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
         foundDoctors = doctorHandler.queryDoctorsOR(inputFormDoctor.First_Name__c, inputFormDoctor.Name, inputFormDoctor.Email__c, inputFormDoctor.Country__c);
@@ -52,11 +58,8 @@ public with sharing class HD_HospitalViewController {
             }
             foundWrappedDoctors.add(requestedToAddDoctor);
         }
-
     }
     public void selectDoctor() {
-
-
         for (HD_DoctorSelectWrapper doctor : foundWrappedDoctors) {
             if (doctor.doctor.Id == selectedDoctorId) {
                 doctor.isSelected = true;
@@ -81,15 +84,13 @@ public with sharing class HD_HospitalViewController {
             if (wrapedContract.contract.Start_Date__c == null) {
                 isReadyToHire = false;
             }
-
         }
         System.debug('isReadyToHire: befor select ' + isReadyToHire);
         isReadyToHire = false;
         System.debug('isReadyToHire: after select  ' + isReadyToHire);
-
     }
-    public void remove() {
 
+    public void remove() {
         List<Integer> indexesToRemove = new List<Integer>();
         for (HD_DoctorSelectWrapper doctor : foundWrappedDoctors) {
             if (doctor.doctor.Id == doctorRemoveId) {
@@ -173,8 +174,6 @@ public with sharing class HD_HospitalViewController {
                     System.debug('saveResults: ' + saveResults);
                     if (saveResults.get(count).success) {
                         selectedDoctorIdToContractWrapper.get(id).status = 'Success';
-                        successContract.put(id,true);
-
                     } else {
                         selectedDoctorIdToContractWrapper.get(id).status = saveResults.get(count).errors.get(0).message;
                     }

@@ -95,7 +95,6 @@
         </apex:form>
     </apex:pageBlock>
 
-
     <div id="multiHireDialog" style="display:none" title="Hire Doctors To {!Hospital__c.Name}">
         <apex:actionRegion >
             <apex:pageBlock id="multiHirePageBlock">
@@ -103,7 +102,6 @@
                     <apex:actionFunction name="sendClearToController" action="{!clearDialog}"
                                          reRender="multiHirePageBlock"
                                          immediate="true"/>
-
                     <apex:pageBlockSection title="{!$Label.Search_For_Doctors_Label}" id="DoctorSearchSection" columns="2">
                         <apex:inputField value="{!inputFormDoctor.First_Name__c}"/>
                         <apex:inputText value="{!inputFormDoctor.Email__c}" label="{!$Label.Email_Label}"/>
@@ -159,7 +157,9 @@
                                 <apex:commandButton value="{!$Label.Edit_Button}"
                                         action="{!editContract}" reRender="NewContractTable , hireCancelButtons , templateButton"
                                         rendered="{!IF(NOT(doc = currentEditedId),true,false)}"
+
                                         disabled="{!IF(AND(doc != currentEditedId,currentEditedId != null),true,false)}">
+
                                     <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
                                 </apex:commandButton>
                                 <apex:commandButton value="{!$Label.Template_Button}" action="{!template}" reRender="NewContractTable,hireCancelButtons" disabled="{!inEditMode}" id="templateButton">
