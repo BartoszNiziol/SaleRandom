@@ -91,7 +91,6 @@
                 <apex:column headerValue="{!$Label.End_Date_Label}" value="{!contract.End_Date__c}"/>
             </apex:pageBlockTable>
             </apex:outputPanel>
-            <apex:commandButton value="debug" action="{!debug}" reRender="hospitalContractsPanel" status="loadingGif"/>
         </apex:form>
     </apex:pageBlock>
 
@@ -158,16 +157,16 @@
                                         action="{!editContract}" reRender="NewContractTable , hireCancelButtons , templateButton"
                                         rendered="{!IF(NOT(doc = currentEditedId),true,false)}"
 
-                                        disabled="{!IF(AND(doc != currentEditedId,currentEditedId != null),true,false)}">
+                                        disabled="{!IF( OR( selectedDoctorIdToContractWrapper[doc].status =='Success' ,AND(doc != currentEditedId,currentEditedId != null)), true ,false)}">
 
                                     <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
                                 </apex:commandButton>
-                                <apex:commandButton value="{!$Label.Template_Button}" action="{!template}" reRender="NewContractTable,hireCancelButtons" disabled="{!inEditMode}" id="templateButton">
+                                <apex:commandButton value="{!$Label.Template_Button}" action="{!template}" reRender="NewContractTable,hireCancelButtons" disabled="{!OR(inEditMode,selectedDoctorIdToContractWrapper[doc].isOpenForEdit)}" id="templateButton">
                                     <apex:param value="{!doc}" name="selectedDoctorId"
                                                 assignTo="{!templateId}"/>
                                 </apex:commandButton>
                                 <apex:commandButton value="{!$Label.Remove_Button}" action="{!remove}"
-                                                    reRender="NewContractTable,resultsDoctorsSection,hireCancelButtons" immediate="true">
+                                                    reRender="NewContractTable,resultsDoctorsSection,hireCancelButtons" immediate="true" disabled="{!selectedDoctorIdToContractWrapper[doc].isOpenForEdit}">
                                     <apex:param value="{!doc}" name="selectedDoctorId"
                                                 assignTo="{!doctorRemoveId}"/>
                                 </apex:commandButton>
@@ -230,18 +229,11 @@
                 });
             });
         }
-
-
 function hideMultiHireDialog(){
     $(function() {
         $("#multiHireDialog").dialog("close");
     });
 }
-
-
-
-
-
 
 //     document.getElementById("bigHead").innerHTML ="{!Hospital__c.Name}"
 //     let openCageApiKey = '2e8af67ee7bf4a00bbdfce25dfcdefe7';

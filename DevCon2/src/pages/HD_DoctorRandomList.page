@@ -2,9 +2,15 @@
  - Created by BRITENET on 01.03.2021.
  -->
 
-<apex:page id="HD_DoctorRandomList" standardController="Doctor__c" extensions="HD_DoctorRandomListController">
+<apex:page id="HD_DoctorRandomList" standardController="Doctor__c" extensions="HD_DoctorRandomListController" sideBar="false" showHeader="false">
+    <style>
+.bPageBlock {
+border-top: 0px;
+}
+</style>
+
     <apex:pageBlock >
-    <apex:pageBlockSection>
+    <apex:pageBlockSection  columns="1" showHeader="false" >
         <apex:pageBlockTable value="{!randomDoctors}" var="doc">
             <apex:column headerValue="ID">
                 <apex:outputField value="{!doc.Id}"/>
@@ -19,7 +25,6 @@
             <apex:column headerValue="Country">
                 <apex:outputField value="{!doc.Country__c}"/>
             </apex:column>
-
         </apex:pageBlockTable>
     </apex:pageBlockSection>
     </apex:pageBlock>
