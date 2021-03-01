@@ -20,8 +20,10 @@ public with sharing class HD_HospitalViewController {
     public Contract__c inputFormContract { get; set; }
     public Boolean isReadyToHire { get; set; }
     public Boolean hireDialogAllowedToClose { get; set; }
-    public Boolean inEditMode{get;set;}
-    public List<Contract__c> currentContracts{get;set;}
+    public Boolean inEditMode { get; set; }
+    public List<Contract__c> currentContracts { get; set;}
+    public Map<Id,Boolean> successContract {get;set;}
+
 
 
     public HD_HospitalViewController(ApexPages.StandardController standardController) {
@@ -38,6 +40,7 @@ public with sharing class HD_HospitalViewController {
         hireDialogAllowedToClose = false;
         foundDoctors = new List<Doctor__c>();
         inEditMode = false;
+        successContract = new Map<Id, Boolean>();
     }
     public void searchDoctors() {
         foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
@@ -101,7 +104,6 @@ public with sharing class HD_HospitalViewController {
         for (Integer i : indexesToRemove) {
             selectedDoctors.remove(i);
         }
-
         selectedDoctorIdToContractWrapper.remove(doctorRemoveId);
         isReadyToHire = true;
         Set<Id> selectedDoctorIdToContractWrapperKeySet = selectedDoctorIdToContractWrapper.keySet();
@@ -110,9 +112,7 @@ public with sharing class HD_HospitalViewController {
             if (wrapedContract.contract.Start_Date__c == null) {
                 isReadyToHire = false;
             }
-
         }
-
     }
 
     public void clear() {
@@ -122,87 +122,84 @@ public with sharing class HD_HospitalViewController {
         inputFormDoctor.Country__c = null;
         foundWrappedDoctors = new List<HD_DoctorSelectWrapper>();
     }
+
     public void template() {
-            System.debug('inEditMode template start: ' + inEditMode);
+        System.debug('inEditMode template start: ' + inEditMode);
         HD_ContractWrapper tempContract = selectedDoctorIdToContractWrapper.get(templateId);
         Set<Id> selectedDoctorIdToContractWrapperKeySet = selectedDoctorIdToContractWrapper.keySet();
-        for(Id id:selectedDoctorIdToContractWrapperKeySet){
+        for (Id id : selectedDoctorIdToContractWrapperKeySet) {
             selectedDoctorIdToContractWrapper.get(id).contract.Start_Date__c = tempContract.contract.Start_Date__c;
             selectedDoctorIdToContractWrapper.get(id).contract.End_Date__c = tempContract.contract.End_Date__c;
         }
-         isReadyToHire = true;
+        isReadyToHire = true;
         for (Id key : selectedDoctorIdToContractWrapperKeySet) {
             HD_ContractWrapper wrapedContract = selectedDoctorIdToContractWrapper.get(key);
             if (wrapedContract.contract.Start_Date__c == null) {
                 isReadyToHire = false;
             }
-
         }
     }
-    public void cancelDialog() {
 
+    public PageReference cancelDialog() {
+        PageReference tempPage = ApexPages.currentPage();
+        Id id = tempPage.getParameters().get('id');
+        tempPage.getParameters().clear();
+        tempPage.getParameters().put('id', id);
+        tempPage.setRedirect(true);
+        return tempPage;
     }
+
     public PageReference hire() {
+        List<Contract__c> contractsToInsert = new List<Contract__c>();
 
-
-     //   if (isReadyToHire) {
-
-         //   Map<Id,Contract__c> contractsIdToContractToSave = new Map<Id, Contract__c>();
-            List<Contract__c> contractsToInsert = new List<Contract__c>();
-
-            Set<Id> selectedDoctorsKeySet = selectedDoctorIdToContractWrapper.keySet();
+        Set<Id> selectedDoctorsKeySet = selectedDoctorIdToContractWrapper.keySet();
+        for (Id id : selectedDoctorsKeySet) {
+            Contract__c contract = selectedDoctorIdToContractWrapper.get(id).contract;
+            if (!(selectedDoctorIdToContractWrapper.get(id).status == 'success')) {
+                contractsToInsert.add(contract);
+            }
+        }
+        List<Database.SaveResult> saveResults;
+        saveResults = Database.insert(contractsToInsert, false);
+        Integer count = 0;
+        for (Database.SaveResult result : saveResults) {
+            System.debug('result.errors: ' + result.errors);
+        }
+        if (selectedDoctorsKeySet.size() > 0 && saveResults.size() > 0) {
             for (Id id : selectedDoctorsKeySet) {
-                Contract__c contract = selectedDoctorIdToContractWrapper.get(id).contract;
-                if (!(selectedDoctorIdToContractWrapper.get(id).status == 'success')) {
-                    contractsToInsert.add(contract);
-                   // contractsIdToContractToSave.put(id,contract);
-                }
-            }
-
-            List<Database.SaveResult> saveResults;
-            saveResults = Database.insert(contractsToInsert, false);
-            Integer count = 0;
-            for(Database.SaveResult result : saveResults){
-                System.debug('result.errors: ' + result.errors);
-            }
+                if (selectedDoctorIdToContractWrapper.get(id).status != 'Success') {
 
 
-            if(selectedDoctorsKeySet.size() > 0 && saveResults.size() > 0) {
-                for (Id id : selectedDoctorsKeySet) {
-                    if (selectedDoctorIdToContractWrapper.get(id).status != 'Success') {
+                    System.debug('saveResults: ' + saveResults);
+                    if (saveResults.get(count).success) {
+                        selectedDoctorIdToContractWrapper.get(id).status = 'Success';
+                        successContract.put(id,true);
 
-
-                        System.debug('saveResults: ' + saveResults);
-                        if (saveResults.get(count).success) {
-                            selectedDoctorIdToContractWrapper.get(id).status = 'Success';
-                        } else {
-                            selectedDoctorIdToContractWrapper.get(id).status = saveResults.get(count).errors.get(0).message;
-                        }
-                        count++;
+                    } else {
+                        selectedDoctorIdToContractWrapper.get(id).status = saveResults.get(count).errors.get(0).message;
                     }
+                    count++;
                 }
             }
-
+        }
         Integer errorCounter = 0 ;
-        if(saveResults.size()>0) {
-
+        if (saveResults.size() > 0) {
             for (Database.SaveResult result : saveResults) {
                 if (result.getErrors().size() > 0) {
                     errorCounter++;
                 }
             }
         }
-
-        if(errorCounter == 0){
-
+        if (errorCounter == 0) {
             PageReference tempPage = ApexPages.currentPage();
+            Id id = tempPage.getParameters().get('id');
+            tempPage.getParameters().clear();
+            tempPage.getParameters().put('id', id);
             tempPage.setRedirect(true);
             return tempPage;
-
         }
-        return  null;
+        return null;
     }
-
 
     public void editContract() {
         System.debug('isReadyToHire edit start');
@@ -218,7 +215,6 @@ public with sharing class HD_HospitalViewController {
             if (wrapedContract.contract.Start_Date__c == null) {
                 isReadyToHire = false;
             }
-
         }
     }
 
@@ -236,9 +232,8 @@ public with sharing class HD_HospitalViewController {
         }
         currentEditedId = null;
         isReadyToHire = null;
-
-
     }
+
     public void saveEditedContract() {
 
         System.debug('isReadyToHire before save');
@@ -272,13 +267,11 @@ public with sharing class HD_HospitalViewController {
             if (wrapedContract.contract.Start_Date__c == null) {
                 isReadyToHire = false;
             }
-
         }
-
     }
 
     public void debug() {
-        delete [SELECT Id FROM Contract__c WHERE Hospital__c =: currentHospital.Id];
+        delete [SELECT Id FROM Contract__c WHERE Hospital__c = :currentHospital.Id];
 
     }
 

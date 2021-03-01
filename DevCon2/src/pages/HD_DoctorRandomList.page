@@ -1,0 +1,26 @@
+<!--
+ - Created by BRITENET on 01.03.2021.
+ -->
+
+<apex:page id="HD_DoctorRandomList" standardController="Doctor__c" extensions="HD_DoctorRandomListController">
+    <apex:pageBlock >
+    <apex:pageBlockSection>
+        <apex:pageBlockTable value="{!randomDoctors}" var="doc">
+            <apex:column headerValue="ID">
+                <apex:outputField value="{!doc.Id}"/>
+            </apex:column>
+            <apex:column headerValue="FullName">
+                <apex:outputField value="{!doc.First_Name__c}"/>
+                <apex:outputField value="{!doc.Name}"/>
+            </apex:column>
+            <apex:column headerValue="Email">
+                <apex:outputField value="{!doc.Email__c}"/>
+            </apex:column>
+            <apex:column headerValue="Country">
+                <apex:outputField value="{!doc.Country__c}"/>
+            </apex:column>
+
+        </apex:pageBlockTable>
+    </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:page>

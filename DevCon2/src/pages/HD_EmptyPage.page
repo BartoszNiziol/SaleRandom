@@ -1,0 +1,10 @@
+<!--
+ - Created by BRITENET on 01.03.2021.
+ -->
+
+<apex:page id="HD_EmptyPage" standardController="Doctor__c" extensions="HD_DoctorRandomListController">
+    <apex:pageBlock >
+        {!doctor.Id};
+xxxxxxxxxxxxxxxxxxxxx
+    </apex:pageBlock>
+</apex:page>
