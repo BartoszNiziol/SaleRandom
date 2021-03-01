@@ -108,6 +108,9 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
         if(oldContract.Id.equals(newContract.Id)){
             return false;
         }
+        if(newContract.End_Date__c == null && oldContract.End_Date__c == null){
+            return true;
+        }
         if (oldContract.End_Date__c == null) {
             if (oldContract.Start_Date__c <= newContract.End_Date__c || oldContract.Start_Date__c <= newContract.Start_Date__c) {
                 return true;
