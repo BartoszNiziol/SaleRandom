@@ -64,7 +64,7 @@ public with sharing class HD_HospitalViewController {
         HD_ContractWrapper contractWrapper = new HD_ContractWrapper(freshContract);
         selectedDoctorIdToContractWrapper.put(selectedDoctorId, contractWrapper);
         isReadyToHire = false;
-        setHireReady ();
+        setHireButtonReady ();
     }
 
     public void remove() {
@@ -84,7 +84,7 @@ public with sharing class HD_HospitalViewController {
         }
         selectedDoctorIdToContractWrapper.remove(doctorRemoveId);
         isReadyToHire = true;
-        setHireReady ();
+        setHireButtonReady ();
     }
 
     public void clear() {
@@ -103,7 +103,7 @@ public with sharing class HD_HospitalViewController {
             selectedDoctorIdToContractWrapper.get(id).contract.End_Date__c = tempContract.contract.End_Date__c;
         }
         isReadyToHire = true;
-        setHireReady ();
+        setHireButtonReady ();
     }
 
     public PageReference cancelDialog() {
@@ -160,13 +160,12 @@ public with sharing class HD_HospitalViewController {
     }
 
     public void editContract() {
-
         selectedDoctorIdToContractWrapper.get(currentEditedId).isOpenForEdit = true;
         isReadyToHire = false;
         selectedDoctorIdToContractWrapper.get(currentEditedId).status = 'In Edit';
         inputFormContract.End_Date__c = selectedDoctorIdToContractWrapper.get(currentEditedId).contract.End_Date__c;
         inputFormContract.Start_Date__c = selectedDoctorIdToContractWrapper.get(currentEditedId).contract.Start_Date__c;
-        setHireReady ();
+        setHireButtonReady ();
     }
 
     public void clearDialog() {
@@ -202,10 +201,10 @@ public with sharing class HD_HospitalViewController {
         } catch (DateException e) {
             ApexPages.addMessages(e);
         }
-        setHireReady ();
+        setHireButtonReady ();
     }
 
-    private void setHireReady (){
+    private void setHireButtonReady(){
         Set<Id> selectedDoctorIdToContractWrapperKeySet = selectedDoctorIdToContractWrapper.keySet();
         for (Id key : selectedDoctorIdToContractWrapperKeySet) {
             HD_ContractWrapper wrapedContract = selectedDoctorIdToContractWrapper.get(key);

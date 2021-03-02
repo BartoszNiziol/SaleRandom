@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Before InputDoctorList To Map">
+    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Suces resolver half implemented">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorImportCSVController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorImportCSVController.cls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorImportToCSVWrapper.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorImportToCSVWrapper.cls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/HD_HospitalViewController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_HospitalViewController.cls" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/HD_DoctorImportCSV.page" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/HD_DoctorImportCSV.page" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/HD_HospitalView.page" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/HD_HospitalView.page" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,11 +62,11 @@
                       <entry key="APEXCLASS:DATEEXCEPTION" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMANAGER" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMISSIONSPECIALIST" value="1614524893000" />
-                      <entry key="APEXCLASS:HD_DOCTORIMPORTCSVCONTROLLER" value="1614683641580" />
+                      <entry key="APEXCLASS:HD_DOCTORIMPORTCSVCONTROLLER" value="1614705895487" />
                       <entry key="APEXCLASS:HD_DOCTORIMPORTTOCSVWRAPPER" value="1614682998149" />
                       <entry key="APEXCLASS:HD_DOCTORRANDOMLISTCONTROLLER" value="1614592459065" />
-                      <entry key="APEXCLASS:HD_DOCTORSELECTWRAPPER" value="1614605480589" />
-                      <entry key="APEXCLASS:HD_HOSPITALVIEWCONTROLLER" value="1614619601610" />
+                      <entry key="APEXCLASS:HD_DOCTORSELECTWRAPPER" value="1614687563165" />
+                      <entry key="APEXCLASS:HD_HOSPITALVIEWCONTROLLER" value="1614687554598" />
                       <entry key="APEXCLASS:HD_PLYGROUNDCONTROLLER" value="1614524893000" />
                       <entry key="APEXCLASS:INET" value="1614524893000" />
                       <entry key="APEXCLASS:INNSERTING" value="1614524893000" />
@@ -91,11 +92,11 @@
                       <entry key="APEXPAGE:CREATECONTACT" value="1614524894000" />
                       <entry key="APEXPAGE:DISPLAYIMAGE" value="1614524894000" />
                       <entry key="APEXPAGE:DISPLAYUSERINFO" value="1614524894000" />
-                      <entry key="APEXPAGE:HD_DOCTORIMPORTCSV" value="1614679219873" />
+                      <entry key="APEXPAGE:HD_DOCTORIMPORTCSV" value="1614705575679" />
                       <entry key="APEXPAGE:HD_DOCTORRANDOMLIST" value="1614617532623" />
                       <entry key="APEXPAGE:HD_DOCTORVIEW" value="1614672284383" />
                       <entry key="APEXPAGE:HD_EMPTYPAGE" value="1614592350455" />
-                      <entry key="APEXPAGE:HD_HOSPITALVIEW" value="1614622535605" />
+                      <entry key="APEXPAGE:HD_HOSPITALVIEW" value="1614687558293" />
                       <entry key="APEXPAGE:HELLOWORLD" value="1614524894000" />
                       <entry key="APEXPAGE:NEWCASELIST" value="1614524894000" />
                       <entry key="APEXPAGE:OPPVIEW" value="1614524894000" />
@@ -209,6 +210,11 @@
             </entry>
           </map>
         </option>
+        <option name="logAnalyzerSettings">
+          <LogAnalyzerSettings>
+            <option name="splitterProportion" value="0.35231316" />
+          </LogAnalyzerSettings>
+        </option>
         <option name="retrieveAndMergeDefault" value="false" />
         <option name="soqlQuerySettings">
           <SoqlQuerySettings>
@@ -296,7 +302,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614682407616</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Suces resolver half implemented">
+      <created>1614684490135</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1614684490135</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -318,6 +331,7 @@
     <MESSAGE value="trigger to fix" />
     <MESSAGE value="dobra noc" />
     <MESSAGE value="Before InputDoctorList To Map" />
-    <option name="LAST_COMMIT_MESSAGE" value="Before InputDoctorList To Map" />
+    <MESSAGE value="Suces resolver half implemented" />
+    <option name="LAST_COMMIT_MESSAGE" value="Suces resolver half implemented" />
   </component>
 </project>
