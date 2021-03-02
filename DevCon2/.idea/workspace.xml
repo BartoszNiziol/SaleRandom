@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="dobra noc">
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_DoctorImportToCSVWrapper.cls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_DoctorImportToCSVWrapper.cls-meta.xml" afterDir="false" />
+    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Before InputDoctorList To Map">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorImportCSVController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorImportCSVController.cls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorImportToCSVWrapper.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorImportToCSVWrapper.cls" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/HD_DoctorImportCSV.page" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/HD_DoctorImportCSV.page" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -62,8 +61,8 @@
                       <entry key="APEXCLASS:DATEEXCEPTION" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMANAGER" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMISSIONSPECIALIST" value="1614524893000" />
-                      <entry key="APEXCLASS:HD_DOCTORIMPORTCSVCONTROLLER" value="1614680890138" />
-                      <entry key="APEXCLASS:HD_DOCTORIMPORTTOCSVWRAPPER" value="1614672016115" />
+                      <entry key="APEXCLASS:HD_DOCTORIMPORTCSVCONTROLLER" value="1614683641580" />
+                      <entry key="APEXCLASS:HD_DOCTORIMPORTTOCSVWRAPPER" value="1614682998149" />
                       <entry key="APEXCLASS:HD_DOCTORRANDOMLISTCONTROLLER" value="1614592459065" />
                       <entry key="APEXCLASS:HD_DOCTORSELECTWRAPPER" value="1614605480589" />
                       <entry key="APEXCLASS:HD_HOSPITALVIEWCONTROLLER" value="1614619601610" />
@@ -290,7 +289,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614632279426</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Before InputDoctorList To Map">
+      <created>1614682407616</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1614682407616</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -311,6 +317,7 @@
     <MESSAGE value="before disable save" />
     <MESSAGE value="trigger to fix" />
     <MESSAGE value="dobra noc" />
-    <option name="LAST_COMMIT_MESSAGE" value="dobra noc" />
+    <MESSAGE value="Before InputDoctorList To Map" />
+    <option name="LAST_COMMIT_MESSAGE" value="Before InputDoctorList To Map" />
   </component>
 </project>

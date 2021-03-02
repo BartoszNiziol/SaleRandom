@@ -5,18 +5,18 @@
 public with sharing class HD_DoctorImportCSVController {
     public Doctor__c currentDoctor { get; set; }
     public Blob inputCSV { get; set; }
-    public List <HD_DoctorImportToCSVWrapper> inputDoctorsList { get; set; }
+    public Map <Integer,HD_DoctorImportToCSVWrapper> indexToInputDoctorMap { get; set; }
     public Boolean isDoctorsToImportSectionShowed { get; set; }
     public Boolean isImportPossible{get;set;}
 
     public HD_DoctorImportCSVController(ApexPages.StandardController standardController) {
-        inputDoctorsList = new List<HD_DoctorImportToCSVWrapper>();
+        indexToInputDoctorMap = new Map<Integer, HD_DoctorImportToCSVWrapper>();
         isDoctorsToImportSectionShowed = false;
     }
 
     public void takeInputCSV() {
-
-        inputDoctorsList = new List<HD_DoctorImportToCSVWrapper>();
+            Integer indexCounter = 0;
+        indexToInputDoctorMap = new Map<Integer, HD_DoctorImportToCSVWrapper>();
         isDoctorsToImportSectionShowed = true;
         try {
             String csvAsString;
@@ -33,7 +33,8 @@ public with sharing class HD_DoctorImportCSVController {
                 HD_DoctorImportToCSVWrapper doctorWrapper = new HD_DoctorImportToCSVWrapper(doctor);
                 doctorWrapper.status = 'Waiting';
                 doctorWrapper.isSelected = false;
-                inputDoctorsList.add(doctorWrapper);
+                indexToInputDoctorMap.put(indexCounter,doctorWrapper);
+                indexCounter ++;
             }
         } catch (Exception e) {
             ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.severity.ERROR, 'An error has occured while importin data Please make sure input csv file is correct');
@@ -42,31 +43,33 @@ public with sharing class HD_DoctorImportCSVController {
     }
 
     public void selectAll() {
-        for(HD_DoctorImportToCSVWrapper wrapper :inputDoctorsList){
-               wrapper.isSelected = true;
+        for(Integer id : indexToInputDoctorMap.keySet()){
+            indexToInputDoctorMap.get(id).isSelected = true;
+
         }
     }
     public void selectReverse() {
-        for(HD_DoctorImportToCSVWrapper wrapper :inputDoctorsList){
-            if(wrapper.isSelected == true){
-                wrapper.isSelected = false;
+        for(Integer id : indexToInputDoctorMap.keySet()){
+            if(indexToInputDoctorMap.get(id).isSelected == true){
+                indexToInputDoctorMap.get(id).isSelected = false;
             }else {
-                wrapper.isSelected = true;
+                indexToInputDoctorMap.get(id).isSelected = true;
             }
 
         }
 
     }
     public void selectNone() {
-        for(HD_DoctorImportToCSVWrapper wrapper :inputDoctorsList){
-            wrapper.isSelected = false;
+        for(Integer id : indexToInputDoctorMap.keySet()){
+            indexToInputDoctorMap.get(id).isSelected = false;
         }
     }
     public void importDoctors() {
         List<Doctor__c> doctorsToInsert = new List<Doctor__c>();
-        for(HD_DoctorImportToCSVWrapper wrapper: inputDoctorsList){
-            if (wrapper.status !=  'success' && wrapper.isSelected == true) {
-                doctorsToInsert.add(wrapper.doctor);
+        for(Integer id : indexToInputDoctorMap.keySet()){
+            if (indexToInputDoctorMap.get(id).status !=  'success' && indexToInputDoctorMap.get(id).isSelected == true) {
+                doctorsToInsert.add(indexToInputDoctorMap.get(id).doctor);
+                indexToInputDoctorMap.get(id).selectedForImport = true;
             }
         }
 
@@ -76,25 +79,36 @@ public with sharing class HD_DoctorImportCSVController {
         System.debug('saveResults: ' + saveResults);
         Database.rollback(sp);
 
-        Integer index = 0;
-        if (saveResults.size() > 0) {
-            for (Database.SaveResult result: saveResults){
-                if (result.success) {
-
+       Integer indexResult = 0;
+        for(Integer id: indexToInputDoctorMap.keySet()){
+            if (indexToInputDoctorMap.get(id).selectedForImport == true) {
+                if(saveResults.get(indexResult).success){
+                    indexToInputDoctorMap.get(id).status ='success';
                 }
-                index ++;
-            }
-        }
-    }
-
-    public void isNoneSelectedCheck(){
-        isImportPossible = false;
-        for(HD_DoctorImportToCSVWrapper wrapper :inputDoctorsList){
-            if(wrapper.isSelected == true){
-                isImportPossible = true;
+                    indexResult++;
             }
 
+
         }
+
+
     }
+    private void deactivateSelectedForImport(){
+        for(Integer id : indexToInputDoctorMap.keySet()){
+                indexToInputDoctorMap.get(id).selectedForImport = false;
+            }
+        }
+
+
+
+//    public void isNoneSelectedCheck(){
+//        isImportPossible = false;
+//        for(HD_DoctorImportToCSVWrapper wrapper :inputDoctorsList){
+//            if(wrapper.isSelected == true){
+//                isImportPossible = true;
+//            }
+//
+//        }
+//    }
 
 }

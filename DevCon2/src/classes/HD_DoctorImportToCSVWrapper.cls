@@ -8,7 +8,7 @@ public with sharing class HD_DoctorImportToCSVWrapper {
     public Boolean isSelected {get;set;}
     public String status {get;set;}
     public Integer index {get;set;}
-
+    public Boolean selectedForImport{get;set;}
     public HD_DoctorImportToCSVWrapper (Doctor__c doctor){
         this.doctor = doctor;
     }
