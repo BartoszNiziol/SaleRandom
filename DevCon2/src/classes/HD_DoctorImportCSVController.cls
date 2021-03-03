@@ -14,24 +14,25 @@ public with sharing class HD_DoctorImportCSVController {
     }
 
     public void takeInputCSV() {
+        isDoctorsToImportSectionShowed = false;
             Integer indexCounter = 0;
         indexToInputDoctorMap = new Map<Integer, HD_DoctorImportToCSVWrapper>();
-        isDoctorsToImportSectionShowed = true;
+
         try {
+
             List<Doctor__c> doctorsToWrap;
             String csvAsString;
             List<String> csvFileLines;
             csvAsString = inputCSV.toString();
             csvFileLines = csvAsString.split('\r\n');
 
-            if(csvFileLines.get(1).startsWith('\'')) {
-                doctorsToWrap  =  parseWithSingleQuotes(csvFileLines);
-            }else if(csvFileLines.get(1).startsWith('\"')) {
-                 doctorsToWrap  =  parseWithDoubleQuotes(csvFileLines);
+            if(!((csvFileLines[0].trim() == Label.CSV_title_with_singleQuotes)|
+            (csvFileLines[0].trim() == Label.CSV_title_with_doubleQuotes)|
+            (csvFileLines[0].trim() == Label.CSV_title_without_quotes))) {
+                throw new DateException('');
             }
-            else {
-                 doctorsToWrap  =  parseWithoutQuotes(csvFileLines);
-            }
+            doctorsToWrap = parseWithDifferentQuotes(csvFileLines);
+
             for (Doctor__c doctor : doctorsToWrap) {
                 HD_DoctorImportToCSVWrapper doctorWrapper = new HD_DoctorImportToCSVWrapper(doctor);
                 doctorWrapper.status = Label.Waiting_Label;
@@ -39,9 +40,8 @@ public with sharing class HD_DoctorImportCSVController {
                 indexToInputDoctorMap.put(indexCounter, doctorWrapper);
                 indexCounter++;
             }
-        }
-
-    catch (Exception e) {
+            isDoctorsToImportSectionShowed = true;
+        } catch (Exception e) {
             ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.Severity.ERROR, Label.CSV_Input_Error_Label);
             ApexPages.addMessage(errorMessage);
         }
@@ -109,45 +109,38 @@ public with sharing class HD_DoctorImportCSVController {
        return str;
     }
 
-    private List<Doctor__c> parseWithoutQuotes (List<String> csvFileLines){
-         List<Doctor__c> doctors = new List<Doctor__c>();
-
-        for (Integer i = 1; i < csvFileLines.size(); i++) {
-            Doctor__c doctor = new Doctor__c();
-            String[] csvRecordData = csvFileLines[i].split(',');
-            doctor.First_Name__c = removeSingleQuotes(csvRecordData[0]) ;
-            doctor.Name = removeSingleQuotes(csvRecordData[1]);
-            doctor.Email__c = removeSingleQuotes(csvRecordData[2]);
-            doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[3]));
-            doctors.add(doctor);
-        }
-        return doctors;
-    }
-    private List<Doctor__c> parseWithSingleQuotes (List<String> csvFileLines){
+    private List<Doctor__c> parseWithDifferentQuotes (List<String> csvFileLines){
         List<Doctor__c> doctors = new List<Doctor__c>();
-
+        Integer count = 0;
         for (Integer i = 1; i < csvFileLines.size(); i++) {
+            System.debug('count: ' + count);
             Doctor__c doctor = new Doctor__c();
-            String[] csvRecordData = csvFileLines[i].split('\'');
-            doctor.First_Name__c = removeSingleQuotes(csvRecordData[1]) ;
-            doctor.Name = removeSingleQuotes(csvRecordData[3]);
-            doctor.Email__c = removeSingleQuotes(csvRecordData[5]);
-            doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[7]));
-            doctors.add(doctor);
-        }
-        return doctors;
-    }
-    private List<Doctor__c> parseWithDoubleQuotes (List<String> csvFileLines){
-        List<Doctor__c> doctors = new List<Doctor__c>();
+            if (csvFileLines.get(i).startsWith('\"')) {
+                String[] csvRecordData = csvFileLines[i].split('\"');
+                doctor.First_Name__c = removeSingleQuotes(csvRecordData[1]) ;
+                doctor.Name = removeSingleQuotes(csvRecordData[3]);
+                doctor.Email__c = removeSingleQuotes(csvRecordData[5]);
+                doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[7]));
+                doctors.add(doctor);
+            }
+            else if(csvFileLines.get(i).startsWith('\'')) {
+                System.debug('weszlo ?');
+                String[] csvRecordData = csvFileLines[i].split('\'');
+                doctor.First_Name__c = removeSingleQuotes(csvRecordData[1]) ;
+                doctor.Name = removeSingleQuotes(csvRecordData[3]);
+                doctor.Email__c = removeSingleQuotes(csvRecordData[5]);
 
-        for (Integer i = 1; i < csvFileLines.size(); i++) {
-            Doctor__c doctor = new Doctor__c();
-            String[] csvRecordData = csvFileLines[i].split('\"');
-            doctor.First_Name__c = removeSingleQuotes(csvRecordData[1]) ;
-            doctor.Name = removeSingleQuotes(csvRecordData[3]);
-            doctor.Email__c = removeSingleQuotes(csvRecordData[5]);
-            doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[7]));
-            doctors.add(doctor);
+                doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[7]));
+                doctors.add(doctor);
+            }else {
+                String[] csvRecordData = csvFileLines[i].split(',');
+                doctor.First_Name__c = removeSingleQuotes(csvRecordData[0]) ;
+                doctor.Name = removeSingleQuotes(csvRecordData[1]);
+                doctor.Email__c = removeSingleQuotes(csvRecordData[2]);
+                doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[3]));
+                doctors.add(doctor);
+            }
+            count++;
         }
         return doctors;
     }

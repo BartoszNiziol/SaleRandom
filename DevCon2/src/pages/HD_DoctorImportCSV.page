@@ -7,7 +7,7 @@
         <apex:form >
         <apex:pageBlockSection title="{!$Label.CSV_File_Label}" columns="2">
             <apex:pageBlockSectionItem>
-                <apex:inputFile value="{!inputCSV}" accept=".csv">
+                <apex:inputFile value="{!inputCSV}" accept=".csv" id="inputFileTag">
                 </apex:inputFile>
                <apex:commandButton value="{!$Label.Process_Label}" action="{!takeInputCSV}">
                </apex:commandButton>

@@ -49,6 +49,7 @@ public with sharing class HD_HospitalViewController {
     }
 
     public void selectDoctor() {
+
         for (HD_DoctorSelectWrapper doctor : foundWrappedDoctors) {
             if (doctor.doctor.Id == selectedDoctorId) {
                 doctor.isSelected = true;
@@ -65,6 +66,7 @@ public with sharing class HD_HospitalViewController {
         selectedDoctorIdToContractWrapper.put(selectedDoctorId, contractWrapper);
         isReadyToHire = false;
         setHireButtonReady ();
+
     }
 
     public void remove() {
