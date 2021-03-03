@@ -66,7 +66,6 @@ public with sharing class HD_HospitalViewController {
         selectedDoctorIdToContractWrapper.put(selectedDoctorId, contractWrapper);
         isReadyToHire = false;
         setHireButtonReady ();
-
     }
 
     public void remove() {
@@ -189,15 +188,15 @@ public with sharing class HD_HospitalViewController {
     public void saveEditedContract() {
         try {
             if (inputFormContract.End_Date__c < System.today()) {
-                throw new DateException('End Date in past');
+                throw new DateException(Label.End_Date_In_Past_Error);
             }
             if (inputFormContract.Start_Date__c > inputFormContract.End_Date__c) {
-                throw new DateException('End Date Before Start Date');
+                throw new DateException(Label.End_Date_Before_Start_Date);
             }
             selectedDoctorIdToContractWrapper.get(currentEditedId).contract.Start_Date__c = inputFormContract.Start_Date__c;
             selectedDoctorIdToContractWrapper.get(currentEditedId).contract.End_Date__c = inputFormContract.End_Date__c;
             selectedDoctorIdToContractWrapper.get(currentEditedId).isOpenForEdit = false;
-            selectedDoctorIdToContractWrapper.get(currentEditedId).status = 'Waiting';
+            selectedDoctorIdToContractWrapper.get(currentEditedId).status = Label.Waiting_Label;
             isReadyToHire = true;
             currentEditedId = null;
             inputFormContract = new Contract__c();

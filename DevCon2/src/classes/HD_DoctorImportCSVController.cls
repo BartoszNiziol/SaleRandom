@@ -19,7 +19,6 @@ public with sharing class HD_DoctorImportCSVController {
         indexToInputDoctorMap = new Map<Integer, HD_DoctorImportToCSVWrapper>();
 
         try {
-
             List<Doctor__c> doctorsToWrap;
             String csvAsString;
             List<String> csvFileLines;
@@ -32,7 +31,6 @@ public with sharing class HD_DoctorImportCSVController {
                 throw new DateException('');
             }
             doctorsToWrap = parseWithDifferentQuotes(csvFileLines);
-
             for (Doctor__c doctor : doctorsToWrap) {
                 HD_DoctorImportToCSVWrapper doctorWrapper = new HD_DoctorImportToCSVWrapper(doctor);
                 doctorWrapper.status = Label.Waiting_Label;
