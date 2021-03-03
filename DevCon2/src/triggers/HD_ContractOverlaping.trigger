@@ -39,7 +39,7 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
         }
     }
 
-    String errorMessage = 'Contract that you trying to create is overlapping with :';
+    String errorMessage = Label.Overlapping_Error;
     for (Contract__c contractsToAdd : Trigger.new) {
 
         String doctorHospitalToAddIds = String.valueOf(contractsToAdd.Doctor__c) + String.valueOf(contractsToAdd.Hospital__c);
@@ -50,7 +50,7 @@ trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
         if (contactsWithSameDoctorANDHospitalASContractsToAdd != null) {
 
             for (Contract__c oldContract : contactsWithSameDoctorANDHospitalASContractsToAdd) {
-                errorMessage = 'Contract that you trying to create is overlapping with :';
+                errorMessage = Label.Overlapping_Error;
                 if (isOverlapped(oldContract, contractsToAdd)) {
                     if(oldContract.End_Date__c != null) {
                         Date startDate = oldContract.Start_Date__c;

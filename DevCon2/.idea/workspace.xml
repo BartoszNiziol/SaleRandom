@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Suces resolver half implemented">
+    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Version 1.0">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorImportCSVController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorImportCSVController.cls" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/classes/HD_HospitalViewController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_HospitalViewController.cls" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/HD_DoctorImportCSV.page" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/HD_DoctorImportCSV.page" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/HD_HospitalView.page" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/HD_HospitalView.page" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/triggers/HD_ContractOverlaping.trigger" beforeDir="false" afterPath="$PROJECT_DIR$/src/triggers/HD_ContractOverlaping.trigger" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,11 +62,11 @@
                       <entry key="APEXCLASS:DATEEXCEPTION" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMANAGER" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMISSIONSPECIALIST" value="1614524893000" />
-                      <entry key="APEXCLASS:HD_DOCTORIMPORTCSVCONTROLLER" value="1614705895487" />
+                      <entry key="APEXCLASS:HD_DOCTORIMPORTCSVCONTROLLER" value="1614756767015" />
                       <entry key="APEXCLASS:HD_DOCTORIMPORTTOCSVWRAPPER" value="1614682998149" />
                       <entry key="APEXCLASS:HD_DOCTORRANDOMLISTCONTROLLER" value="1614592459065" />
                       <entry key="APEXCLASS:HD_DOCTORSELECTWRAPPER" value="1614687563165" />
-                      <entry key="APEXCLASS:HD_HOSPITALVIEWCONTROLLER" value="1614687554598" />
+                      <entry key="APEXCLASS:HD_HOSPITALVIEWCONTROLLER" value="1614754823577" />
                       <entry key="APEXCLASS:HD_PLYGROUNDCONTROLLER" value="1614524893000" />
                       <entry key="APEXCLASS:INET" value="1614524893000" />
                       <entry key="APEXCLASS:INNSERTING" value="1614524893000" />
@@ -92,7 +92,7 @@
                       <entry key="APEXPAGE:CREATECONTACT" value="1614524894000" />
                       <entry key="APEXPAGE:DISPLAYIMAGE" value="1614524894000" />
                       <entry key="APEXPAGE:DISPLAYUSERINFO" value="1614524894000" />
-                      <entry key="APEXPAGE:HD_DOCTORIMPORTCSV" value="1614705575679" />
+                      <entry key="APEXPAGE:HD_DOCTORIMPORTCSV" value="1614757524077" />
                       <entry key="APEXPAGE:HD_DOCTORRANDOMLIST" value="1614617532623" />
                       <entry key="APEXPAGE:HD_DOCTORVIEW" value="1614672284383" />
                       <entry key="APEXPAGE:HD_EMPTYPAGE" value="1614592350455" />
@@ -112,7 +112,7 @@
                       <entry key="APEXTRIGGER:DMLTRIGGERBULK" value="1614524894000" />
                       <entry key="APEXTRIGGER:DMLTRIGGERNOTBULK" value="1614524894000" />
                       <entry key="APEXTRIGGER:EXAMPLETRIGGER" value="1614524894000" />
-                      <entry key="APEXTRIGGER:HD_CONTRACTOVERLAPING" value="1614619601897" />
+                      <entry key="APEXTRIGGER:HD_CONTRACTOVERLAPING" value="1614756599682" />
                       <entry key="APEXTRIGGER:HELLOWORLDTRIGGER" value="1614524894000" />
                       <entry key="APEXTRIGGER:RESTRICTCONTACTBYNAME" value="1614524894000" />
                       <entry key="APEXTRIGGER:SSQLTRIGGERBULK" value="1614524894000" />
@@ -309,7 +309,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614684490135</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Version 1.0">
+      <created>1614706939844</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1614706939844</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -332,6 +339,7 @@
     <MESSAGE value="dobra noc" />
     <MESSAGE value="Before InputDoctorList To Map" />
     <MESSAGE value="Suces resolver half implemented" />
-    <option name="LAST_COMMIT_MESSAGE" value="Suces resolver half implemented" />
+    <MESSAGE value="Version 1.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="Version 1.0" />
   </component>
 </project>

@@ -145,6 +145,7 @@ public with sharing class HD_HospitalViewController {
             for (Database.SaveResult result : saveResults) {
                 if (result.getErrors().size() > 0) {
                     errorCounter++;
+                    break;
                 }
             }
         }

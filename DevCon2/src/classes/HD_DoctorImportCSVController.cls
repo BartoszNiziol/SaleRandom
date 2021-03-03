@@ -30,36 +30,14 @@ public with sharing class HD_DoctorImportCSVController {
                 doctor.Email__c = csvRecordData[2];
                 doctor.Birthday_Date__c = Date.parse(csvRecordData[3]);
                 HD_DoctorImportToCSVWrapper doctorWrapper = new HD_DoctorImportToCSVWrapper(doctor);
-                doctorWrapper.status = 'Waiting';
+                doctorWrapper.status = Label.Waiting_Label;
                 doctorWrapper.isSelected = false;
                 indexToInputDoctorMap.put(indexCounter,doctorWrapper);
                 indexCounter ++;
             }
         } catch (Exception e) {
-            ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'An error has occurred while importing data Please make sure that csv input file is correct');
+            ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.Severity.ERROR, Label.CSV_Input_Error_Label);
             ApexPages.addMessage(errorMessage);
-        }
-    }
-
-    public void selectAll() {
-        for(Integer id : indexToInputDoctorMap.keySet()){
-            indexToInputDoctorMap.get(id).isSelected = true;
-        }
-    }
-
-    public void selectReverse() {
-        for(Integer id : indexToInputDoctorMap.keySet()){
-            if(indexToInputDoctorMap.get(id).isSelected == true){
-                indexToInputDoctorMap.get(id).isSelected = false;
-            }else {
-                indexToInputDoctorMap.get(id).isSelected = true;
-            }
-        }
-    }
-
-    public void selectNone() {
-        for(Integer id : indexToInputDoctorMap.keySet()){
-            indexToInputDoctorMap.get(id).isSelected = false;
         }
     }
 
@@ -92,6 +70,28 @@ public with sharing class HD_DoctorImportCSVController {
                     indexResult++;
                 }
             }
+        }
+    }
+
+    public void selectAll() {
+        for(Integer id : indexToInputDoctorMap.keySet()){
+            indexToInputDoctorMap.get(id).isSelected = true;
+        }
+    }
+
+    public void selectReverse() {
+        for(Integer id : indexToInputDoctorMap.keySet()){
+            if(indexToInputDoctorMap.get(id).isSelected == true){
+                indexToInputDoctorMap.get(id).isSelected = false;
+            }else {
+                indexToInputDoctorMap.get(id).isSelected = true;
+            }
+        }
+    }
+
+    public void selectNone() {
+        for(Integer id : indexToInputDoctorMap.keySet()){
+            indexToInputDoctorMap.get(id).isSelected = false;
         }
     }
 }
