@@ -18,24 +18,30 @@ public with sharing class HD_DoctorImportCSVController {
         indexToInputDoctorMap = new Map<Integer, HD_DoctorImportToCSVWrapper>();
         isDoctorsToImportSectionShowed = true;
         try {
+            List<Doctor__c> doctorsToWrap;
             String csvAsString;
             List<String> csvFileLines;
             csvAsString = inputCSV.toString();
             csvFileLines = csvAsString.split('\r\n');
-            for (Integer i = 1; i < csvFileLines.size(); i++) {
-                Doctor__c doctor = new Doctor__c();
-                String[] csvRecordData = csvFileLines[i].split(',');
-                doctor.First_Name__c = csvRecordData[0].trim() ;
-                doctor.Name = csvRecordData[1];
-                doctor.Email__c = csvRecordData[2];
-                doctor.Birthday_Date__c = Date.parse(csvRecordData[3]);
+
+            if(csvFileLines.get(1).startsWith('\'')) {
+                doctorsToWrap  =  parseWithSingleQuotes(csvFileLines);
+            }else if(csvFileLines.get(1).startsWith('\"')) {
+                 doctorsToWrap  =  parseWithDoubleQuotes(csvFileLines);
+            }
+            else {
+                 doctorsToWrap  =  parseWithoutQuotes(csvFileLines);
+            }
+            for (Doctor__c doctor : doctorsToWrap) {
                 HD_DoctorImportToCSVWrapper doctorWrapper = new HD_DoctorImportToCSVWrapper(doctor);
                 doctorWrapper.status = Label.Waiting_Label;
                 doctorWrapper.isSelected = false;
-                indexToInputDoctorMap.put(indexCounter,doctorWrapper);
-                indexCounter ++;
+                indexToInputDoctorMap.put(indexCounter, doctorWrapper);
+                indexCounter++;
             }
-        } catch (Exception e) {
+        }
+
+    catch (Exception e) {
             ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.Severity.ERROR, Label.CSV_Input_Error_Label);
             ApexPages.addMessage(errorMessage);
         }
@@ -93,5 +99,56 @@ public with sharing class HD_DoctorImportCSVController {
         for(Integer id : indexToInputDoctorMap.keySet()){
             indexToInputDoctorMap.get(id).isSelected = false;
         }
+    }
+
+    private String removeSingleQuotes(String str){
+        if ((str.startsWith('\'') && str.endsWith('\'')) || str.startsWith('\"') && str.endsWith('\"') ) {
+                String clearedString = str.mid(1,str.length()-2);
+            return clearedString;
+        }
+       return str;
+    }
+
+    private List<Doctor__c> parseWithoutQuotes (List<String> csvFileLines){
+         List<Doctor__c> doctors = new List<Doctor__c>();
+
+        for (Integer i = 1; i < csvFileLines.size(); i++) {
+            Doctor__c doctor = new Doctor__c();
+            String[] csvRecordData = csvFileLines[i].split(',');
+            doctor.First_Name__c = removeSingleQuotes(csvRecordData[0]) ;
+            doctor.Name = removeSingleQuotes(csvRecordData[1]);
+            doctor.Email__c = removeSingleQuotes(csvRecordData[2]);
+            doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[3]));
+            doctors.add(doctor);
+        }
+        return doctors;
+    }
+    private List<Doctor__c> parseWithSingleQuotes (List<String> csvFileLines){
+        List<Doctor__c> doctors = new List<Doctor__c>();
+
+        for (Integer i = 1; i < csvFileLines.size(); i++) {
+            Doctor__c doctor = new Doctor__c();
+            String[] csvRecordData = csvFileLines[i].split('\'');
+            doctor.First_Name__c = removeSingleQuotes(csvRecordData[1]) ;
+            doctor.Name = removeSingleQuotes(csvRecordData[3]);
+            doctor.Email__c = removeSingleQuotes(csvRecordData[5]);
+            doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[7]));
+            doctors.add(doctor);
+        }
+        return doctors;
+    }
+    private List<Doctor__c> parseWithDoubleQuotes (List<String> csvFileLines){
+        List<Doctor__c> doctors = new List<Doctor__c>();
+
+        for (Integer i = 1; i < csvFileLines.size(); i++) {
+            Doctor__c doctor = new Doctor__c();
+            String[] csvRecordData = csvFileLines[i].split('\"');
+            doctor.First_Name__c = removeSingleQuotes(csvRecordData[1]) ;
+            doctor.Name = removeSingleQuotes(csvRecordData[3]);
+            doctor.Email__c = removeSingleQuotes(csvRecordData[5]);
+            doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[7]));
+            doctors.add(doctor);
+        }
+        return doctors;
     }
 }
