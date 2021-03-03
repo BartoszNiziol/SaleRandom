@@ -3,53 +3,59 @@
  -->
 
 <apex:page id="HD_DoctorImportCSV" standardController="Doctor__c" extensions="HD_DoctorImportCSVController">
-    <apex:pageBlock >
-        <apex:form >
-        <apex:pageBlockSection title="{!$Label.CSV_File_Label}" columns="2">
-            <apex:pageBlockSectionItem>
-                <apex:inputFile value="{!inputCSV}" accept=".csv" id="inputFileTag">
-                </apex:inputFile>
-               <apex:commandButton value="{!$Label.Process_Label}" action="{!takeInputCSV}">
-               </apex:commandButton>
-            </apex:pageBlockSectionItem>
-        </apex:pageBlockSection>
+    <apex:pageBlock>
+        <apex:form>
+            <apex:pageBlockSection title="{!$Label.CSV_File_Label}" columns="2">
+                <apex:pageBlockSectionItem>
+                    <apex:inputFile value="{!inputCSV}" accept=".csv" id="inputFileTag">
+                    </apex:inputFile>
+                    <apex:commandButton value="{!$Label.Process_Label}" action="{!takeInputCSV}">
+                    </apex:commandButton>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
         </apex:form>
-        <apex:form >
-        <apex:pageBlockSection title="{!$Label.Doctors_To_Import_Label}" rendered="{!isDoctorsToImportSectionShowed}" columns="1">
-            <apex:pageBlockTable value="{!indexToInputDoctorMap}" var="doc">
-            <apex:column headerValue="{!$Label.Is_Import_Label}" id="isImportColumn">
-                <apex:inputCheckbox value="{!indexToInputDoctorMap[doc].isSelected}"/>
-            </apex:column>
-                <apex:column  headerValue="{!$Label.First_Name}">
-                <apex:outputField value="{!indexToInputDoctorMap[doc].doctor.First_Name__c}"/>
-                </apex:column>
-                <apex:column  headerValue="{!$Label.Last_Name_Label}">
-                    <apex:outputField value="{!indexToInputDoctorMap[doc].doctor.Name}"/>
-                </apex:column>
-                <apex:column headerValue="{!$Label.Email_Label}">
-                    <apex:outputField value="{!indexToInputDoctorMap[doc].doctor.Email__c}"/>
-                </apex:column>
-                <apex:column headerValue="{!$Label.Birthdate_Label}">
-                    <apex:outputField value="{!indexToInputDoctorMap[doc].doctor.Birthday_Date__c}"/>
-                </apex:column>
-                <apex:column headerValue="{!$Label.Status_Label}">
-                    <apex:outputLink value="/{!indexToInputDoctorMap[doc].doctor.id}" disabled="{!IF(indexToInputDoctorMap[doc].status!='success',true,false)}">
-                    <apex:outputText value="{!indexToInputDoctorMap[doc].status}"/>
-                    </apex:outputLink>
-                </apex:column>
-            </apex:pageBlockTable>
-        </apex:pageBlockSection>
-        <div style="float:left;">
-                <apex:commandButton action="{!selectAll}" value="{!$Label.All_Label}" rendered="{!(isDoctorsToImportSectionShowed)}" reRender="isImportColumn"/>
-                <apex:commandButton action="{!selectReverse}" value="{!$Label.Reverse_Button}" rendered="{!(isDoctorsToImportSectionShowed)}" reRender="isImportColumn" />
-                <apex:commandButton action="{!selectNone}" value="{!$Label.None_Button}" rendered="{!(isDoctorsToImportSectionShowed)}" reRender="isImportColumn" />
-        </div>
+        <apex:form>
+            <apex:pageBlockSection title="{!$Label.Doctors_To_Import_Label}"
+                                   rendered="{!isDoctorsToImportSectionShowed}" columns="1">
+                <apex:pageBlockTable value="{!indexToInputDoctorMap}" var="doc">
+                    <apex:column headerValue="{!$Label.Is_Import_Label}" id="isImportColumn">
+                        <apex:inputCheckbox value="{!indexToInputDoctorMap[doc].isSelected}"/>
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.First_Name}">
+                        <apex:outputField value="{!indexToInputDoctorMap[doc].doctor.First_Name__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.Last_Name_Label}">
+                        <apex:outputField value="{!indexToInputDoctorMap[doc].doctor.Name}"/>
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.Email_Label}">
+                        <apex:outputField value="{!indexToInputDoctorMap[doc].doctor.Email__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.Birthdate_Label}">
+                        <apex:outputField value="{!indexToInputDoctorMap[doc].doctor.Birthday_Date__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.Status_Label}">
+                        <apex:outputLink value="/{!indexToInputDoctorMap[doc].doctor.id}" target="_blank"
+                                         disabled="{!IF(indexToInputDoctorMap[doc].status!='success',true,false)}">
+                            <apex:outputText value="{!indexToInputDoctorMap[doc].status}"/>
+                        </apex:outputLink>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <div style="float:left;">
+                <apex:commandButton action="{!selectAll}" value="{!$Label.All_Label}"
+                                    rendered="{!(isDoctorsToImportSectionShowed)}" reRender="isImportColumn"/>
+                <apex:commandButton action="{!selectReverse}" value="{!$Label.Reverse_Button}"
+                                    rendered="{!(isDoctorsToImportSectionShowed)}" reRender="isImportColumn"/>
+                <apex:commandButton action="{!selectNone}" value="{!$Label.None_Button}"
+                                    rendered="{!(isDoctorsToImportSectionShowed)}" reRender="isImportColumn"/>
+            </div>
             <div style="text-align:right;">
-                <apex:commandButton action="{!importDoctors}" value="{!$Label.Import_Button}" rendered="{!(isDoctorsToImportSectionShowed)}" />
-<!--                                    disabled="{!NOT(isImportPossible)}"-->
+                <apex:commandButton action="{!importDoctors}" value="{!$Label.Import_Button}"
+                                    rendered="{!(isDoctorsToImportSectionShowed)}"/>
+                <!--                                    disabled="{!NOT(isImportPossible)}"-->
 
             </div>
         </apex:form>
-        <apex:pageMessages />
+        <apex:pageMessages/>
     </apex:pageBlock>
 </apex:page>

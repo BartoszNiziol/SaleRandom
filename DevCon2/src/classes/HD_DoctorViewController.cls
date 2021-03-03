@@ -5,7 +5,7 @@
 public with sharing class HD_DoctorViewController {
     public HD_ContractHandler contractHandler;
     public HD_HospitalHandler hospitalSearchHelper;
-    public String croppedImageAsString{get;set;}
+    public String croppedImageAsString { get; set; }
     public List<Contract__c> availableContracts { get; set; }
     public List<Hospital__c> foundHospitals { get; set; }
     public Hospital__c inputFormHospital { get; set; }
@@ -15,9 +15,11 @@ public with sharing class HD_DoctorViewController {
     public Contract__c contract { get; set; }
     public String contractToDismissId { get; set; }
     public Contract__c newContract { get; set; }
-    public Boolean hireDialogAllowedToClose {get; set;}
-    public Id AttachmentParentId {get;set;}
-    public Blob cropperImage{get;set;}
+    public Boolean hireDialogAllowedToClose { get; set; }
+    public Id AttachmentParentId { get; set; }
+    public Blob cropperImage { get; set; }
+    public Boolean isLicenseEnabled { set; }
+    public Boolean isAddressSectionEnabled { set; }
     public Attachment doctorImageAttachment {
         get {
             if (doctorImageAttachment == null)
@@ -38,6 +40,14 @@ public with sharing class HD_DoctorViewController {
         newContract = new Contract__c();
         getContracts();
         hireDialogAllowedToClose = false;
+    }
+
+    public Boolean getIsLicenseEnabled() {
+        return HD_Utils.isSettingEnabled('DoctorLicenseEnabled', currentDoctor.Country__c);
+    }
+
+    public Boolean getIsAddressSectionEnabled(){
+        return HD_Utils.isSettingEnabledFOrCurrentUserCountry('DoctorAddressSectionEnabled');
     }
 
     public void dismiss() {
@@ -89,7 +99,7 @@ public with sharing class HD_DoctorViewController {
             clearDialog();
             hireDialogAllowedToClose = true;
             System.debug(hireDialogAllowedToClose);
-        }catch (Exception e){
+        } catch (Exception e) {
             hireDialogAllowedToClose = false;
             ApexPages.addMessages(e);
         }
@@ -98,57 +108,55 @@ public with sharing class HD_DoctorViewController {
         return null;
     }
 
-    public void uploadAttachment(){
+    public void uploadAttachment() {
 
         doctorImageAttachment.Body = cropperImage;
         doctorImageAttachment.OwnerId = UserInfo.getUserId();
         doctorImageAttachment.ParentId = AttachmentParentId;
-        doctorImageAttachment.Name ='ProfileImage';
-        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :AttachmentParentId];
+        doctorImageAttachment.Name = 'ProfileImage';
+        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId = :AttachmentParentId];
         delete images;
         insert doctorImageAttachment;
         doctorImageAttachment = new Attachment();
     }
 
-    public void deletePhoto(){
-        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :AttachmentParentId];
+    public void deletePhoto() {
+        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId = :AttachmentParentId];
         delete images;
     }
 
-    public void blobFromCropping(){
+    public void blobFromCropping() {
         cropp();
         uploadAttachment();
     }
 
-    public Id getImageId(){
+    public Id getImageId() {
         Id result = null;
-        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId= :AttachmentParentId ORDER BY CreatedDate DESC ];
+        List<Attachment> images = [SELECT Id FROM Attachment WHERE Name = 'ProfileImage' AND ParentId = :AttachmentParentId ORDER BY CreatedDate DESC];
         System.debug('all attachments-------------' + images);
-        if(!images.isEmpty())
-        {
-            result=images[0].Id;
+        if (!images.isEmpty()) {
+            result = images[0].Id;
         }
         return result;
     }
 
-    public void cropp(){
+    public void cropp() {
         String[] parts = croppedImageAsString.split(',');
         cropperImage = EncodingUtil.base64Decode(parts[1]);
     }
 
-    public void invokeSizeError(){
+    public void invokeSizeError() {
         ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, 'Image size over 1MB');
         ApexPages.addMessage(myMsg);
     }
 
-    public void invokeFileTypeError(){
+    public void invokeFileTypeError() {
         ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, 'Wrong type of file');
         ApexPages.addMessage(myMsg);
     }
 
-    public void empty(){}
-
-
+    public void empty() {
+    }
 
 
 }

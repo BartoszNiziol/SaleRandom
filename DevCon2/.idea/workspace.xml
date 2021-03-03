@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Dynamic by line csv parsing &amp; Title check">
+    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Prepared">
+      <change afterPath="$PROJECT_DIR$/src/classes/HD_Utils.cls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/classes/HD_Utils.cls-meta.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IlluminatedCloud/DevCon/OfflineSymbolTable.zip" beforeDir="false" afterPath="$PROJECT_DIR$/IlluminatedCloud/DevCon/OfflineSymbolTable.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorImportCSVController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorImportCSVController.cls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/HD_HospitalViewController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_HospitalViewController.cls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorViewController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorViewController.cls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/HD_DoctorImportCSV.page" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/HD_DoctorImportCSV.page" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/HD_DoctorView.page" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/HD_DoctorView.page" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,12 +65,14 @@
                       <entry key="APEXCLASS:DATEEXCEPTION" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMANAGER" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMISSIONSPECIALIST" value="1614524893000" />
-                      <entry key="APEXCLASS:HD_DOCTORIMPORTCSVCONTROLLER" value="1614769858397" />
+                      <entry key="APEXCLASS:HD_DOCTORIMPORTCSVCONTROLLER" value="1614781775559" />
                       <entry key="APEXCLASS:HD_DOCTORIMPORTTOCSVWRAPPER" value="1614682998149" />
                       <entry key="APEXCLASS:HD_DOCTORRANDOMLISTCONTROLLER" value="1614592459065" />
                       <entry key="APEXCLASS:HD_DOCTORSELECTWRAPPER" value="1614687563165" />
+                      <entry key="APEXCLASS:HD_DOCTORVIEWCONTROLLER" value="1614789023516" />
                       <entry key="APEXCLASS:HD_HOSPITALVIEWCONTROLLER" value="1614772157944" />
                       <entry key="APEXCLASS:HD_PLYGROUNDCONTROLLER" value="1614524893000" />
+                      <entry key="APEXCLASS:HD_UTILS" value="1614788907387" />
                       <entry key="APEXCLASS:INET" value="1614524893000" />
                       <entry key="APEXCLASS:INNSERTING" value="1614524893000" />
                       <entry key="APEXCLASS:NEWCASELISTCONTROLLER" value="1614524893000" />
@@ -90,9 +97,9 @@
                       <entry key="APEXPAGE:CREATECONTACT" value="1614524894000" />
                       <entry key="APEXPAGE:DISPLAYIMAGE" value="1614524894000" />
                       <entry key="APEXPAGE:DISPLAYUSERINFO" value="1614524894000" />
-                      <entry key="APEXPAGE:HD_DOCTORIMPORTCSV" value="1614770373000" />
+                      <entry key="APEXPAGE:HD_DOCTORIMPORTCSV" value="1614777391059" />
                       <entry key="APEXPAGE:HD_DOCTORRANDOMLIST" value="1614617532623" />
-                      <entry key="APEXPAGE:HD_DOCTORVIEW" value="1614672284383" />
+                      <entry key="APEXPAGE:HD_DOCTORVIEW" value="1614789023108" />
                       <entry key="APEXPAGE:HD_EMPTYPAGE" value="1614592350455" />
                       <entry key="APEXPAGE:HD_HOSPITALVIEW" value="1614687558293" />
                       <entry key="APEXPAGE:HELLOWORLD" value="1614524894000" />
@@ -335,7 +342,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614770329788</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Prepared">
+      <created>1614776315041</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1614776315041</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -362,6 +376,7 @@
     <MESSAGE value="Version 1.0001" />
     <MESSAGE value="Added dynamic by whole file type selection" />
     <MESSAGE value="Dynamic by line csv parsing &amp; Title check" />
-    <option name="LAST_COMMIT_MESSAGE" value="Dynamic by line csv parsing &amp; Title check" />
+    <MESSAGE value="Prepared" />
+    <option name="LAST_COMMIT_MESSAGE" value="Prepared" />
   </component>
 </project>
