@@ -7,11 +7,10 @@
         <apex:form>
             <apex:pageBlockSection title="{!$Label.CSV_File_Label}" columns="2">
                 <apex:pageBlockSectionItem>
-                    <apex:inputFile value="{!inputCSV}" accept=".csv" id="inputFileTag">
-                    </apex:inputFile>
-                    <apex:commandButton value="{!$Label.Process_Label}" action="{!takeInputCSV}">
-                    </apex:commandButton>
+                    <apex:inputFile value="{!inputCSV}" accept=".csv" id="inputFileTag"/>
+                    <apex:commandButton value="{!$Label.Process_Label}" action="{!takeInputCSV}"/>
                 </apex:pageBlockSectionItem>
+                <apex:commandButton value="{!$Label.Template_Button}" action="{!templateCSV}"/>
             </apex:pageBlockSection>
         </apex:form>
         <apex:form>
@@ -34,9 +33,10 @@
                         <apex:outputField value="{!indexToInputDoctorMap[doc].doctor.Birthday_Date__c}"/>
                     </apex:column>
                     <apex:column headerValue="{!$Label.Status_Label}">
+                        <apex:outputText value="{!indexToInputDoctorMap[doc].status}"/>
                         <apex:outputLink value="/{!indexToInputDoctorMap[doc].doctor.id}" target="_blank"
-                                         disabled="{!IF(indexToInputDoctorMap[doc].status!='success',true,false)}">
-                            <apex:outputText value="{!indexToInputDoctorMap[doc].status}"/>
+                                         rendered="{!IF(indexToInputDoctorMap[doc].status == $Label.Success_Label,true,false)}">
+                            Link
                         </apex:outputLink>
                     </apex:column>
                 </apex:pageBlockTable>

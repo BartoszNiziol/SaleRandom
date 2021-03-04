@@ -188,10 +188,10 @@ public with sharing class HD_HospitalViewController {
     public void saveEditedContract() {
         try {
             if (inputFormContract.End_Date__c < System.today()) {
-                throw new DateException(Label.End_Date_In_Past_Error);
+                throw new HD_DateException(Label.End_Date_In_Past_Error);
             }
             if (inputFormContract.Start_Date__c > inputFormContract.End_Date__c) {
-                throw new DateException(Label.End_Date_Before_Start_Date);
+                throw new HD_DateException(Label.End_Date_Before_Start_Date);
             }
             selectedDoctorIdToContractWrapper.get(currentEditedId).contract.Start_Date__c = inputFormContract.Start_Date__c;
             selectedDoctorIdToContractWrapper.get(currentEditedId).contract.End_Date__c = inputFormContract.End_Date__c;
@@ -200,7 +200,7 @@ public with sharing class HD_HospitalViewController {
             isReadyToHire = true;
             currentEditedId = null;
             inputFormContract = new Contract__c();
-        } catch (DateException e) {
+        } catch (HD_DateException e) {
             ApexPages.addMessages(e);
         }
         setHireButtonReady ();

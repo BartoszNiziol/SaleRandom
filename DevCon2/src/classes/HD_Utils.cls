@@ -3,12 +3,22 @@
  */
 
 public with sharing class HD_Utils {
+
+
     public static Boolean isSettingEnabled(String settingName, String valueToCheck) {
         HD_Setting__c settingItem = HD_Setting__c.getInstance(settingName);
         if (settingItem == null) {
             return false;
         }
-        return settingItem.Value__c.contains(valueToCheck);
+        String settingItemValue =  settingItem.Value__c;
+        List<String> settingItemsValues = settingItemValue.split(',');
+        Boolean settingValueExist = false;
+        for (String singleValue : settingItemsValues){
+            if (singleValue == valueToCheck) {
+                settingValueExist = true;
+            }
+        }
+        return  settingValueExist;
     }
     public static Boolean isSettingEnabledFOrCurrentUserCountry(String settingName) {
         return isSettingEnabled(settingName, getCurrentUser().Country);
@@ -23,5 +33,4 @@ public with sharing class HD_Utils {
         }
         return userList[0];
     }
-
 }

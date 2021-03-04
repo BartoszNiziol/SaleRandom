@@ -7,6 +7,7 @@ public with sharing class HD_DoctorImportCSVController {
     public Map <Integer, HD_DoctorImportToCSVWrapper> indexToInputDoctorMap { get; set; }
     public Boolean isDoctorsToImportSectionShowed { get; set; }
     public Boolean isImportPossible { get; set; }
+    public ApexPages.StandardSetController setController { get; set; }
 
 
     public HD_DoctorImportCSVController(ApexPages.StandardController standardController) {
@@ -28,7 +29,7 @@ public with sharing class HD_DoctorImportCSVController {
             if (!((csvFileLines[0].trim() == Label.CSV_title_with_singleQuotes) |
                     (csvFileLines[0].trim() == Label.CSV_title_with_doubleQuotes) |
                     (csvFileLines[0].trim() == Label.CSV_title_without_quotes))) {
-                throw new DateException('');
+                throw new HD_DateException('');
             }
             doctorsToWrap = parseWithDifferentQuotes(csvFileLines);
             for (Doctor__c doctor : doctorsToWrap) {
@@ -48,7 +49,7 @@ public with sharing class HD_DoctorImportCSVController {
     public void importDoctors() {
         List<Doctor__c> doctorsToInsert = new List<Doctor__c>();
         for (Integer id : indexToInputDoctorMap.keySet()) {
-            if (indexToInputDoctorMap.get(id).status != 'success' && indexToInputDoctorMap.get(id).isSelected == true) {
+            if (indexToInputDoctorMap.get(id).status != Label.Success_Label && indexToInputDoctorMap.get(id).isSelected == true) {
                 doctorsToInsert.add(indexToInputDoctorMap.get(id).doctor);
                 indexToInputDoctorMap.get(id).selectedForImport = true;
             }
@@ -60,7 +61,7 @@ public with sharing class HD_DoctorImportCSVController {
             for (Integer id : indexToInputDoctorMap.keySet()) {
                 if (indexToInputDoctorMap.get(id).selectedForImport == true) {
                     if (saveResults.get(indexResult).success) {
-                        indexToInputDoctorMap.get(id).status = 'success';
+                        indexToInputDoctorMap.get(id).status = Label.Success_Label;
                         indexToInputDoctorMap.get(id).selectedForImport = false;
                     } else {
                         indexToInputDoctorMap.get(id).status = '';
@@ -84,11 +85,7 @@ public with sharing class HD_DoctorImportCSVController {
 
     public void selectReverse() {
         for (Integer id : indexToInputDoctorMap.keySet()) {
-            if (indexToInputDoctorMap.get(id).isSelected == true) {
-                indexToInputDoctorMap.get(id).isSelected = false;
-            } else {
-                indexToInputDoctorMap.get(id).isSelected = true;
-            }
+            indexToInputDoctorMap.get(id).isSelected = !indexToInputDoctorMap.get(id).isSelected;
         }
     }
 
@@ -113,17 +110,11 @@ public with sharing class HD_DoctorImportCSVController {
             Doctor__c doctor = new Doctor__c();
             if (csvFileLines.get(i).startsWith('\"')) {
                 String[] csvRecordData = csvFileLines[i].split('\"');
-                doctor.First_Name__c = removeSingleQuotes(csvRecordData[1]) ;
-                doctor.Name = removeSingleQuotes(csvRecordData[3]);
-                doctor.Email__c = removeSingleQuotes(csvRecordData[5]);
-                doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[7]));
+                asssignDoctorFromSplitedLines(csvRecordData,doctor);
                 doctors.add(doctor);
             } else if (csvFileLines.get(i).startsWith('\'')) {
                 String[] csvRecordData = csvFileLines[i].split('\'');
-                doctor.First_Name__c = removeSingleQuotes(csvRecordData[1]) ;
-                doctor.Name = removeSingleQuotes(csvRecordData[3]);
-                doctor.Email__c = removeSingleQuotes(csvRecordData[5]);
-                doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[7]));
+                asssignDoctorFromSplitedLines(csvRecordData,doctor);
                 doctors.add(doctor);
             } else {
                 String[] csvRecordData = csvFileLines[i].split(',');
@@ -136,5 +127,18 @@ public with sharing class HD_DoctorImportCSVController {
             count++;
         }
         return doctors;
+    }
+    private Doctor__c asssignDoctorFromSplitedLines(String[] csvRecordData,Doctor__c doctor){
+        doctor.First_Name__c = removeSingleQuotes(csvRecordData[1]) ;
+        doctor.Name = removeSingleQuotes(csvRecordData[3]);
+        doctor.Email__c = removeSingleQuotes(csvRecordData[5]);
+        doctor.Birthday_Date__c = Date.parse(removeSingleQuotes(csvRecordData[7]));
+        return doctor;
+    }
+
+    public PageReference templateCSV() {
+        PageReference page = Page.HD_DoctorImportToCSCTemplate;
+        page.setRedirect(false);
+        return page;
     }
 }
