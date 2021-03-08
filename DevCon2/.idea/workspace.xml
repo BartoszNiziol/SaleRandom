@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Before column erases">
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_DateException.cls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_DoctorClientUseWebService.cls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_DoctorClientUseWebService.cls-meta.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/HD_DoctorImportToCSCTemplate.page" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/HD_DoctorImportToCSCTemplate.page-meta.xml" afterDir="false" />
+    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Before reconecting">
+      <change afterPath="$PROJECT_DIR$/src/classes/DoctorResponseWrapper.cls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/classes/DoctorResponseWrapper.cls-meta.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/classes/HD_TestWeb.cls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/classes/HD_TestWeb.cls-meta.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/DateException.cls" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/DateException.cls-meta.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DateException.cls-meta.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorImportCSVController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorImportCSVController.cls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/HD_HospitalViewController.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_HospitalViewController.cls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/HD_Utils.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_Utils.cls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/HD_DoctorImportCSV.page" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/HD_DoctorImportCSV.page" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorClientUseWebService.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorClientUseWebService.cls" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,10 +63,11 @@
                       <entry key="APEXCLASS:CONTACTANDLEADSEARCH" value="1614524893000" />
                       <entry key="APEXCLASS:CONTACTSEARCH" value="1614524893000" />
                       <entry key="APEXCLASS:DATEEXCEPTION" value="1614524893000" />
+                      <entry key="APEXCLASS:DOCTORRESPONSEWRAPPER" value="1614942388294" />
                       <entry key="APEXCLASS:EMAILMANAGER" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMISSIONSPECIALIST" value="1614524893000" />
                       <entry key="APEXCLASS:HD_DATEEXCEPTION" value="1614853622000" />
-                      <entry key="APEXCLASS:HD_DOCTORCLIENTUSEWEBSERVICE" value="1614855794060" />
+                      <entry key="APEXCLASS:HD_DOCTORCLIENTUSEWEBSERVICE" value="1614944484917" />
                       <entry key="APEXCLASS:HD_DOCTORIMPORTCSVCONTROLLER" value="1614853622000" />
                       <entry key="APEXCLASS:HD_DOCTORIMPORTTOCSVWRAPPER" value="1614682998149" />
                       <entry key="APEXCLASS:HD_DOCTORRANDOMLISTCONTROLLER" value="1614592459065" />
@@ -80,6 +75,7 @@
                       <entry key="APEXCLASS:HD_DOCTORVIEWCONTROLLER" value="1614790926054" />
                       <entry key="APEXCLASS:HD_HOSPITALVIEWCONTROLLER" value="1614853622000" />
                       <entry key="APEXCLASS:HD_PLYGROUNDCONTROLLER" value="1614524893000" />
+                      <entry key="APEXCLASS:HD_TESTWEB" value="1614936109287" />
                       <entry key="APEXCLASS:HD_UTILS" value="1614853622000" />
                       <entry key="APEXCLASS:INET" value="1614524893000" />
                       <entry key="APEXCLASS:INNSERTING" value="1614524893000" />
@@ -365,7 +361,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614790884570</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Before reconecting">
+      <created>1614859389627</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1614859389627</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -394,6 +397,7 @@
     <MESSAGE value="Dynamic by line csv parsing &amp; Title check" />
     <MESSAGE value="Prepared" />
     <MESSAGE value="Before column erases" />
-    <option name="LAST_COMMIT_MESSAGE" value="Before column erases" />
+    <MESSAGE value="Before reconecting" />
+    <option name="LAST_COMMIT_MESSAGE" value="Before reconecting" />
   </component>
 </project>
