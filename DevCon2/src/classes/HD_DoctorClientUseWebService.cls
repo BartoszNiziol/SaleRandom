@@ -4,73 +4,77 @@
 
 global class HD_DoctorClientUseWebService {
 
-    webService static String sayHello() {
-        return 'I is working';
-    }
-
-    webService static DoctorResponseWrapper getDoctor(String firstName, String lastName, String email, String country) {
-        List<Doctor__c> requestedDoctor = [
-                SELECT Id, First_Name__c, Name, Email__c, Country__c
-                FROM Doctor__c
-                WHERE First_Name__c = :firstName AND Name = :lastName AND Email__c = :email AND Country__c = :country
-        ];
-        if (requestedDoctor.size() > 0) {
-            return new DoctorResponseWrapper(requestedDoctor[0]);
-        }
-        return null;
-    }
-
-    webService static List<DoctorResponseWrapper> getDoctors() {
-        List<Doctor__c> requestedDoctors = [
-                SELECT Id, First_Name__c, Name, Email__c, Country__c
-                FROM Doctor__c
-        ];
+    webService static List<DoctorResponseWrapper> getDoctors(String firstName, String lastName, String email, String country) {
         List<DoctorResponseWrapper> wrappers = new List<DoctorResponseWrapper>();
-        for (Doctor__c doctor : requestedDoctors) {
-            wrappers.add(new DoctorResponseWrapper(doctor));
-        }
-        if (requestedDoctors.size() > 0) {
+        try {
+            List<Doctor__c> foundDoctors = HD_DoctorHandler.queryDoctorsORStartsWith(firstName, lastName, email, country);
+            for (Doctor__c doctor : foundDoctors) {
+                wrappers.add(new DoctorResponseWrapper(doctor));
+            }
+            return wrappers;
+        } catch (Exception e) {
+            DoctorResponseWrapper errorWrapper = new DoctorResponseWrapper();
+            wrappers.clear();
+            errorWrapper.isSuccess = false;
+            errorWrapper.message = e.getMessage();
+            wrappers.add(errorWrapper);
             return wrappers;
         }
-        return null;
     }
 
-    webService static Id addDoctor(String firstName, String lastName, String email, String country) {
-        Doctor__c doctorToAdd = new Doctor__c();
-        doctorToAdd.First_Name__c = firstName;
-        doctorToAdd.Name = lastName;
-        doctorToAdd.Email__c = email;
-        doctorToAdd.Country__c = country;
-        insert doctorToAdd;
-        return doctorToAdd.Id;
-    }
-
-    webService static Id updateDoctor(Id id, String firstName, String lastName, String email, String country) {
-        List<Doctor__c> requestedDoctor = [
-                SELECT Id
-                FROM Doctor__c
-                WHERE Id = :id
-        ];
-        if (requestedDoctor.size() > 0) {
-            requestedDoctor[0].First_Name__c = firstName;
-            requestedDoctor[0].Name = lastName;
-            requestedDoctor[0].Email__c = email;
-            requestedDoctor[0].Country__c = country;
-            Doctor__c doctorToUpdate = requestedDoctor[0];
-            update doctorToUpdate ;
-            return doctorToUpdate.Id;
+    webService static HD_DoctorResponseStatus addDoctor(String firstName, String lastName, String email, String country) {
+        try {
+            Doctor__c doctorToAdd = new Doctor__c();
+            doctorToAdd.First_Name__c = firstName;
+            doctorToAdd.Name = lastName;
+            doctorToAdd.Email__c = email;
+            doctorToAdd.Country__c = country;
+            insert doctorToAdd;
+            HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus(doctorToAdd);
+            responseStatus.isSuccess = true;
+            return responseStatus;
+        } catch (Exception e) {
+            HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus();
+            responseStatus.message = e.getMessage();
+            responseStatus.isSuccess = false;
+            return responseStatus;
         }
-        return null;
     }
 
-    webService static void deleteDoctor(Id id) {
-        List<Doctor__c> requestedDoctor = [
-                SELECT Id
-                FROM Doctor__c
-                WHERE Id = :id
-        ];
-        Doctor__c doctorToDelete = requestedDoctor[0];
-        delete doctorToDelete;
+    webService static HD_DoctorResponseStatus updateDoctor(String id, String firstName, String lastName, String email, String country) {
+        try {
+            Doctor__c doctor = new Doctor__c();
+            doctor.First_Name__c = firstName;
+            doctor.Name = lastName;
+            doctor.Email__c = email;
+            doctor.Country__c = country;
+            doctor.Id = id;
+            update doctor;
+            HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus(doctor);
+            responseStatus.isSuccess = true;
+            return responseStatus;
+        } catch (Exception e) {
+            HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus();
+            responseStatus.isSuccess = false;
+            responseStatus.message = e.getMessage();
+            return responseStatus;
+        }
+    }
+
+    webService static HD_DoctorResponseStatus deleteDoctor(String id) {
+        try {
+            Doctor__c doctorToDelete = new Doctor__c();
+            doctorToDelete.Id = id;
+            HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus(doctorToDelete);
+            responseStatus.isSuccess = true;
+            delete doctorToDelete;
+            return responseStatus;
+        } catch (Exception e) {
+            HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus();
+            responseStatus.isSuccess = false;
+            responseStatus.message = e.getMessage();
+            return responseStatus;
+        }
     }
 
 

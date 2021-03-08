@@ -7,7 +7,10 @@ global class DoctorResponseWrapper {
     webService String lastName;
     webService String email;
     webService String country;
-    webService Id id;
+    webService String id;
+    webService String message;
+    webService Boolean isSuccess;
+
 
     public DoctorResponseWrapper(Doctor__c doctor) {
         this.firstname = doctor.First_Name__c;
@@ -17,5 +20,10 @@ global class DoctorResponseWrapper {
         if (doctor.Id != null) {
             this.id = doctor.Id;
         }
+        isSuccess = true;
+    }
+
+    public DoctorResponseWrapper(){
+
     }
 }

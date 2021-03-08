@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Before reconecting">
-      <change afterPath="$PROJECT_DIR$/src/classes/DoctorResponseWrapper.cls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/classes/DoctorResponseWrapper.cls-meta.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_TestWeb.cls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_TestWeb.cls-meta.xml" afterDir="false" />
+    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Web Service Implementation">
+      <change afterPath="$PROJECT_DIR$/src/classes/HD_DoctorResponseStatus.cls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/classes/HD_DoctorResponseStatus.cls-meta.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/DoctorResponseWrapper.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/DoctorResponseWrapper.cls" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorClientUseWebService.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorClientUseWebService.cls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorHandler.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorHandler.cls" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,14 +63,16 @@
                       <entry key="APEXCLASS:CONTACTANDLEADSEARCH" value="1614524893000" />
                       <entry key="APEXCLASS:CONTACTSEARCH" value="1614524893000" />
                       <entry key="APEXCLASS:DATEEXCEPTION" value="1614524893000" />
-                      <entry key="APEXCLASS:DOCTORRESPONSEWRAPPER" value="1614942388294" />
+                      <entry key="APEXCLASS:DOCTORRESPONSEWRAPPER" value="1615201594891" />
                       <entry key="APEXCLASS:EMAILMANAGER" value="1614524893000" />
                       <entry key="APEXCLASS:EMAILMISSIONSPECIALIST" value="1614524893000" />
                       <entry key="APEXCLASS:HD_DATEEXCEPTION" value="1614853622000" />
-                      <entry key="APEXCLASS:HD_DOCTORCLIENTUSEWEBSERVICE" value="1614944484917" />
+                      <entry key="APEXCLASS:HD_DOCTORCLIENTUSEWEBSERVICE" value="1615201872102" />
+                      <entry key="APEXCLASS:HD_DOCTORHANDLER" value="1615201598305" />
                       <entry key="APEXCLASS:HD_DOCTORIMPORTCSVCONTROLLER" value="1614853622000" />
                       <entry key="APEXCLASS:HD_DOCTORIMPORTTOCSVWRAPPER" value="1614682998149" />
                       <entry key="APEXCLASS:HD_DOCTORRANDOMLISTCONTROLLER" value="1614592459065" />
+                      <entry key="APEXCLASS:HD_DOCTORRESPONSESTATUS" value="1615201594891" />
                       <entry key="APEXCLASS:HD_DOCTORSELECTWRAPPER" value="1614687563165" />
                       <entry key="APEXCLASS:HD_DOCTORVIEWCONTROLLER" value="1614790926054" />
                       <entry key="APEXCLASS:HD_HOSPITALVIEWCONTROLLER" value="1614853622000" />
@@ -368,7 +370,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614859389627</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Web Service Implementation">
+      <created>1615192088851</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1615192088851</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -398,6 +407,7 @@
     <MESSAGE value="Prepared" />
     <MESSAGE value="Before column erases" />
     <MESSAGE value="Before reconecting" />
-    <option name="LAST_COMMIT_MESSAGE" value="Before reconecting" />
+    <MESSAGE value="Web Service Implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Web Service Implementation" />
   </component>
 </project>
