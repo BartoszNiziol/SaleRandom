@@ -1,0 +1,152 @@
+<apex:page id="BNDoctorViewG" standardController="Doctor__c">
+    <script type="text/javascript"
+            src="https://maps.google.com/maps/api/js?key=AIzaSyBCiCk7ro-LGeUEXt4dp8Vyw0_ndvNiExM&sensor=false"></script>
+    <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js?key=AIzaSyBCiCk7ro-LGeUEXt4dp8Vyw0_ndvNiExM"></script>
+
+    <style>
+    .PageFacet{
+       padding-top: 9px;
+       padding-bottom 6 px;
+       font-size: 23px;
+       padding-left: 10px;
+       font-weight: bold;
+       background-color: transparent;
+       color :black;
+    }
+    #map{
+       font-family: Arial;
+       font-size:12px;
+       line-height:normal !important;
+       height:250px;
+       min-width:300px;
+       background:transparent;
+    }
+    #bigHead{
+        font-size: 23px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        margin-left: 5px;
+    }
+    #doctorTitlePrefix{
+        font-size: 15px;
+        margin-left: 5px;
+    }
+    </style>
+
+    <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
+                                  style="margin-right:10px;"/></div>
+    <div id="doctorTitlePrefix">Doctor</div>
+    <div id="bigHead"></div>
+    <apex:pageBlock >
+        <apex:facet name="header">
+            <div class="PageFacet">Doctor Detail</div>
+        </apex:facet>
+        <apex:form >
+            <div style="text-align:center; height:30px;">
+                <apex:commandButton action="{!Edit}" value="Edit"/>
+                <apex:commandButton action="{!Delete}" value="Delete"/>
+            </div>
+            <apex:pageBlockSection title="Details" columns="2" collapsible="true">
+                <apex:outputField value="{!Doctor__c.First_Name__c}" label="First Name"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Phone_Number__c}" label="Phone Number"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Name}" label="Last Name"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Email__c}" label="Email"></apex:outputField>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Address">
+                <apex:outputField value="{!Doctor__c.City__c}" label="City"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Country__c}" label="Country"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.Street__c}" label="Street"></apex:outputField>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1">
+                <div id="map"></div>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Other" columns="1">
+                <apex:outputField value="{!Doctor__c.Birthday_Date__c}" label="Birth Date"></apex:outputField>
+                <apex:outputField value="{!Doctor__c.License_Number__c}" label="License Number"></apex:outputField>
+            </apex:pageBlockSection>
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Edit}" value="Edit"/>
+                <apex:commandButton action="{!Delete}" value="Delete"/>
+            </div>
+        </apex:form>
+    </apex:pageBlock>
+    <apex:pageBlock >
+        <apex:facet name="header">
+            <div class="PageFacet">Contracts</div>
+        </apex:facet>
+        <apex:form >
+            <apex:pageBlockTable value="{!Doctor__c.Contracts__r}" var="contract">
+                <apex:column headerValue="Action">
+                    <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.Edit,contract.Id)}">
+                        Edit
+                    </apex:outputLink>
+                    |
+                    <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.View,contract.Id)}">
+                        View
+                    </apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="Contract Id" value="{!contract.Id}"></apex:column>
+                <apex:column headerValue="Hospital Name" value="{!contract.Hospital__r.Name}"></apex:column>
+                <apex:column headerValue="Start Date" value="{!contract.Start_Date__c}"></apex:column>
+                <apex:column headerValue="End Date" value="{!contract.End_Date__c}"></apex:column>
+            </apex:pageBlockTable>
+        </apex:form>
+    </apex:pageBlock>
+
+    <script type="text/javascript">
+    document.getElementById("bigHead").innerHTML ="{!Doctor__c.Name}"
+
+    $(document).ready(function() {
+         var myOptions = {
+         zoom: 15,
+         mapTypeId: google.maps.MapTypeId.ROADMAP,
+         mapTypeControl: false
+    }
+
+     var map;
+     var marker;
+     var geocoder = new google.maps.Geocoder();
+     var address = "{!Doctor__c.Street__c},{!Doctor__c.City__c},{!Doctor__c.Country__c}";
+     var infowindow = new google.maps.InfoWindow({
+     content: "<b>{!Doctor__c.Name}</b><br>" + address + "AIzaSyBCiCk7ro-LGeUEXt4dp8Vyw0_ndvNiExM"
+     });
+
+     geocoder.geocode( { address: address}, function(results, status) {
+       if (status == google.maps.GeocoderStatus.OK && results.length) {
+        if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+         map = new google.maps.Map(document.getElementById("map"), myOptions);
+         map.setCenter(results[0].geometry.location);
+         marker = new google.maps.Marker({
+            position: results[0].geometry.location,
+            map: map,
+            title: "{!Doctor__c.Name}"
+        });
+         google.maps.event.addListener(marker, 'click', function() {
+          infowindow.open(map,marker);
+        });
+         google.maps.event.addListener(infowindow, 'closeclick', function() {
+          map.setCenter(marker.getPosition());
+        });
+      }
+    } else {
+      $('#map').css({'height' : '15px'});
+      $('#map').html("Oops! address could not be found, please make sure the address is correct.");
+      resizeIframe();
+    }
+  });
+
+  function resizeIframe() {
+    var me = window.name;
+    if (me) {
+      var iframes = parent.document.getElementsByName(me);
+      if (iframes && iframes.length == 1) {
+        height = document.body.offsetHeight;
+        iframes[0].style.height = height + "px";
+      }
+    }
+  }
+});
+    </script>
+
+</apex:page>

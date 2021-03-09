@@ -1,0 +1,131 @@
+<apex:page id="HD_Playground" standardController="Doctor__c" extensions="HD_PlygroundController">
+
+    <apex:includeScript value="{!$Resource.jQuery}"/>
+    <apex:includeScript value="{!$Resource.jQueryUI}"/>
+    <apex:stylesheet value="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.js"></script>
+
+    <style>
+    .label {
+      cursor: pointer;
+    }
+
+    .progress {
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .alert {
+      display: none;
+    }
+
+    .img-container img {
+      max-width: 100%;
+    }
+    #theImage {
+     display: block;
+     max-width: 100%;
+}
+
+    </style>
+    <apex:form >
+        <apex:image value="/servlet/servlet.FileDownload?file={!ImageId}" rendered="{!NOT(ISBLANK(ImageId))}"/>
+
+        <apex:image id="avatar" value="{!$Resource.Default_Portrait}" width="200" height="200"/>
+<!--        <input type="file" class="sr-only" id="input" name="image" accept="image/*" value="Change photo"/>-->
+
+        <apex:inputFile value="{!attachment.Body}" filename="{!attachment.Name}" accept="image/*" id="input" onChange="upload"/>
+        <apex:commandButton id="upload" action="{!upload}" value="upload"/>
+
+        <apex:commandButton id="opener" onClick="showModal();" reRender="mainPanel"
+                            value="Open Dialog"/>
+    </apex:form>
+
+
+
+<!--    <apex:form>-->
+<!--        <apex:commandButton id="checkBlob" value="checkBlob" action="{!showBlob}"/>-->
+<!--    </apex:form>-->
+
+
+    <div id="dialogBox" title="Cropper" style="display:none;">
+        <div class="modal-body">
+            <div class="img-container">
+                <img id="image" src="https://avatars0.githubusercontent.com/u/3456749"/>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="crop">Crop</button>
+        </div>
+    </div>
+    <script>
+
+var $image = $('#image');
+
+$image.cropper({
+  aspectRatio: 16 / 9,
+  crop: function(event) {
+    console.log(event.detail.x);
+    console.log(event.detail.y);
+    console.log(event.detail.width);
+    console.log(event.detail.height);
+    console.log(event.detail.rotate);
+    console.log(event.detail.scaleX);
+    console.log(event.detail.scaleY);
+  }
+});
+
+function showModal(){
+    $(function() {
+        $("#dialogBox").dialog({
+        autoOpen: true,
+        height: 600,
+        width: 550,
+        modal: true,
+    });
+    });
+}
+
+var cropper = $image.data('cropper');
+
+    </script>
+<!--    <apex:form >-->
+<!--        <apex:actionFunction action="{!upload}" name="upload"/>-->
+        <!--            <apex:image value="/servlet/servlet.FileDownload?file={!ImageId}"  rendered="{!NOT(ISBLANK(ImageId))}"  id="theImage" style="width:100px;  height:100px;"/>-->
+
+
+        <!--            <apex:image id="avatar" value="{!$Resource.Default_Portrait}" width="200" height="200"/>-->
+        <!--        <input type="file" class="sr-only" id="input" name="image" accept="image/*" value="Change photo"/>-->
+<!--        <apex:inputFile value="{!uploadedImage}" filename="uploadedImage" accept="image/*" id="input" onChange=""/>-->
+<!--        <apex:commandButton id="upload" action="{!cropp}" value="upload"/>-->
+
+
+        <!--            <apex:inputFile value="{!attachment.Body}" filename="{!attachment.Name}" accept="image/*" id="input" onChange=""/>-->
+        <!--            <apex:commandButton id="upload" action="{!upload}" value="upload"/>-->
+<!--    </apex:form>-->
+<!--    <apex:form >-->
+<!--        <apex:image id="image" value="data:image,base64,{!cropperImage}" style="height:100px; width:100px;"/>-->
+<!--        <apex:commandButton reRender="image" action="{!check}"/>-->
+<!--    </apex:form>-->
+
+<!--    <apex:form >-->
+<!--        <apex:commandButton id="opener" onClick="showCroppModal();" reRender="mainPanel"-->
+<!--                            value="Open Dialog"/>-->
+
+<!--        <div id="dialogCroppBox" title="Cropper" style="display:none;">-->
+<!--            <div class="modal-body">-->
+<!--                <div class="img-container">-->
+<!--                    <img id="image" src="https://avatars0.githubusercontent.com/u/3456749 "/>-->
+
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="modal-footer">-->
+<!--                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>-->
+<!--                <button type="button" class="btn btn-primary" id="crop">Crop</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </apex:form>-->
+
+</apex:page>

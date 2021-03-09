@@ -1,0 +1,9 @@
+<apex:page cache="true" contentType="application/vnd.ms-excel#Doctor_{!TODAY()}.csv">
+
+    'FirstName','LastName','Email','BirthDate'
+    'Robert','Lewandowski','rl9@wp.pl','01/01/1900'
+    'Andrzej','Golota','andiuu@wp.pl','13/03/1995'
+    'Jan','Bednarek','jb25@wp.pl','02/02/1901'
+    'Gareth','Bale','Bale@wp.pl','01/03/1801'
+
+</apex:page>

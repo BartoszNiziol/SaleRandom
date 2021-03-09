@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="Web Service Implementation">
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_DoctorResponseStatus.cls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/classes/HD_DoctorResponseStatus.cls-meta.xml" afterDir="false" />
+    <list default="true" id="fe321a3b-9293-46d3-be76-0d43024730d6" name="Default Changelist" comment="General Web Service Refactor">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/DoctorResponseWrapper.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/DoctorResponseWrapper.cls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorClientUseWebService.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorClientUseWebService.cls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorHandler.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorHandler.cls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/HD_DoctorResponseStatus.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/HD_DoctorResponseStatus.cls" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -259,10 +255,10 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="XML" />
     <property name="last_opened_file_path" value="$USER_HOME$/Desktop/Nowy folder/SaleRandom/TriggerContract" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
+    <property name="project.structure.side.proportion" value="0.36206895" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -377,7 +373,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615192088851</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="General Web Service Refactor">
+      <created>1615202659943</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1615202659943</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -408,6 +411,7 @@
     <MESSAGE value="Before column erases" />
     <MESSAGE value="Before reconecting" />
     <MESSAGE value="Web Service Implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Web Service Implementation" />
+    <MESSAGE value="General Web Service Refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="General Web Service Refactor" />
   </component>
 </project>

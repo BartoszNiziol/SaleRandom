@@ -1,0 +1,299 @@
+<apex:page id="HD_HospitalViev" standardController="Hospital__c" extensions="HD_HospitalViewController">
+    <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css"/>
+    <apex:includescript value="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/opencagedata/leaflet-opencage-search@1.4.1/dist/css/L.Control.OpenCageData.Search.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/opencagedata/leaflet-opencage-search@1.4.1/dist/js/L.Control.OpenCageSearch.min.js"></script>
+    <apex:stylesheet value="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <apex:includeScript value="{!$Resource.jQuery}"/>
+    <apex:includeScript value="{!$Resource.jQueryUI}"/>
+
+    <style>
+    .PageFacet{
+         padding-top: 9px;
+        padding-bottom 6 px;
+       font-size: 23px;
+       padding-left: 10px;
+       font-weight: bold;
+       background-color: transparent;
+       color :black;
+    }
+    #mapid{
+        height: 180px;
+    }
+     #bigHead{
+        font-size: 23px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        margin-left: 5px;
+    }
+    #hospitalPrefix{
+        font-size: 15px;
+        margin-left: 5px;
+    }
+       .datePicker{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 9999;
+            left: 50%;
+            padding:10px;
+            position: absolute;
+            width: 500px;
+            margin-left: -250px;
+            top:100px;
+        }
+
+    </style>
+    <c:HD_SpinnerComponent />
+    <div style="float:left;"><img src="/img/icon/custom51_100/stethoscope32.png" height="40px"
+                                  style="margin-right:10px;"/></div>
+    <div id="hospitalPrefix">{!$Label.Hospital_Label}</div>
+    <div id="bigHead"></div>
+    <apex:pageBlock id="ViewPageBlock">
+        <apex:facet name="header">
+            <div class="PageFacet">{!$Label.Hospital_Detail_Label}</div>
+        </apex:facet>
+        <apex:form >
+            <div style="text-align:center; height:30px;">
+                <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
+                <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
+            </div>
+            <apex:pageBlockSection title="{!$Label.Details_Label}" columns="2">
+                <apex:outputField value="{!Hospital__c.Name}"/>
+                <apex:outputField value="{!Hospital__c.Phone_Number__c}"/>
+                <apex:outputField value="{!Hospital__c.Web_Page__c}"/>
+                <apex:outputField value="{!Hospital__c.Email__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Address_Label}">
+                <apex:outputField value="{!Hospital__c.City__c}"/>
+                <apex:outputField value="{!Hospital__c.Country__c}"/>
+                <apex:outputField value="{!Hospital__c.Street__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1">
+                <div id="mapid"></div>
+            </apex:pageBlockSection>
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Edit}" value="{!$Label.Edit_Button}"/>
+                <apex:commandButton id="multiHireOpener" onClick="showMultiHireDialog();"
+                                    value="{!$Label.Hire_Button}" status="loadingGif" reRender="multiHireDialog"/>
+                <apex:commandButton action="{!Delete}" value="{!$Label.Delete_Button}"/>
+            </div>
+        </apex:form>
+    </apex:pageBlock>
+    <apex:pageBlock >
+        <apex:facet name="header">
+            <div class="PageFacet">{!$Label.Contracts_Label}</div>
+        </apex:facet>
+        <apex:form >
+            <apex:outputPanel id="hospitalContractsPanel">
+                <apex:pageBlockTable value="{!Hospital__c.Contracts__r}" var="contract" id="contractsDisplay">
+                    <apex:column headerValue="{!$Label.Action_Label}">
+                        <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.Edit,contract.Id)}">
+                            {!$Label.Edit_Label}
+                        </apex:outputLink>
+                        |
+                        <apex:outputLink target="_blank" value="{!URLFOR($Action.Contract__c.View,contract.Id)}">
+                            {!$Label.View_Label}
+                        </apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.Doctor_Label}"
+                                 value="{!contract.Doctor__r.Name} {!contract.Doctor__r.First_Name__c}"/>
+                    <apex:column headerValue="{!$Label.Start_Date_Label}" value="{!contract.Start_Date__c}"/>
+                    <apex:column headerValue="{!$Label.End_Date_Label}" value="{!contract.End_Date__c}"/>
+                </apex:pageBlockTable>
+            </apex:outputPanel>
+        </apex:form>
+    </apex:pageBlock>
+    <div id="multiHireDialog" style="display:none" title="Hire Doctors To {!Hospital__c.Name}">
+        <apex:actionRegion >
+            <apex:pageBlock id="multiHirePageBlock">
+                <apex:form >
+                    <apex:actionFunction name="sendClearToController" action="{!clearDialog}"
+                                         reRender="multiHirePageBlock"
+                                         immediate="true"/>
+                    <apex:pageBlockSection title="{!$Label.Search_For_Doctors_Label}" id="DoctorSearchSection"
+                                           columns="2">
+                        <apex:inputField value="{!inputFormDoctor.First_Name__c}" html-autocomplete="off"/>
+                        <apex:inputText value="{!inputFormDoctor.Email__c}" label="{!$Label.Email_Label}"
+                                        html-autocomplete="off"/>
+                        <apex:inputField value="{!inputFormDoctor.Name}" required="true" html-autocomplete="off"/>
+                        <apex:inputField value="{!inputFormDoctor.Country__c}" html-autocomplete="off"/>
+                    </apex:pageBlockSection>
+                    <div align="center">
+                        <apex:commandButton action="{!searchDoctors}"
+                                            value="{!$Label.Search_Button}" status="loadingGif"
+                                            reRender="resultsDoctorsSection,DoctorSearchSection"/>
+                        <apex:commandButton action="{!clear}" value="{!$Label.Clear_Button}"
+                                            status="loadingGif" id="clearButton"
+                                            reRender="DoctorSearchSection,resultDoctorTable,multiHirePageBlock"
+                                            immediate="true"/>
+                    </div>
+                </apex:form>
+                <apex:form >
+                    <apex:pageBlockSection title="Results" columns="1" id="resultsDoctorsSection">
+                        <apex:pageBlockTable value="{!foundWrappedDoctors}" var="doc" id="resultDoctorTable">
+                            <apex:column headerValue="{!$Label.Action_Label}"
+                                         style="height:21px; text-align:center;">
+                                <apex:commandButton action="{!selectDoctor}"
+                                                    reRender="resultsDoctorsSection,NewContractTable,hireCancelButtons"
+                                                    value="{!$Label.Select_Label}"
+                                                    style="{!IF(doc.isSelected,'display:none;','display:initial;')}">
+                                    <apex:param value="{!doc.doctor.Id}" name="selectedDoctorId"
+                                                assignTo="{!selectedDoctorId}"/>
+                                </apex:commandButton>
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.Full_Name_Label}">
+                                {!doc.doctor.First_Name__c} {! doc.doctor.Name}
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.Email_Label}">
+                                {! doc.doctor.Email__c}
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.Country_Label}">
+                                {! doc.doctor.Country__c}
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSection>
+                </apex:form>
+                <apex:form >
+                    <apex:pageBlockSection title="{!$Label.New_Contracts_Label}" columns="1">
+                        <apex:pageBlockTable value="{!selectedDoctorIdToContractWrapper}" var="doc"
+                                             id="NewContractTable">
+                            <apex:column headerValue="{!$Label.Action_Label}">
+                                <apex:commandButton value="{!$Label.Save_Button}"
+                                                    action="{!saveEditedContract}"
+                                                    reRender="NewContractTable,hireCancelButtons ,templateButton"
+                                                    rendered="{!IF(doc = currentEditedId,true,false)}"
+                                                    disabled="{!IF(AND(doc != currentEditedId,currentEditedId != null),true,false)}">
+                                    <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
+                                </apex:commandButton>
+                                <apex:commandButton value="{!$Label.Edit_Button}"
+                                                    action="{!editContract}"
+                                                    reRender="NewContractTable , hireCancelButtons , templateButton"
+                                                    rendered="{!IF(NOT(doc = currentEditedId),true,false)}"
+                                                    disabled="{!IF( OR( selectedDoctorIdToContractWrapper[doc].status =='Success' ,AND(doc != currentEditedId,currentEditedId != null)), true ,false)}">
+                                    <apex:param value="{!doc}" assignTo="{!currentEditedId}" name="toEditId"/>
+                                </apex:commandButton>
+                                <apex:commandButton value="{!$Label.Template_Button}" action="{!template}"
+                                                    reRender="NewContractTable,hireCancelButtons"
+                                                    disabled="{!OR(inEditMode,selectedDoctorIdToContractWrapper[doc].isOpenForEdit)}"
+                                                    id="templateButton">
+                                    <apex:param value="{!doc}" name="selectedDoctorId"
+                                                assignTo="{!templateId}"/>
+                                </apex:commandButton>
+                                <apex:commandButton value="{!$Label.Remove_Button}" action="{!remove}"
+                                                    reRender="NewContractTable,resultsDoctorsSection,hireCancelButtons"
+                                                    immediate="true"
+                                                    disabled="{!selectedDoctorIdToContractWrapper[doc].isOpenForEdit}">
+                                    <apex:param value="{!doc}" name="selectedDoctorId"
+                                                assignTo="{!doctorRemoveId}"/>
+                                </apex:commandButton>
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.Full_Name_Label}">
+                                {!selectedDoctorIdToContractWrapper[doc].contract.Doctor__r.First_Name__c}  {!selectedDoctorIdToContractWrapper[doc].contract.Doctor__r.Name}
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.Start_Date_Label}">
+                                <apex:inputField rendered="{!selectedDoctorIdToContractWrapper[doc].isOpenForEdit}"
+                                                 value="{!inputFormContract.Start_Date__c}" required="true"
+                                                 html-autocomplete="off"/>
+                                <apex:outputField rendered="{!NOT(selectedDoctorIdToContractWrapper[doc].isOpenForEdit)}"
+                                        value="{!selectedDoctorIdToContractWrapper[doc].contract.Start_Date__c}"/>
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.End_Date_Label}">
+                                <apex:inputField rendered="{!selectedDoctorIdToContractWrapper[doc].isOpenForEdit}"
+                                                 value="{!inputFormContract.End_Date__c}" html-autocomplete="off"/>
+                                <apex:outputField rendered="{!NOT(selectedDoctorIdToContractWrapper[doc].isOpenForEdit)}"
+                                        value="{!selectedDoctorIdToContractWrapper[doc].contract.End_Date__c}"/>
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.Status_Label}">
+                                <apex:outputText value="{!selectedDoctorIdToContractWrapper[doc].status}"/>
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSection>
+                    <apex:outputPanel id="hireCancelButtons">
+                        <div style="text-align:center;">
+                            <apex:commandButton value="{!$Label.Hire_Button}" action="{!hire}"
+                                                reRender="NewContractTable,contractsDisplay"
+                                                onComplete="{!if(hireDialogAllowedToClose == true,"hideModal()","empty()")}"
+                                                disabled="{!IF(isReadyToHire,false,true)}"/>
+                            <apex:commandButton value="{!$Label.Cancel_Button}" action="{!cancelDialog}"
+                                                reRender="NewContractTable,contractsDisplay"
+                                                onClick="hideMultiHireDialog();" status="loadingGif"/>
+                        </div>
+                        <apex:messages />
+                    </apex:outputPanel>
+                </apex:form>
+            </apex:pageBlock>
+        </apex:actionRegion>
+    </div>
+    <apex:relatedList list="histories">
+        <apex:facet name="header">{!$Label.History_Hospital_Label}</apex:facet>
+    </apex:relatedList>
+
+    <script type="text/javascript">
+     let $ = jQuery.noConflict();
+
+  function showMultiHireDialog(){
+    $(function() {
+        $("#multiHireDialog").dialog({
+        autoOpen: true,
+        height: 750,
+        width: 1000,
+        modal: true,
+        closeOnEscape: false,
+                open: function(event, ui) {
+                            sendClearToController();
+                             $(".ui-dialog-titlebar-close", ui.dialog).hide();
+                    }
+                });
+            });
+        }
+function hideMultiHireDialog(){
+    $(function() {
+        $("#multiHireDialog").dialog("close");
+    });
+}
+
+//     document.getElementById("bigHead").innerHTML ="{!Hospital__c.Name}"
+//     let openCageApiKey = '2e8af67ee7bf4a00bbdfce25dfcdefe7';
+//     let address = "{!Hospital__c.Street__c},{!Hospital__c.City__c},{!Hospital__c.Country__c}";
+//     let mymap = L.map('mapid').setView([0,0], 13);
+//     let api_url = 'https://api.opencagedata.com/geocode/v1/json'
+//     let request_url = api_url
+//    + '?'
+//    + 'key=' + openCageApiKey
+//    + '&q=' + address
+//    + '&pretty=1'
+//    + '&no_annotations=1';
+//
+//    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+//      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+//      maxZoom: 18,
+//      id: 'mapbox/streets-v11',
+//      tileSize: 512,
+//      zoomOffset: -1,
+//      accessToken: 'pk.eyJ1IjoiYmFydG9zem5pemlvbHMiLCJhIjoiY2tsNWNndXdkMG11NDJvcDY2cG9xM2NhcSJ9.jEwnPxwOb9ERM90aVRVDEg'
+//    }).addTo(mymap);
+//
+//      let request = new XMLHttpRequest();
+//      request.open('GET', request_url, true);
+//      request.send();
+//      request.onload = function() {
+//
+//      let data = JSON.parse(request.responseText);
+//      let geometry = data.results[0].geometry;
+//      lat = geometry.lat;
+//      lng = geometry.lng;
+//      L.marker([lat,lng]).addTo(mymap);
+//      mymap.setView([lat, lng]);
+//
+//  };
+
+
+
+
+
+    </script>
+
+
+</apex:page>

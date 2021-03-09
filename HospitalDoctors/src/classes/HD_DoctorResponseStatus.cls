@@ -1,3 +1,6 @@
+/**
+ * Created by BRITENET on 08.03.2021.
+ */
 
     global class HD_DoctorResponseStatus {
         webService String id;

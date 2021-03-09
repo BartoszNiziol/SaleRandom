@@ -1,0 +1,14 @@
+<!--
+ - Created by BRITENET on 06.02.2021.
+ -->
+
+<apex:page id="CreateContact" standardController="Contact">
+    <apex:form >
+
+        <apex:inputField value="{!Contact.FirstName}"/>
+        <apex:inputField value="{!Contact.LastName}"/>
+        <apex:inputField value="{!Contact.Email}"/>
+        <apex:commandButton action="{! save }" value="Save" />
+
+    </apex:form>
+</apex:page>
