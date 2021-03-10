@@ -19,9 +19,10 @@
                                     </div>
                                 </div>
                                 <div style="float:right; text-align:right">
-
-                                    <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!setEditedIdNull}"
-                                                        value="New" reRender="foundDoctorsTable" onClick="openUpsertDialog()">
+                                    <apex:commandButton styleClass="slds-button slds-button_neutral"
+                                                        action="{!setEditedIdNull}"
+                                                        value="New" reRender="foundDoctorsTable,modalPanel"
+                                                        onClick="openUpsertDialog()">
                                     </apex:commandButton>
                                 </div>
                             </div>
@@ -63,7 +64,7 @@
                                             <div class="slds-form-element">
                                                 <label class="slds-form-element__label" for="input-01">Email</label>
                                                 <div class="slds-form-element__control">
-                                                    <apex:inputField value="{!inputSearchFormDoctor.Email__c}"/>
+                                                    <apex:inputText value="{!inputSearchFormDoctor.Email__c}"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -94,18 +95,21 @@
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
                             <apex:dataTable value="{!foundDoctors}" var="doc"
-                                            styleClass="slds-table slds-table--bordered slds-table--striped" id="foundDoctorsTable">
+                                            styleClass="slds-table slds-table--bordered slds-table--striped"
+                                            id="foundDoctorsTable">
                                 <apex:column headerValue="Action">
                                     <div class="slds-button-group" role="group"
-                                         style="text-align:center; display:block;">
+                                         style="text-align:left; display:block;">
 
                                         <apex:commandButton styleClass="slds-button slds-button_neutral"
-                                                              value="Edit" reRender="foundDoctorsTable" onClick="openUpsertDialog()">
+                                                            value="Edit" reRender=" foundDoctorsTable , modalPanel "
+                                                            onClick="openUpsertDialog()" action="{!setEditedForm}">
                                             <apex:param value="{!doc.Id}" name="toEditId" assignTo="{!toEditId}"/>
                                         </apex:commandButton>
 
                                         <apex:commandButton styleClass="slds-button slds-button_neutral"
-                                                            action="{!deleteButtonAction}" value="Delete" reRender="foundDoctorsTable">
+                                                            action="{!deleteButtonAction}" value="Delete"
+                                                            reRender="foundDoctorsTable">
                                             <apex:param value="{!doc.Id}" name="toDeleteId" assignTo="{!toDeleteId}"/>
                                         </apex:commandButton>
                                     </div>
@@ -124,6 +128,7 @@
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="false"
                  aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open" id="upsertModal"
                  style="display:none ">
+
             <apex:form>
                 <div class="slds-modal__container">
                     <header class="slds-modal__header">
@@ -134,6 +139,8 @@
                         <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Doctor</h2>
                     </header>
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <apex:messages />
+                        <apex:outputPanel id="modalPanel">
                         <fieldset class="slds-form-element slds-form-element_compound">
                             <div class="slds-form-element">
                                 <label class="slds-form-element__label" for="input-01">First Name</label>
@@ -144,7 +151,7 @@
                             <div class="slds-form-element">
                                 <label class="slds-form-element__label" for="input-01">Last Name</label>
                                 <div class="slds-form-element__control">
-                                    <apex:inputField value="{!inputUpsertFormDoctor.Name}"/>
+                                    <apex:inputField value="{!inputUpsertFormDoctor.Name}" required="true"/>
                                 </div>
                             </div>
                             <div class="slds-form-element">
@@ -160,30 +167,50 @@
                                 </div>
                             </div>
                         </fieldset>
+            </apex:outputPanel>
                     </div>
                     <footer class="slds-modal__footer">
-                        <button type="button" class="slds-button slds-button_neutral" onclick="closeUpsertDialog()">
-                            Cancel
-                        </button>
-                        <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!saveButtonAction}" onComplete="closeUpsertDialog()"
-                                            value="Save"/>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral"
+                                            onComplete="closeUpsertDialog()" value="Cancel" immediate="true"/>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!saveButtonAction}"
+                                            onComplete="{!if(isDialogReadyToClose == true,"closeUpsertDialog()","empty()")} "
+                                            value="Save" reRender="modalPanel, foundDoctorsTable"/>
                     </footer>
                 </div>
             </apex:form>
         </section>
+
         <div class="slds-backdrop slds-backdrop_open" id="modalFade" style="display:none"></div>
     </div>
 
     <script>
+
+
+
+
+     let isDialogReadyToClose = true;
     function closeUpsertDialog(){
+        if(isDialogReadyToClose){
        document.getElementById("upsertModal").style.display ="none";
        document.getElementById("modalFade").style.display = "none";
+
+         }
     }
 
     function openUpsertDialog(){
+
        document.getElementById("upsertModal").style.display ="block";
        document.getElementById("modalFade").style.display = "block";
     }
+
+    function switchOnDialogReadyToClose(){
+        isDialogReadyToClose = true;
+    }
+    function empty(){
+
+    }
+
+
 
 
     </script>

@@ -6,7 +6,9 @@ public with sharing class HD_DoctorExternalSearchController {
     public String dBSesionId { get; set; }
     public String toDeleteId { get; set; }
     public String toEditId { get; set; }
-
+    public Boolean isDialogReadyToClose{get;set;}
+    public Boolean editDialog{get;set;}
+    public Boolean addDialog{get;set;}
 
     public HD_DoctorExternalSearchController() {
         inputSearchFormDoctor = new Doctor__c();
@@ -23,8 +25,6 @@ public with sharing class HD_DoctorExternalSearchController {
         obj.Sessionheader.sessionid = loginResult.sessionid;
         dbSesionId = loginResult.sessionid;
     }
-
-
 
     public void searchButtonAction() {
         foundDoctors = new List<Doctor__c>();
@@ -53,35 +53,9 @@ public with sharing class HD_DoctorExternalSearchController {
         }
     }
 
-//    public void newButtonAction() {
-//
-//        DoctorExternalBaseService.DB_DoctorExternalSearchWebService service = new DoctorExternalBaseService.DB_DoctorExternalSearchWebService();
-//        Map<String, String> inputHttpHeaders = new Map<String, String>();
-//        inputHttpHeaders.put('Content-Type', 'text/xml');
-//        inputHttpHeaders.put('Accept', 'text/xml');
-//        inputHttpHeaders.put('SoapAction', '');
-//        DoctorExternalBaseService.SessionHeader_element sessionId = new DoctorExternalBaseService.SessionHeader_element();
-//        sessionId.sessionId = dBSesionId;
-//        service.inputHttpHeaders_x = inputHttpHeaders;
-//        service.SessionHeader = sessionId;
-//        DoctorExternalBaseWrapper.DB_DoctorResponseWrapper wrap = service.addDoctor(inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
-//    }
-//
-//    public void editButtonAction() {
-//        System.debug(toEditId);
-//        DoctorExternalBaseService.DB_DoctorExternalSearchWebService service = new DoctorExternalBaseService.DB_DoctorExternalSearchWebService();
-//        Map<String, String> inputHttpHeaders = new Map<String, String>();
-//        inputHttpHeaders.put('Content-Type', 'text/xml');
-//        inputHttpHeaders.put('Accept', 'text/xml');
-//        inputHttpHeaders.put('SoapAction', '');
-//        DoctorExternalBaseService.SessionHeader_element sessionId = new DoctorExternalBaseService.SessionHeader_element();
-//        sessionId.sessionId = dBSesionId;
-//        service.inputHttpHeaders_x = inputHttpHeaders;
-//        service.SessionHeader = sessionId;
-//        DoctorExternalBaseWrapper.DB_DoctorResponseWrapper wrap = service.updateDoctor(toEditId,inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
-//    }
-
     public void saveButtonAction() {
+
+        isDialogReadyToClose = false;
         DB_SearchApi.DB_DoctorExternalSearchWebService service = new  DB_SearchApi.DB_DoctorExternalSearchWebService();
         Map<String, String> inputHttpHeaders = new Map<String, String>();
         inputHttpHeaders.put('Content-Type', 'text/xml');
@@ -92,9 +66,14 @@ public with sharing class HD_DoctorExternalSearchController {
         service.inputHttpHeaders_x = inputHttpHeaders;
         service.SessionHeader = sessionId;
         DB_ResponseWrapper.DB_DoctorResponseWrapper wrap = service.upsertDoctor(toEditId,inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
-        System.debug('saveButtonmesage');
-        System.debug(wrap.message);
         System.debug(wrap.isSuccess);
+        if(wrap.isSuccess=false){
+            isDialogReadyToClose = false;
+            ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR,wrap.message);
+            ApexPages.addMessage(myMsg);
+        }else{
+            isDialogReadyToClose = true;
+        }
 
     }
 
@@ -112,9 +91,9 @@ public with sharing class HD_DoctorExternalSearchController {
         Doctor__c docToRemoveFromList;
 
         for (Doctor__c doc: foundDoctors){
-
             if (doc.Id == toDeleteId) {
                 docToRemoveFromList = doc;
+                break;
             }
         }
         foundDoctors.remove(foundDoctors.indexOf(docToRemoveFromList));
@@ -127,6 +106,17 @@ public with sharing class HD_DoctorExternalSearchController {
 
     public void setEditedIdNull(){
         toEditId = null;
+        inputUpsertFormDoctor = new Doctor__c();
+        isDialogReadyToClose = false;
+    }
+    public void setEditedForm(){
+
+        for (Doctor__c doctor : foundDoctors){
+            if (doctor.Id == toEditId) {
+                inputUpsertFormDoctor = doctor;
+                break;
+            }
+        }
     }
 
 

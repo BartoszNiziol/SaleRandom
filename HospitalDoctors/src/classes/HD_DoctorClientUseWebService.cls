@@ -21,37 +21,7 @@ global class HD_DoctorClientUseWebService {
             return wrappers;
         }
     }
-//    webService static HD_DoctorResponseStatus addDoctor(String firstName, String lastName, String email, String country) {
-//        try {
-//            Doctor__c doctorToAdd = new Doctor__c();
-//            doctorToAdd.First_Name__c = firstName;
-//            doctorToAdd.Name = lastName;
-//            doctorToAdd.Email__c = email;
-//            doctorToAdd.Country__c = country;
-//            insert doctorToAdd;
-//            HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus(doctorToAdd);
-//            return responseStatus;
-//        } catch (Exception e) {
-//          return applyErrorStatus(e);
-//        }
-//    }
-//
-//    webService static HD_DoctorResponseStatus updateDoctor(String id, String firstName, String lastName, String email, String country) {
-//
-//        try {
-//            Doctor__c doctor = new Doctor__c();
-//            doctor.First_Name__c = firstName;
-//            doctor.Name = lastName;
-//            doctor.Email__c = email;
-//            doctor.Country__c = country;
-//            doctor.Id = id;
-//            update doctor;
-//            HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus(doctor);
-//            return responseStatus;
-//        } catch (Exception e) {
-//          return applyErrorStatus(e);
-//        }
-//    }
+
     webService static HD_DoctorResponseStatus deleteDoctor(String id) {
         try {
             Doctor__c doctorToDelete = new Doctor__c();

@@ -18,42 +18,6 @@ global class DB_DoctorExternalSearchWebService {
         }
     }
 
-//    webService static DB_DoctorResponseWrapper addDoctor(String firstName, String lastName, String email, String country) {
-//        try {
-//            Doctor__c doctorToAdd = new Doctor__c();
-//            doctorToAdd.First_Name__c = firstName;
-//            doctorToAdd.Name = lastName;
-//            doctorToAdd.Email__c = email;
-//            doctorToAdd.Country__c = country;
-//            insert doctorToAdd;
-//            DB_DoctorResponseWrapper responseStatus = new DB_DoctorResponseWRapper(doctorToAdd);
-//            return responseStatus;
-//        } catch (Exception e) {
-//            DB_DoctorResponseWrapper responseStatus = new DB_DoctorResponseWrapper();
-//            responseStatus.message = e.getMessage();
-//            responseStatus.isSuccess = false;
-//            return responseStatus;
-//        }
-//    }
-
-//    webService static DB_DoctorResponseWrapper updateDoctor(String id, String firstName, String lastName, String email, String country) {
-//        try {
-//            Doctor__c doctor = new Doctor__c();
-//            doctor.First_Name__c = firstName;
-//            doctor.Name = lastName;
-//            doctor.Email__c = email;
-//            doctor.Country__c = country;
-//            doctor.Id = id;
-//            update doctor;
-//            DB_DoctorResponseWrapper responseStatus = new DB_DoctorResponseWrapper(doctor);
-//            return responseStatus;
-//        } catch (Exception e) {
-//            DB_DoctorResponseWrapper responseStatus = new DB_DoctorResponseWrapper();
-//            responseStatus.isSuccess = false;
-//            responseStatus.message = e.getMessage();
-//            return responseStatus;
-//        }
-//    }
     webService static DB_DoctorResponseWrapper upsertDoctor(String id, String firstName, String lastName, String email, String country){
         try {
             Doctor__c doctor = new Doctor__c();
