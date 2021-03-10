@@ -17,30 +17,13 @@ public with sharing class HD_DoctorExternalSearchController {
         getSessionId();
     }
 
-    private void getSessionId() {
-        partnerSoapSforceCom.Soap obj = new partnerSoapSforceCom.Soap();
-        partnerSoapSforceCom.LoginResult loginResult = obj.login('EggShell@Britenet.com', 'poco2jestem23dw3WF2mrIHOvMUy2nk2548');
-        obj.SessionHeader = new partnerSoapSforceCom.SessionHeader_element();
-        obj.endpoint_x = loginResult.ServerUrl;
-        obj.Sessionheader.sessionid = loginResult.sessionid;
-        dbSesionId = loginResult.sessionid;
-    }
-
     public void searchButtonAction() {
         foundDoctors = new List<Doctor__c>();
-        DoctorExternalBaseService.DB_DoctorExternalSearchWebService service = new DoctorExternalBaseService.DB_DoctorExternalSearchWebService();
-        Map<String, String> inputHttpHeaders = new Map<String, String>();
-        inputHttpHeaders.put('Content-Type', 'text/xml');
-        inputHttpHeaders.put('Accept', 'text/xml');
-        inputHttpHeaders.put('SoapAction', '');
-        DoctorExternalBaseService.SessionHeader_element sessionId = new DoctorExternalBaseService.SessionHeader_element();
-        sessionId.sessionId = dBSesionId;
-        service.inputHttpHeaders_x = inputHttpHeaders;
-        service.SessionHeader = sessionId;
-        DoctorExternalBaseWrapper.DB_DoctorResponseWrapper[] wrap = service.getDoctors(inputSearchFormDoctor.First_Name__c, inputSearchFormDoctor.Name, inputSearchFormDoctor.Email__c, inputSearchFormDoctor.Country__c);
+        DB_SearchApi.DB_DoctorExternalSearchWebService service = configureService();
+        DB_ResponseWrapper.DB_DoctorResponseWrapper[] wrap = service.getDoctors(inputSearchFormDoctor.First_Name__c, inputSearchFormDoctor.Name, inputSearchFormDoctor.Email__c, inputSearchFormDoctor.Country__c);
         if (wrap != null) {
             if (wrap.size() != 0) {
-                for (DoctorExternalBaseWrapper.DB_DoctorResponseWrapper wrapElement : wrap) {
+                for (DB_ResponseWrapper.DB_DoctorResponseWrapper wrapElement : wrap) {
                     Doctor__c doctor = new Doctor__c();
                     doctor.Id = wrapElement.id;
                     doctor.First_Name__c = wrapElement.firstName;
@@ -54,17 +37,8 @@ public with sharing class HD_DoctorExternalSearchController {
     }
 
     public void saveButtonAction() {
-
         isDialogReadyToClose = false;
-        DB_SearchApi.DB_DoctorExternalSearchWebService service = new  DB_SearchApi.DB_DoctorExternalSearchWebService();
-        Map<String, String> inputHttpHeaders = new Map<String, String>();
-        inputHttpHeaders.put('Content-Type', 'text/xml');
-        inputHttpHeaders.put('Accept', 'text/xml');
-        inputHttpHeaders.put('SoapAction', '');
-        DB_SearchApi.SessionHeader_element sessionId = new DB_SearchApi.SessionHeader_element();
-        sessionId.sessionId = dBSesionId;
-        service.inputHttpHeaders_x = inputHttpHeaders;
-        service.SessionHeader = sessionId;
+        DB_SearchApi.DB_DoctorExternalSearchWebService service = configureService();
         DB_ResponseWrapper.DB_DoctorResponseWrapper wrap = service.upsertDoctor(toEditId,inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
         System.debug(wrap.isSuccess);
         if(wrap.isSuccess=false){
@@ -77,18 +51,9 @@ public with sharing class HD_DoctorExternalSearchController {
     }
 
     public void deleteButtonAction() {
-        DoctorExternalBaseService.DB_DoctorExternalSearchWebService service = new DoctorExternalBaseService.DB_DoctorExternalSearchWebService();
-        Map<String, String> inputHttpHeaders = new Map<String, String>();
-        inputHttpHeaders.put('Content-Type', 'text/xml');
-        inputHttpHeaders.put('Accept', 'text/xml');
-        inputHttpHeaders.put('SoapAction', '');
-        DoctorExternalBaseService.SessionHeader_element sessionId = new DoctorExternalBaseService.SessionHeader_element();
-        sessionId.sessionId = dBSesionId;
-        service.inputHttpHeaders_x = inputHttpHeaders;
-        service.SessionHeader = sessionId;
-        DoctorExternalBaseWrapper.DB_DoctorResponseWrapper wrap = service.deleteDoctor(toDeleteId);
+        DB_SearchApi.DB_DoctorExternalSearchWebService service = configureService();
+        DB_ResponseWrapper.DB_DoctorResponseWrapper wrap = service.deleteDoctor(toDeleteId);
         Doctor__c docToRemoveFromList;
-
         for (Doctor__c doc: foundDoctors){
             if (doc.Id == toDeleteId) {
                 docToRemoveFromList = doc;
@@ -108,6 +73,7 @@ public with sharing class HD_DoctorExternalSearchController {
         inputUpsertFormDoctor = new Doctor__c();
         isDialogReadyToClose = false;
     }
+
     public void setEditedForm(){
         isDialogReadyToClose = false;
         for (Doctor__c doctor : foundDoctors){
@@ -116,6 +82,28 @@ public with sharing class HD_DoctorExternalSearchController {
                 break;
             }
         }
+    }
+
+    private DB_SearchApi.DB_DoctorExternalSearchWebService configureService(){
+        DB_SearchApi.DB_DoctorExternalSearchWebService service = new DB_SearchApi.DB_DoctorExternalSearchWebService();
+        Map<String, String> inputHttpHeaders = new Map<String, String>();
+        inputHttpHeaders.put('Content-Type', 'text/xml');
+        inputHttpHeaders.put('Accept', 'text/xml');
+        inputHttpHeaders.put('SoapAction', '');
+        DB_SearchApi.SessionHeader_element sessionId = new DB_SearchApi.SessionHeader_element();
+        sessionId.sessionId = dBSesionId;
+        service.inputHttpHeaders_x = inputHttpHeaders;
+        service.SessionHeader = sessionId;
+        return service;
+    }
+
+    private void getSessionId() {
+        partnerSoapSforceCom.Soap obj = new partnerSoapSforceCom.Soap();
+        partnerSoapSforceCom.LoginResult loginResult = obj.login('EggShell@Britenet.com', 'poco2jestem23dw3WF2mrIHOvMUy2nk2548');
+        obj.SessionHeader = new partnerSoapSforceCom.SessionHeader_element();
+        obj.endpoint_x = loginResult.ServerUrl;
+        obj.Sessionheader.sessionid = loginResult.sessionid;
+        dbSesionId = loginResult.sessionid;
     }
 
 

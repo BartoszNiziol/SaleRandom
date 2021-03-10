@@ -169,21 +169,15 @@
                 </div>
             </apex:form>
         </section>
-
         <div class="slds-backdrop slds-backdrop_open" id="modalFade" style="display:none"></div>
     </div>
 
     <script>
-
-
-
-
      let isDialogReadyToClose = true;
     function closeUpsertDialog(){
         if(isDialogReadyToClose){
        document.getElementById("upsertModal").style.display ="none";
        document.getElementById("modalFade").style.display = "none";
-
          }
     }
      function successCloseUpsertDialog(){
@@ -195,7 +189,6 @@
     }
 
     function openUpsertDialog(){
-
        document.getElementById("upsertModal").style.display ="block";
        document.getElementById("modalFade").style.display = "block";
     }
@@ -203,19 +196,14 @@
     function switchOnDialogReadyToClose(){
         isDialogReadyToClose = true;
     }
-    function empty(){
-
-    }
+    function empty(){}
 
     function changeHeaderToEdit(){
         document.getElementById('modal-heading-01').innerHTML = 'Edit Doctor'
     }
+
     function changeHeaderToAdd(){
         document.getElementById('modal-heading-01').innerHTML = 'Add New Doctor'
     }
-
-
-
-
     </script>
 </apex:page>
