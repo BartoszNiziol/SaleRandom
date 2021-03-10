@@ -70,13 +70,20 @@ global class HD_DoctorClientUseWebService {
 
     webService static HD_DoctorResponseStatus deleteDoctor(String id) {
 
-        Doctor__c doctorToDelete = new Doctor__c();
-        doctorToDelete.Id = id;
-        HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus(doctorToDelete);
-        responseStatus.isSuccess = true;
-        delete doctorToDelete;
-        return responseStatus;
+        try {
+            Doctor__c doctorToDelete = new Doctor__c();
+            doctorToDelete.Id = id;
+            HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus(doctorToDelete);
+            responseStatus.isSuccess = true;
+            delete doctorToDelete;
+            return responseStatus;
+        } catch (Exception e){
+            HD_DoctorResponseStatus responseStatus = new HD_DoctorResponseStatus();
+            responseStatus.isSuccess = false;
+            responseStatus.message = e.getMessage();
+            return responseStatus;
 
+        }
 
     }
 

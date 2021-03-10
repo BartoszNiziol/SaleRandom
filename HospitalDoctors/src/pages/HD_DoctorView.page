@@ -144,7 +144,6 @@
         </apex:form>
     </apex:pageBlock>
     <apex:pageBlock id="contractsBlockPage">
-
         <apex:facet name="header">
             <div class="PageFacet">{!$Label.Contracts_Label}</div>
         </apex:facet>

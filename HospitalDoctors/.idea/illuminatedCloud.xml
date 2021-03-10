@@ -4,9 +4,9 @@
     <option name="connections">
       <list>
         <IlluminatedCloudConnection>
-          <option name="connectionName" value="HospitalDoctors" />
+          <option name="connectionName" value="HospitalDoctor" />
           <option name="defaultModuleName" value="HospitalDoctors" />
-          <option name="offlineSymbolTablePath" value="$PROJECT_DIR$/IlluminatedCloud/HospitalDoctors/OfflineSymbolTable.zip" />
+          <option name="offlineSymbolTablePath" value="$PROJECT_DIR$/IlluminatedCloud/HospitalDoctor/OfflineSymbolTable.zip" />
         </IlluminatedCloudConnection>
       </list>
     </option>

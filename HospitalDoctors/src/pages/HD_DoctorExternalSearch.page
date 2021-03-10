@@ -1,15 +1,189 @@
-<apex:page standardStylesheets="false" lightningStylesheets="true">
-    <apex:slds />
+<apex:page standardStylesheets="false" lightningStylesheets="true" controller="HD_DoctorExternalSearchController">
+    <apex:includeScript value="{!$Resource.jQuery}"/>
+    <apex:slds/>
     <div class="slds-scope">
         <apex:form id="form">
-            <div class="slds-modal__header">
-                <h2 class="slds-text-heading--medium">SLDS On Visualforce page</h2>
+            <div class="slds-page-header">
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-page-header__name">
+                                    <div class="slds-page-header__name-title">
+                                        <h1 style="float:left">
+                                            <span class="slds-page-header__title slds-truncate"
+                                                  title="Search For Doctors on SO">Search For Doctors on SO</span>
+                                        </h1>
+                                    </div>
+                                </div>
+                                <div style="float:right; text-align:right">
+                                    <button type="button" class="slds-button slds-button_brand"
+                                            onclick="openUpsertDialog()">New
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="slds-modal__content slds-p-around--medium">
-                <apex:commandLink value="">
-                    <button type="button" class="slds-button slds-button--brand">Cancel</button>
-                </apex:commandLink>
-            </div>
+            <article class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <fieldset class="slds-form-element slds-form-element_compound">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__row">
+                                        <div class="slds-size_1-of-2">
+                                            <div class="slds-form-element">
+                                                <label class="slds-form-element__label" for="input-01">First
+                                                    Name</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField value="{!inputSearchFormDoctor.First_Name__c}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-size_1-of-2">
+                                            <div class="slds-form-element">
+                                                <label class="slds-form-element__label" for="input-02">Last Name</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField value="{!inputSearchFormDoctor.Name}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset class="slds-form-element slds-form-element_compound">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__row">
+                                        <div class="slds-size_1-of-2">
+                                            <div class="slds-form-element">
+                                                <label class="slds-form-element__label" for="input-01">Email</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField value="{!inputSearchFormDoctor.Email__c}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-size_1-of-2">
+                                            <div class="slds-form-element">
+                                                <label class="slds-form-element__label" for="input-02">Country</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField value="{!inputSearchFormDoctor.Country__c}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="slds-button-group" role="group" style="text-align:center; display:block;">
+                                <apex:commandButton styleClass="slds-button slds-button_neutral"
+                                                    action="{!searchButtonAction}" value="Search"/>
+                                <apex:commandButton styleClass="slds-button slds-button_neutral"
+                                                    action="{!clearButtonAction}" value="Clear"/>
+                            </div>
+                        </div>
+                    </header>
+                </div>
+            </article>
+
+            <article class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <apex:dataTable value="{!foundDoctors}" var="doc"
+                                            styleClass="slds-table slds-table--bordered slds-table--striped" id="foundDoctorsTable">
+                                <apex:column headerValue="Action">
+                                    <div class="slds-button-group" role="group"
+                                         style="text-align:center; display:block;">
+
+                                        <apex:commandButton styleClass="slds-button slds-button_neutral"
+                                                              value="Edit" reRender="foundDoctorsTable" onClick="openUpsertDialog()">
+                                            <apex:param value="{!doc.Id}" name="toEditId" assignTo="{!toEditId}"/>
+                                        </apex:commandButton>
+
+                                        <apex:commandButton styleClass="slds-button slds-button_neutral"
+                                                            action="{!deleteButtonAction}" value="Delete" reRender="foundDoctorsTable">
+                                            <apex:param value="{!doc.Id}" name="toDeleteId" assignTo="{!toDeleteId}"/>
+                                        </apex:commandButton>
+                                    </div>
+                                </apex:column>
+                                <apex:column value="{!doc.First_Name__c}" headerValue="First Name"/>
+                                <apex:column value="{!doc.Name}" headerValue="Last Name"/>
+                                <apex:column value="{!doc.Email__c}" headerValue="Email"/>
+                                <apex:column value="{!doc.Country__c}" headerValue="Country"/>
+                            </apex:dataTable>
+                        </div>
+                    </header>
+                </div>
+            </article>
         </apex:form>
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="false"
+                 aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open" id="upsertModal"
+                 style="display:none ">
+            <apex:form>
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close">
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Doctor</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <fieldset class="slds-form-element slds-form-element_compound">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="input-01">First Name</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField value="{!inputUpsertFormDoctor.First_Name__c}"/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="input-01">Last Name</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField value="{!inputUpsertFormDoctor.Name}"/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="input-01">Email</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField value="{!inputUpsertFormDoctor.Email__c}"/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="input-01">Country</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField value="{!inputUpsertFormDoctor.Country__c}"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button type="button" class="slds-button slds-button_neutral" onclick="closeUpsertDialog()">
+                            Cancel
+                        </button>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!newButtonAction}"
+                                            value="Save"/>
+                    </footer>
+                </div>
+            </apex:form>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" id="modalFade" style="display:none"></div>
     </div>
+
+    <script>
+    function closeUpsertDialog(){
+       document.getElementById("upsertModal").style.display ="none";
+       document.getElementById("modalFade").style.display = "none";
+    }
+
+    function openUpsertDialog(){
+       document.getElementById("upsertModal").style.display ="block";
+       document.getElementById("modalFade").style.display = "block";
+    }
+
+
+    </script>
 </apex:page>
