@@ -94,6 +94,8 @@ public with sharing class HD_DoctorExternalSearchController {
         DB_ResponseWrapper.DB_DoctorResponseWrapper wrap = service.upsertDoctor(toEditId,inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
         System.debug('saveButtonmesage');
         System.debug(wrap.message);
+        System.debug(wrap.isSuccess);
+
     }
 
     public void deleteButtonAction() {
@@ -107,8 +109,6 @@ public with sharing class HD_DoctorExternalSearchController {
         service.inputHttpHeaders_x = inputHttpHeaders;
         service.SessionHeader = sessionId;
         DoctorExternalBaseWrapper.DB_DoctorResponseWrapper wrap = service.deleteDoctor(toDeleteId);
-        System.debug(wrap.isSuccess);
-        System.debug(wrap.message);
         Doctor__c docToRemoveFromList;
 
         for (Doctor__c doc: foundDoctors){
