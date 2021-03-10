@@ -22,7 +22,7 @@
                                     <apex:commandButton styleClass="slds-button slds-button_neutral"
                                                         action="{!setEditedIdNull}"
                                                         value="New" reRender="foundDoctorsTable,modalPanel"
-                                                        onClick="openUpsertDialog()">
+                                                        onClick="openUpsertDialog() , changeHeaderToAdd()">
                                     </apex:commandButton>
                                 </div>
                             </div>
@@ -42,7 +42,7 @@
                                                 <label class="slds-form-element__label" for="input-01">First
                                                     Name</label>
                                                 <div class="slds-form-element__control">
-                                                    <apex:inputField value="{!inputSearchFormDoctor.First_Name__c}"/>
+                                                    <apex:inputField value="{!inputSearchFormDoctor.First_Name__c}" styleClass="slds-input"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -79,7 +79,7 @@
                                     </div>
                                 </div>
                             </fieldset>
-                            <div class="slds-button-group" role="group" style="text-align:center; display:block;">
+                            <div class="slds-button-group" role="group" style=" display:block; margin-left: 25%">
                                 <apex:commandButton styleClass="slds-button slds-button_neutral"
                                                     action="{!searchButtonAction}" value="Search"/>
                                 <apex:commandButton styleClass="slds-button slds-button_neutral"
@@ -103,11 +103,11 @@
 
                                         <apex:commandButton styleClass="slds-button slds-button_neutral"
                                                             value="Edit" reRender=" foundDoctorsTable , modalPanel "
-                                                            onClick="openUpsertDialog()" action="{!setEditedForm}">
+                                                            onClick="openUpsertDialog(),changeHeaderToEdit()" action="{!setEditedForm}">
                                             <apex:param value="{!doc.Id}" name="toEditId" assignTo="{!toEditId}"/>
                                         </apex:commandButton>
 
-                                        <apex:commandButton styleClass="slds-button slds-button_neutral"
+                                        <apex:commandButton styleClass="slds-button slds-button_neutral" onClick="if(!confirm('Are you sure to delete this Doctor?')){return false;}"
                                                             action="{!deleteButtonAction}" value="Delete"
                                                             reRender="foundDoctorsTable">
                                             <apex:param value="{!doc.Id}" name="toDeleteId" assignTo="{!toDeleteId}"/>
@@ -173,7 +173,7 @@
                         <apex:commandButton styleClass="slds-button slds-button_neutral"
                                             onComplete="closeUpsertDialog()" value="Cancel" immediate="true"/>
                         <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!saveButtonAction}"
-                                            onComplete="{!if(isDialogReadyToClose == true,"closeUpsertDialog()","empty()")} "
+                                            onComplete="{!if(isDialogReadyToClose == true,"successCloseUpsertDialog()","empty()")} "
                                             value="Save" reRender="modalPanel, foundDoctorsTable"/>
                     </footer>
                 </div>
@@ -196,6 +196,13 @@
 
          }
     }
+     function successCloseUpsertDialog(){
+        if(isDialogReadyToClose){
+       document.getElementById("upsertModal").style.display ="none";
+       document.getElementById("modalFade").style.display = "none";
+        alert('Operation Completed !');
+         }
+    }
 
     function openUpsertDialog(){
 
@@ -208,6 +215,13 @@
     }
     function empty(){
 
+    }
+
+    function changeHeaderToEdit(){
+        document.getElementById('modal-heading-01').innerHTML = 'Edit Doctor'
+    }
+    function changeHeaderToAdd(){
+        document.getElementById('modal-heading-01').innerHTML = 'Add New Doctor'
     }
 
 

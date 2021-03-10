@@ -28,8 +28,11 @@ global class DB_DoctorExternalSearchWebService {
             if(id != null){
                 doctor.Id = id;
             }
-            upsert doctor;
+          Database.UpsertResult result = Database.upsert(doctor);
+            result.isCreated();
+
             DB_DoctorResponseWrapper responseStatus = new DB_DoctorResponseWrapper(doctor);
+            responseStatus.message ='Operation Success !';
             return responseStatus;
         } catch (Exception e) {
             return applyErrorStatus(e);

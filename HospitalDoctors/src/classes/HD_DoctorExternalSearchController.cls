@@ -74,7 +74,6 @@ public with sharing class HD_DoctorExternalSearchController {
         }else{
             isDialogReadyToClose = true;
         }
-
     }
 
     public void deleteButtonAction() {
@@ -110,7 +109,7 @@ public with sharing class HD_DoctorExternalSearchController {
         isDialogReadyToClose = false;
     }
     public void setEditedForm(){
-
+        isDialogReadyToClose = false;
         for (Doctor__c doctor : foundDoctors){
             if (doctor.Id == toEditId) {
                 inputUpsertFormDoctor = doctor;
