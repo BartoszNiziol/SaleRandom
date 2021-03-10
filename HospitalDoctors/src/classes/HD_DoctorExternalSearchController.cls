@@ -24,20 +24,7 @@ public with sharing class HD_DoctorExternalSearchController {
         dbSesionId = loginResult.sessionid;
     }
 
-    public void newButtonAction() {
 
-        DoctorExternalBaseService.DB_DoctorExternalSearchWebService service = new DoctorExternalBaseService.DB_DoctorExternalSearchWebService();
-        Map<String, String> inputHttpHeaders = new Map<String, String>();
-        inputHttpHeaders.put('Content-Type', 'text/xml');
-        inputHttpHeaders.put('Accept', 'text/xml');
-        inputHttpHeaders.put('SoapAction', '');
-        DoctorExternalBaseService.SessionHeader_element sessionId = new DoctorExternalBaseService.SessionHeader_element();
-        sessionId.sessionId = dBSesionId;
-        service.inputHttpHeaders_x = inputHttpHeaders;
-        service.SessionHeader = sessionId;
-        DoctorExternalBaseWrapper.DB_DoctorResponseWrapper wrap = service.addDoctor(inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
-        System.debug(wrap.id);
-    }
 
     public void searchButtonAction() {
         foundDoctors = new List<Doctor__c>();
@@ -66,31 +53,50 @@ public with sharing class HD_DoctorExternalSearchController {
         }
     }
 
-    public void clearButtonAction() {
-        inputSearchFormDoctor = null;
-        foundDoctors = new List<Doctor__c>();
-    }
+//    public void newButtonAction() {
+//
+//        DoctorExternalBaseService.DB_DoctorExternalSearchWebService service = new DoctorExternalBaseService.DB_DoctorExternalSearchWebService();
+//        Map<String, String> inputHttpHeaders = new Map<String, String>();
+//        inputHttpHeaders.put('Content-Type', 'text/xml');
+//        inputHttpHeaders.put('Accept', 'text/xml');
+//        inputHttpHeaders.put('SoapAction', '');
+//        DoctorExternalBaseService.SessionHeader_element sessionId = new DoctorExternalBaseService.SessionHeader_element();
+//        sessionId.sessionId = dBSesionId;
+//        service.inputHttpHeaders_x = inputHttpHeaders;
+//        service.SessionHeader = sessionId;
+//        DoctorExternalBaseWrapper.DB_DoctorResponseWrapper wrap = service.addDoctor(inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
+//    }
+//
+//    public void editButtonAction() {
+//        System.debug(toEditId);
+//        DoctorExternalBaseService.DB_DoctorExternalSearchWebService service = new DoctorExternalBaseService.DB_DoctorExternalSearchWebService();
+//        Map<String, String> inputHttpHeaders = new Map<String, String>();
+//        inputHttpHeaders.put('Content-Type', 'text/xml');
+//        inputHttpHeaders.put('Accept', 'text/xml');
+//        inputHttpHeaders.put('SoapAction', '');
+//        DoctorExternalBaseService.SessionHeader_element sessionId = new DoctorExternalBaseService.SessionHeader_element();
+//        sessionId.sessionId = dBSesionId;
+//        service.inputHttpHeaders_x = inputHttpHeaders;
+//        service.SessionHeader = sessionId;
+//        DoctorExternalBaseWrapper.DB_DoctorResponseWrapper wrap = service.updateDoctor(toEditId,inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
+//    }
 
-    public void editButtonAction() {
-        System.debug(toEditId);
-        DoctorExternalBaseService.DB_DoctorExternalSearchWebService service = new DoctorExternalBaseService.DB_DoctorExternalSearchWebService();
+    public void saveButtonAction() {
+        DB_SearchApi.DB_DoctorExternalSearchWebService service = new  DB_SearchApi.DB_DoctorExternalSearchWebService();
         Map<String, String> inputHttpHeaders = new Map<String, String>();
         inputHttpHeaders.put('Content-Type', 'text/xml');
         inputHttpHeaders.put('Accept', 'text/xml');
         inputHttpHeaders.put('SoapAction', '');
-        DoctorExternalBaseService.SessionHeader_element sessionId = new DoctorExternalBaseService.SessionHeader_element();
+        DB_SearchApi.SessionHeader_element sessionId = new DB_SearchApi.SessionHeader_element();
         sessionId.sessionId = dBSesionId;
         service.inputHttpHeaders_x = inputHttpHeaders;
         service.SessionHeader = sessionId;
-        DoctorExternalBaseWrapper.DB_DoctorResponseWrapper wrap = service.updateDoctor(toEditId,inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
-        System.debug(wrap.isSuccess);
+        DB_ResponseWrapper.DB_DoctorResponseWrapper wrap = service.upsertDoctor(toEditId,inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
+        System.debug('saveButtonmesage');
         System.debug(wrap.message);
-
-
     }
 
     public void deleteButtonAction() {
-        System.debug(toDeleteId);
         DoctorExternalBaseService.DB_DoctorExternalSearchWebService service = new DoctorExternalBaseService.DB_DoctorExternalSearchWebService();
         Map<String, String> inputHttpHeaders = new Map<String, String>();
         inputHttpHeaders.put('Content-Type', 'text/xml');
@@ -105,7 +111,6 @@ public with sharing class HD_DoctorExternalSearchController {
         System.debug(wrap.message);
         Doctor__c docToRemoveFromList;
 
-
         for (Doctor__c doc: foundDoctors){
 
             if (doc.Id == toDeleteId) {
@@ -113,8 +118,15 @@ public with sharing class HD_DoctorExternalSearchController {
             }
         }
         foundDoctors.remove(foundDoctors.indexOf(docToRemoveFromList));
+    }
 
+    public void clearButtonAction() {
+        inputSearchFormDoctor = new Doctor__c();
+        foundDoctors = new List<Doctor__c>();
+    }
 
+    public void setEditedIdNull(){
+        toEditId = null;
     }
 
 

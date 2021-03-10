@@ -19,9 +19,10 @@
                                     </div>
                                 </div>
                                 <div style="float:right; text-align:right">
-                                    <button type="button" class="slds-button slds-button_brand"
-                                            onclick="openUpsertDialog()">New
-                                    </button>
+
+                                    <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!setEditedIdNull}"
+                                                        value="New" reRender="foundDoctorsTable" onClick="openUpsertDialog()">
+                                    </apex:commandButton>
                                 </div>
                             </div>
                         </div>
@@ -164,7 +165,7 @@
                         <button type="button" class="slds-button slds-button_neutral" onclick="closeUpsertDialog()">
                             Cancel
                         </button>
-                        <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!newButtonAction}"
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!saveButtonAction}" onComplete="closeUpsertDialog()"
                                             value="Save"/>
                     </footer>
                 </div>

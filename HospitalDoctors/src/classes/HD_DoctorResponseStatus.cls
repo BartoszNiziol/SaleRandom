@@ -10,6 +10,7 @@
         public HD_DoctorResponseStatus(Doctor__c doctor){
             this.id = doctor.Id;
             message = 'Success';
+            isSuccess = true;
         }
 
         public HD_DoctorResponseStatus(){

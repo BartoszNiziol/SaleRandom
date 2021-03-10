@@ -7,7 +7,6 @@ global class DB_DoctorResponseWrapper {
     webService String message;
     webService Boolean isSuccess;
 
-
     public DB_DoctorResponseWrapper(Doctor__c doctor) {
         this.firstname = doctor.First_Name__c;
         this.lastName = doctor.Name;
