@@ -108,6 +108,4 @@ public with sharing class HD_DoctorExternalSearchController {
         obj.Sessionheader.sessionid = loginResult.sessionid;
         dbSesionId = loginResult.sessionid;
     }
-
-
 }

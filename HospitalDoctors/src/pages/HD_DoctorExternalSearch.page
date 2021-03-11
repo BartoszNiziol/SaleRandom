@@ -7,11 +7,8 @@
     .slds-form-element__label
     {
         font-weight:bold;
-
     }
-
     </style>
-
     <div class="slds-scope">
         <apex:form id="form">
             <div class="slds-page-header" style="margin-bottom:1%">

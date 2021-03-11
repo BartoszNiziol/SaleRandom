@@ -5,6 +5,16 @@
 public with sharing class HD_Utils {
 
 
+    public static String retrieveCredentials(String credentialName){
+        HD_Setting__c settingItem = HD_Setting__c.getInstance(credentialName);
+        if (settingItem == null) {
+            return '';
+        }
+        String credentialValue = settingItem.Value__c;
+        return credentialValue;
+
+    }
+
     public static Boolean isSettingEnabled(String settingName, String valueToCheck) {
         HD_Setting__c settingItem = HD_Setting__c.getInstance(settingName);
         if (settingItem == null) {

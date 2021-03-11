@@ -31,7 +31,7 @@ global class DB_DoctorExternalSearchWebService {
             }
             Database.UpsertResult result = Database.upsert(doctor);
             DB_DoctorResponseWrapper responseStatus = new DB_DoctorResponseWrapper(doctor);
-            responseStatus.message ='Operation Success !';
+            responseStatus.message =Label.Operation_Succes_Label;
             System.debug(responseStatus.message);
             return responseStatus;
         } catch (Exception e) {
@@ -56,7 +56,7 @@ global class DB_DoctorExternalSearchWebService {
         responseStatus.isSuccess = false;
         responseStatus.message = e.getMessage();
         if(responseStatus.message.contains('DUPLICATES_DETECTED')){
-            responseStatus.message = 'This Doctor Already Exist in Doctor Base';
+            responseStatus.message = Label.Duplicates_Error;
         }
         return responseStatus;
     }
