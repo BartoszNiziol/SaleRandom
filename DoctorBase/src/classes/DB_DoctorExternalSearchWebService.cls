@@ -20,7 +20,6 @@ global class DB_DoctorExternalSearchWebService {
 
     webService static DB_DoctorResponseWrapper upsertDoctor(String id, String firstName, String lastName, String email, String country){
         try {
-
             Doctor__c doctor = new Doctor__c();
             doctor.First_Name__c = firstName;
             doctor.Name = lastName;

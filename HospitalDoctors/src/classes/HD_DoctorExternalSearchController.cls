@@ -102,7 +102,7 @@ public with sharing class HD_DoctorExternalSearchController {
 
     private void getSessionId() {
         partnerSoapSforceCom.Soap obj = new partnerSoapSforceCom.Soap();
-        partnerSoapSforceCom.LoginResult loginResult = obj.login('EggShell@Britenet.com', 'poco2jestem23dw3WF2mrIHOvMUy2nk2548');
+        partnerSoapSforceCom.LoginResult loginResult = obj.login(HD_Utils.retrieveCredentials('DBLogin') , HD_Utils.retrieveCredentials('DBPassword'));
         obj.SessionHeader = new partnerSoapSforceCom.SessionHeader_element();
         obj.endpoint_x = loginResult.ServerUrl;
         obj.Sessionheader.sessionid = loginResult.sessionid;
