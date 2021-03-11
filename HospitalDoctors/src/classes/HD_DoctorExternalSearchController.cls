@@ -41,10 +41,12 @@ public with sharing class HD_DoctorExternalSearchController {
         DB_SearchApi.DB_DoctorExternalSearchWebService service = configureService();
         DB_ResponseWrapper.DB_DoctorResponseWrapper wrap = service.upsertDoctor(toEditId,inputUpsertFormDoctor.First_Name__c, inputUpsertFormDoctor.Name, inputUpsertFormDoctor.Email__c, inputUpsertFormDoctor.Country__c);
         System.debug(wrap.isSuccess);
-        if(wrap.isSuccess=false){
+        if(wrap.isSuccess==false){
             isDialogReadyToClose = false;
             ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR,wrap.message);
             ApexPages.addMessage(myMsg);
+            System.debug('message');
+            System.debug(myMsg);
         }else{
             isDialogReadyToClose = true;
         }

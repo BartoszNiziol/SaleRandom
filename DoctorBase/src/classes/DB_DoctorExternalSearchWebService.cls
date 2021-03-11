@@ -20,6 +20,7 @@ global class DB_DoctorExternalSearchWebService {
 
     webService static DB_DoctorResponseWrapper upsertDoctor(String id, String firstName, String lastName, String email, String country){
         try {
+
             Doctor__c doctor = new Doctor__c();
             doctor.First_Name__c = firstName;
             doctor.Name = lastName;
@@ -28,11 +29,10 @@ global class DB_DoctorExternalSearchWebService {
             if(id != null){
                 doctor.Id = id;
             }
-          Database.UpsertResult result = Database.upsert(doctor);
-            result.isCreated();
-
+            Database.UpsertResult result = Database.upsert(doctor);
             DB_DoctorResponseWrapper responseStatus = new DB_DoctorResponseWrapper(doctor);
             responseStatus.message ='Operation Success !';
+            System.debug(responseStatus.message);
             return responseStatus;
         } catch (Exception e) {
             return applyErrorStatus(e);

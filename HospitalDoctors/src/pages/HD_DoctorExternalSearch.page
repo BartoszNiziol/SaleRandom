@@ -1,6 +1,7 @@
 <apex:page standardStylesheets="false" lightningStylesheets="true" controller="HD_DoctorExternalSearchController" sideBar="false">
     <apex:includeScript value="{!$Resource.jQuery}"/>
     <apex:slds/>
+    <c:HD_SpinnerComponent />
     <div class="slds-scope">
         <apex:form id="form">
             <div class="slds-page-header" style="margin-bottom:1%">
@@ -19,7 +20,7 @@
                                     </div>
                                 </div>
                                 <div style="float:right; text-align:right">
-                                    <apex:commandButton styleClass="slds-button slds-button_brand"
+                                    <apex:commandButton styleClass="slds-button slds-button_brand" status="loadingGif"
                                                         action="{!setEditedIdNull}"
                                                         value="{!$Label.New_Button}" reRender="foundDoctorsTable,modalPanel"
                                                         onClick="openUpsertDialog() , changeHeaderToAdd()">
@@ -76,9 +77,9 @@
                                 </div>
                             <div class="slds-button-row" role="group" style=" display:block; text-align:center; margin-top:4%">
                                 <apex:commandButton styleClass="slds-button slds-button_brand"
-                                                    action="{!searchButtonAction}" value="{!$Label.Search_Button}"/>
+                                                    action="{!searchButtonAction}" value="{!$Label.Search_Button}" status="loadingGif"/>
                                 <apex:commandButton styleClass="slds-button slds-button_brand"
-                                                    action="{!clearButtonAction}" value="{!$Label.Clear_Button}"/>
+                                                    action="{!clearButtonAction}" value="{!$Label.Clear_Button}" status="loadingGif"/>
                             </div>
                         </div>
                     </header>
@@ -96,12 +97,12 @@
                                          style="text-align:left; display:block;">
                                         <apex:commandButton styleClass="slds-button slds-button_neutral"
                                                             value="{!$Label.Edit_Button}" reRender=" foundDoctorsTable , modalPanel "
-                                                            onClick="openUpsertDialog(),changeHeaderToEdit()" action="{!setEditedForm}">
+                                                            onClick="openUpsertDialog(),changeHeaderToEdit()" action="{!setEditedForm}" status="loadingGif">
                                             <apex:param value="{!doc.Id}" name="toEditId" assignTo="{!toEditId}"/>
                                         </apex:commandButton>
                                         <apex:commandButton styleClass="slds-button slds-button_neutral" onClick="if(!confirm('{!$Label.Delete_Warning}')){return false;}"
                                                             action="{!deleteButtonAction}" value="{!$Label.Delete_Button}"
-                                                            reRender="foundDoctorsTable">
+                                                            reRender="foundDoctorsTable" status="loadingGif">
                                             <apex:param value="{!doc.Id}" name="toDeleteId" assignTo="{!toDeleteId}"/>
                                         </apex:commandButton>
                                     </div>
@@ -129,7 +130,6 @@
                         <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.Doctor_Label}</h2>
                     </header>
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-                        <apex:messages />
                         <apex:outputPanel id="modalPanel">
                         <fieldset class="slds-form-element slds-form-element_compound">
                             <div class="slds-form-element">
@@ -156,15 +156,16 @@
                                     <apex:inputField value="{!inputUpsertFormDoctor.Country__c}" styleClass="slds-input"/>
                                 </div>
                             </div>
+                            <apex:messages />
                         </fieldset>
             </apex:outputPanel>
                     </div>
                     <footer class="slds-modal__footer">
                         <apex:commandButton styleClass="slds-button slds-button_neutral"
-                                            onComplete="closeUpsertDialog()" value="{!$Label.Cancel_Button}" immediate="true"/>
+                                            onComplete="closeUpsertDialog()" value="{!$Label.Cancel_Button}" immediate="true" status="loadingGif"/>
                         <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!saveButtonAction}"
                                             onComplete="{!if(isDialogReadyToClose == true,"successCloseUpsertDialog()","empty()")} "
-                                            value="{!$Label.Save_Button}" reRender="modalPanel, foundDoctorsTable"/>
+                                            value="{!$Label.Save_Button}" status="loadingGif" reRender="modalPanel, foundDoctorsTable"/>
                     </footer>
                 </div>
             </apex:form>
