@@ -1,7 +1,17 @@
-<apex:page standardStylesheets="false" lightningStylesheets="true" controller="HD_DoctorExternalSearchController" sideBar="false">
+<apex:page standardStylesheets="false" lightningStylesheets="true" controller="HD_DoctorExternalSearchController"
+           sideBar="false">
     <apex:includeScript value="{!$Resource.jQuery}"/>
     <apex:slds/>
-    <c:HD_SpinnerComponent />
+    <c:HD_SpinnerComponent/>
+    <style>
+    .slds-form-element__label
+    {
+        font-weight:bold;
+
+    }
+
+    </style>
+
     <div class="slds-scope">
         <apex:form id="form">
             <div class="slds-page-header" style="margin-bottom:1%">
@@ -15,14 +25,15 @@
                                     <div class="slds-page-header__name-title">
                                         <h1 style="float:left">
                                             <span class="slds-page-header__title slds-truncate"
-                                                  title="Search For Doctors on SO">{!$Label.Search_For_Doctors_On_SO_Label}</span>
+                                                  title="Search For Doctors on SO">{!$Label.Search_For_Doctors_Label}</span>
                                         </h1>
                                     </div>
                                 </div>
                                 <div style="float:right; text-align:right">
                                     <apex:commandButton styleClass="slds-button slds-button_brand" status="loadingGif"
                                                         action="{!setEditedIdNull}"
-                                                        value="{!$Label.New_Button}" reRender="foundDoctorsTable,modalPanel"
+                                                        value="{!$Label.New_Button}"
+                                                        reRender="foundDoctorsTable,modalPanel"
                                                         onClick="openUpsertDialog() , changeHeaderToAdd()">
                                     </apex:commandButton>
                                 </div>
@@ -30,56 +41,72 @@
                         </div>
                     </div>
                 </div>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__col-meta">
+                        <p class="slds-page-header__meta-text" style="margin-left:1%">{!$Label.On_Doctor_Base_label}</p>
+                    </div>
+                </div>
             </div>
             <article class="slds-card">
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
-                                <div class="slds-form-element__control slds-form-element_compound" style="margin-top:2%">
-                                    <div class="slds-form-element__row">
-                                        <div class="slds-size_3-of-6 slds-col slds-p-horizontal_medium" >
-                                            <div class="slds-form-element" >
-                                                <label class="slds-form-element__label" for="input-01">{!$Label.First_Name}</label>
-                                                <div class="slds-form-element__control">
-                                                    <apex:inputField value="{!inputSearchFormDoctor.First_Name__c}" styleClass="slds-input"/>
-                                                </div>
+                            <div class="slds-form-element__control slds-form-element_compound" style="margin-top:2%">
+                                <div class="slds-form-element__row">
+                                    <div class="slds-size_3-of-6 slds-col slds-p-horizontal_medium">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label"
+                                                   for="input-01">{!$Label.First_Name}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:inputField value="{!inputSearchFormDoctor.First_Name__c}"
+                                                                 styleClass="slds-input"/>
                                             </div>
                                         </div>
-                                        <div class="slds-size_3-of-6 slds-col slds-p-horizontal_medium">
-                                            <div class="slds-form-element">
-                                                <label class="slds-form-element__label" for="input-02">{!$Label.Last_Name_Label}</label>
-                                                <div class="slds-form-element__control" style="text-align:right">
-                                                    <apex:inputField value="{!inputSearchFormDoctor.Name}" styleClass="slds-input"/>
-                                                </div>
+                                    </div>
+                                    <div class="slds-size_3-of-6 slds-col slds-p-horizontal_medium">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label"
+                                                   for="input-02">{!$Label.Last_Name_Label}</label>
+                                            <div class="slds-form-element__control" style="text-align:right">
+                                                <apex:inputField value="{!inputSearchFormDoctor.Name}"
+                                                                 styleClass="slds-input"/>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="slds-form-element__control slds-form-element_compound" style="margin-top:2%">
-                                    <div class="slds-form-element__row">
-                                        <div class="slds-size_3-of-6 slds-col slds-p-horizontal_medium">
-                                            <div class="slds-form-element">
-                                                <label class="slds-form-element__label" for="input-01">{!$Label.Email_Label}</label>
-                                                <div class="slds-form-element__control">
-                                                    <apex:inputText value="{!inputSearchFormDoctor.Email__c}" styleClass="slds-input"/>
-                                                </div>
+                            </div>
+                            <div class="slds-form-element__control slds-form-element_compound" style="margin-top:2%">
+                                <div class="slds-form-element__row">
+                                    <div class="slds-size_3-of-6 slds-col slds-p-horizontal_medium">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label"
+                                                   for="input-01">{!$Label.Email_Label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:inputText value="{!inputSearchFormDoctor.Email__c}"
+                                                                styleClass="slds-input"/>
                                             </div>
                                         </div>
-                                        <div class="slds-size_3-of-6 slds-col slds-p-horizontal_medium" >
-                                            <div class="slds-form-element">
-                                                <label class="slds-form-element__label" for="input-02">{!$Label.Country_Label}</label>
-                                                <div class="slds-form-element__control">
-                                                    <apex:inputField value="{!inputSearchFormDoctor.Country__c}" styleClass="slds-input"/>
-                                                </div>
+                                    </div>
+                                    <div class="slds-size_3-of-6 slds-col slds-p-horizontal_medium">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label"
+                                                   for="input-02">{!$Label.Country_Label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:inputField value="{!inputSearchFormDoctor.Country__c}"
+                                                                 styleClass="slds-input"/>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            <div class="slds-button-row" role="group" style=" display:block; text-align:center; margin-top:4%">
+                            </div>
+                            <div class="slds-button-row" role="group"
+                                 style=" display:block; text-align:center; margin-top:4%; margin-bottom:1%">
                                 <apex:commandButton styleClass="slds-button slds-button_brand"
-                                                    action="{!searchButtonAction}" value="{!$Label.Search_Button}" status="loadingGif"/>
+                                                    action="{!searchButtonAction}" value="{!$Label.Search_Button}"
+                                                    status="loadingGif"/>
                                 <apex:commandButton styleClass="slds-button slds-button_brand"
-                                                    action="{!clearButtonAction}" value="{!$Label.Clear_Button}" status="loadingGif"/>
+                                                    action="{!clearButtonAction}" value="{!$Label.Clear_Button}"
+                                                    status="loadingGif"/>
                             </div>
                         </div>
                     </header>
@@ -89,19 +116,23 @@
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
-                            <apex:dataTable value="{!foundDoctors}" var="doc"
-                                            styleClass="slds-table slds-table--bordered slds-table--striped"
+                            <apex:dataTable value="{!foundDoctors}" var="doc" columnsWidth="14%,23%,23%,20%,20%"
+                                            styleClass="slds-table slds-table--bordered slds-table-- slds-table_col-bordered"
                                             id="foundDoctorsTable">
                                 <apex:column headerValue="{!$Label.Action_Label}">
                                     <div class="slds-button-group" role="group"
                                          style="text-align:left; display:block;">
                                         <apex:commandButton styleClass="slds-button slds-button_neutral"
-                                                            value="{!$Label.Edit_Button}" reRender=" foundDoctorsTable , modalPanel "
-                                                            onClick="openUpsertDialog(),changeHeaderToEdit()" action="{!setEditedForm}" status="loadingGif">
+                                                            value="{!$Label.Edit_Button}"
+                                                            reRender=" foundDoctorsTable , modalPanel "
+                                                            onClick="openUpsertDialog(),changeHeaderToEdit()"
+                                                            action="{!setEditedForm}" status="loadingGif">
                                             <apex:param value="{!doc.Id}" name="toEditId" assignTo="{!toEditId}"/>
                                         </apex:commandButton>
-                                        <apex:commandButton styleClass="slds-button slds-button_neutral" onClick="if(!confirm('{!$Label.Delete_Warning}')){return false;}"
-                                                            action="{!deleteButtonAction}" value="{!$Label.Delete_Button}"
+                                        <apex:commandButton styleClass="slds-button slds-button_neutral"
+                                                            onClick="if(!confirm('{!$Label.Delete_Warning}')){return false;}"
+                                                            action="{!deleteButtonAction}"
+                                                            value="{!$Label.Delete_Button}"
                                                             reRender="foundDoctorsTable" status="loadingGif">
                                             <apex:param value="{!doc.Id}" name="toDeleteId" assignTo="{!toDeleteId}"/>
                                         </apex:commandButton>
@@ -131,41 +162,50 @@
                     </header>
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                         <apex:outputPanel id="modalPanel">
-                        <fieldset class="slds-form-element slds-form-element_compound">
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label" for="input-01">{!$Label.First_Name}</label>
-                                <div class="slds-form-element__control">
-                                    <apex:inputField value="{!inputUpsertFormDoctor.First_Name__c}" styleClass="slds-input"/>
+                            <apex:messages style="color:red; margin-left: 5px"/>
+                            <fieldset class="slds-form-element slds-form-element_compound">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="input-01">{!$Label.First_Name}</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:inputField value="{!inputUpsertFormDoctor.First_Name__c}"
+                                                         styleClass="slds-input"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label" for="input-01">{!$Label.Last_Name_Label}</label>
-                                <div class="slds-form-element__control">
-                                    <apex:inputField value="{!inputUpsertFormDoctor.Name}" required="true" styleClass="slds-input"/>
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label"
+                                           for="input-01">{!$Label.Last_Name_Label}</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:inputField value="{!inputUpsertFormDoctor.Name}" required="true"
+                                                         styleClass="slds-input"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label" for="input-01">{!$Label.Email_Label}</label>
-                                <div class="slds-form-element__control">
-                                    <apex:inputField value="{!inputUpsertFormDoctor.Email__c}" styleClass="slds-input"/>
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="input-01">{!$Label.Email_Label}</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:inputField value="{!inputUpsertFormDoctor.Email__c}"
+                                                         styleClass="slds-input"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label" for="input-01">{!$Label.Country_Label}</label>
-                                <div class="slds-form-element__control">
-                                    <apex:inputField value="{!inputUpsertFormDoctor.Country__c}" styleClass="slds-input"/>
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label"
+                                           for="input-01">{!$Label.Country_Label}</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:inputField value="{!inputUpsertFormDoctor.Country__c}"
+                                                         styleClass="slds-input"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <apex:messages />
-                        </fieldset>
-            </apex:outputPanel>
+
+                            </fieldset>
+                        </apex:outputPanel>
                     </div>
                     <footer class="slds-modal__footer">
                         <apex:commandButton styleClass="slds-button slds-button_neutral"
-                                            onComplete="closeUpsertDialog()" value="{!$Label.Cancel_Button}" immediate="true" status="loadingGif"/>
+                                            onComplete="closeUpsertDialog()" value="{!$Label.Cancel_Button}"
+                                            immediate="true" status="loadingGif"/>
                         <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!saveButtonAction}"
                                             onComplete="{!if(isDialogReadyToClose == true,"successCloseUpsertDialog()","empty()")} "
-                                            value="{!$Label.Save_Button}" status="loadingGif" reRender="modalPanel, foundDoctorsTable"/>
+                                            value="{!$Label.Save_Button}" status="loadingGif"
+                                            reRender="modalPanel, foundDoctorsTable"/>
                     </footer>
                 </div>
             </apex:form>
@@ -206,5 +246,6 @@
     function changeHeaderToAdd(){
         document.getElementById('modal-heading-01').innerHTML = 'Add New Doctor'
     }
+
     </script>
 </apex:page>

@@ -50,6 +50,7 @@ public with sharing class HD_DoctorExternalSearchController {
         }else{
             isDialogReadyToClose = true;
         }
+        searchButtonAction();
     }
 
     public void deleteButtonAction() {

@@ -55,6 +55,9 @@ global class DB_DoctorExternalSearchWebService {
         DB_DoctorResponseWrapper responseStatus = new DB_DoctorResponseWrapper();
         responseStatus.isSuccess = false;
         responseStatus.message = e.getMessage();
+        if(responseStatus.message.contains('DUPLICATES_DETECTED')){
+            responseStatus.message = 'This Doctor Already Exist in Doctor Base';
+        }
         return responseStatus;
     }
 
