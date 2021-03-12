@@ -55,7 +55,7 @@
                                             <label class="slds-form-element__label"
                                                    for="input-01">{!$Label.First_Name}</label>
                                             <div class="slds-form-element__control">
-                                                <apex:inputField value="{!inputSearchFormDoctor.First_Name__c}"
+                                                <apex:inputText value="{!inputSearchFormDoctor.firstName}"
                                                                  styleClass="slds-input"/>
                                             </div>
                                         </div>
@@ -65,7 +65,7 @@
                                             <label class="slds-form-element__label"
                                                    for="input-02">{!$Label.Last_Name_Label}</label>
                                             <div class="slds-form-element__control" style="text-align:right">
-                                                <apex:inputField value="{!inputSearchFormDoctor.Name}"
+                                                <apex:inputText value="{!inputSearchFormDoctor.lastName}"
                                                                  styleClass="slds-input"/>
                                             </div>
                                         </div>
@@ -79,7 +79,7 @@
                                             <label class="slds-form-element__label"
                                                    for="input-01">{!$Label.Email_Label}</label>
                                             <div class="slds-form-element__control">
-                                                <apex:inputText value="{!inputSearchFormDoctor.Email__c}"
+                                                <apex:inputText value="{!inputSearchFormDoctor.email}"
                                                                 styleClass="slds-input"/>
                                             </div>
                                         </div>
@@ -89,7 +89,7 @@
                                             <label class="slds-form-element__label"
                                                    for="input-02">{!$Label.Country_Label}</label>
                                             <div class="slds-form-element__control">
-                                                <apex:inputField value="{!inputSearchFormDoctor.Country__c}"
+                                                <apex:inputText value="{!inputSearchFormDoctor.country}"
                                                                  styleClass="slds-input"/>
                                             </div>
                                         </div>
@@ -135,10 +135,10 @@
                                         </apex:commandButton>
                                     </div>
                                 </apex:column>
-                                <apex:column value="{!doc.First_Name__c}" headerValue="{!$Label.First_Name}"/>
-                                <apex:column value="{!doc.Name}" headerValue="{!$Label.Last_Name_Label}"/>
-                                <apex:column value="{!doc.Email__c}" headerValue="{!$Label.Email_Label}"/>
-                                <apex:column value="{!doc.Country__c}" headerValue="{!$Label.Country_Label}"/>
+                                <apex:column value="{!doc.firstName}" headerValue="{!$Label.First_Name}"/>
+                                <apex:column value="{!doc.lastName}" headerValue="{!$Label.Last_Name_Label}"/>
+                                <apex:column value="{!doc.email}" headerValue="{!$Label.Email_Label}"/>
+                                <apex:column value="{!doc.country}" headerValue="{!$Label.Country_Label}"/>
                             </apex:dataTable>
                         </div>
                     </header>
@@ -164,7 +164,7 @@
                                 <div class="slds-form-element">
                                     <label class="slds-form-element__label" for="input-01">{!$Label.First_Name}</label>
                                     <div class="slds-form-element__control">
-                                        <apex:inputField value="{!inputUpsertFormDoctor.First_Name__c}"
+                                        <apex:inputText value="{!inputUpsertFormDoctor.firstName}"
                                                          styleClass="slds-input"/>
                                     </div>
                                 </div>
@@ -172,14 +172,14 @@
                                     <label class="slds-form-element__label"
                                            for="input-01">{!$Label.Last_Name_Label}</label>
                                     <div class="slds-form-element__control">
-                                        <apex:inputField value="{!inputUpsertFormDoctor.Name}" required="true"
+                                        <apex:inputText value="{!inputUpsertFormDoctor.lastName}" required="true"
                                                          styleClass="slds-input"/>
                                     </div>
                                 </div>
                                 <div class="slds-form-element">
                                     <label class="slds-form-element__label" for="input-01">{!$Label.Email_Label}</label>
                                     <div class="slds-form-element__control">
-                                        <apex:inputField value="{!inputUpsertFormDoctor.Email__c}"
+                                        <apex:inputText value="{!inputUpsertFormDoctor.email}"
                                                          styleClass="slds-input"/>
                                     </div>
                                 </div>
@@ -187,11 +187,10 @@
                                     <label class="slds-form-element__label"
                                            for="input-01">{!$Label.Country_Label}</label>
                                     <div class="slds-form-element__control">
-                                        <apex:inputField value="{!inputUpsertFormDoctor.Country__c}"
+                                        <apex:inputText value="{!inputUpsertFormDoctor.country}"
                                                          styleClass="slds-input"/>
                                     </div>
                                 </div>
-
                             </fieldset>
                         </apex:outputPanel>
                     </div>
