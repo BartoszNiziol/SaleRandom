@@ -89,8 +89,9 @@
                                             <label class="slds-form-element__label"
                                                    for="input-02">{!$Label.Country_Label}</label>
                                             <div class="slds-form-element__control">
-                                                <apex:inputText value="{!inputSearchFormDoctor.country}"
-                                                                 styleClass="slds-input"/>
+                                                <apex:selectList value="{!selectedCountryForSearch}" multiSelect="false" size="1" styleClass="slds-select">
+                                                    <apex:selectOptions value="{!countriesSet}"/>
+                                                </apex:selectList>
                                             </div>
                                         </div>
                                     </div>
@@ -187,8 +188,9 @@
                                     <label class="slds-form-element__label"
                                            for="input-01">{!$Label.Country_Label}</label>
                                     <div class="slds-form-element__control">
-                                        <apex:inputText value="{!inputUpsertFormDoctor.country}"
-                                                         styleClass="slds-input"/>
+                                        <apex:selectList value="{!selectedCountryForUpsert}" multiSelect="false" size="1" styleClass="slds-select">
+                                            <apex:selectOptions value="{!countriesSet}"/>
+                                        </apex:selectList>
                                     </div>
                                 </div>
                             </fieldset>
