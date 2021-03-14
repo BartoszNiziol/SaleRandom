@@ -4,7 +4,7 @@
 
 public with sharing class HD_HospitalHandler {
 
-    public List<Hospital__c> queryHospitals(String name, String email, String country) {
+    public static List<Hospital__c> queryHospitals(String name, String email, String country) {
 
         String query = 'SELECT ID,Name,Email__c,Country__c ' +
                 ' FROM Hospital__c ' +
@@ -14,7 +14,7 @@ public with sharing class HD_HospitalHandler {
         return Database.query(query);
     }
 
-    private String dynamicQueryLikeGenerator(String field) {
+    private static String dynamicQueryLikeGenerator(String field) {
         String fieldLike;
         if ((field != null) && (field != '')) {
             fieldLike = field + '%';

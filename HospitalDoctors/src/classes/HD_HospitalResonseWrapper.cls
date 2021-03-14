@@ -14,15 +14,17 @@
 
        public HD_HospitalResonseWrapper (Hospital__c hospital){
            this.id = hospital.Id;
-           this.hospitalName = hospitalName;
-           this.email = email;
-           this.country = country;
-           this.city = city;
+           this.hospitalName = hospital.Name;
+           this.email = hospital.Email__c;
+           this.country = hospital.Country__c;
+           this.city = hospital.City__c;
            this.message = 'Succes';
            this.isSuccess = true;
        }
 
        public HD_HospitalResonseWrapper(){
+           this.message = 'Succes';
+           this.isSuccess = true;
        }
 
 

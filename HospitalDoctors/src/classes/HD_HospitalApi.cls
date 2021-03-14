@@ -2,83 +2,104 @@
  * Created by BRITENET on 12.03.2021.
  */
 @RestResource(urlMapping='/Hospital/')
-global  with sharing class HD_HospitalApi {
+global with sharing class HD_HospitalApi {
 
-        @HttpGet
-        global static HD_HospitalResonseWrapper getHospitals (){
-            try {
-                RestRequest req = RestContext.request;
-                String id = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
-                Hospital__c result = [SELECT Name,City__c,Email__c,Country__c FROM Hospital__c WHERE Id=: id];
-                HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper();
-                wrapper.city = result.City__c;
-                wrapper.email = result.Email__c;
-                wrapper.country =result.Country__c;
-                wrapper.hospitalName = result.Name;
-                return wrapper;
+    @HttpGet
+    global static List<HD_HospitalResonseWrapper> getHospitals() {
+        try {
+            RestRequest req = RestContext.request;
 
-            }catch (Exception e){
-               return   errorResponse(e);
+            Map<String,String> requestParams = req.params;
+
+            String id = requestParams.get('id');
+            String name = requestParams.get('name');
+            String email = requestParams.get('email');
+            String country = requestParams.get('country');
+
+            if(email != null){
+                email = email.toLowerCase();
             }
 
-        }
+            System.debug(name);
+            System.debug(email);
+            System.debug(country);
 
-        @HttpPost
-        global static HD_HospitalResonseWrapper createHospital (String hospitalName, String email, String country, String city){
-            try{
-                RestRequest req = RestContext.request;
+
+            List<Hospital__c> result = HD_HospitalHandler.queryHospitals(name,email,country);
+            System.debug(result);
+            List<HD_HospitalResonseWrapper> hospitalResponseWrappers = new List<HD_HospitalResonseWrapper>();
+
+            for (Hospital__c hospital: result){
                 HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper();
-                Hospital__c hospital = new Hospital__c();
-                hospital.Name = hospitalName;
-                hospital.Email__c = email;
-                hospital.Country__c = country;
-                hospital.City__c = city;
-                insert hospital;
-                return wrapper;
-            }catch (Exception e){
-                return   errorResponse(e);
+                wrapper.email = hospital.Email__c;
+                wrapper.country = hospital.Country__c;
+                wrapper.hospitalName = hospital.Name;
+                wrapper.id = hospital.Id;
+                hospitalResponseWrappers.add(wrapper);
             }
-
+            return hospitalResponseWrappers;
+        } catch (Exception e) {
+            List<HD_HospitalResonseWrapper> hospitalResponseWrappers = new List<HD_HospitalResonseWrapper>();
+            hospitalResponseWrappers.add(errorResponse(e));
+            return  hospitalResponseWrappers;
         }
+    }
 
-        @HttpPatch
-        global static HD_HospitalResonseWrapper updateHospital (String hospitalName, String email, String country, String city ){
-            try{
-                RestRequest req = RestContext.request;
-                String id = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
-                HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper();
-                Hospital__c hospital = new Hospital__c();
-                hospital.Name = hospitalName;
-                hospital.Email__c = email;
-                hospital.Country__c = country;
-                hospital.City__c = city;
-                hospital.Id = id;
-                update hospital;
-                return wrapper;
-            }catch (Exception e){
-                return   errorResponse(e);
-            }
-        }
+    @HttpPost
+    global static HD_HospitalResonseWrapper upsertHospital() {
 
-        @HttpDelete
-        global static HD_HospitalResonseWrapper deleteHospital (){
-            try{
-                RestRequest req = RestContext.request;
-                String id = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
-                HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper();
-                Hospital__c hospital = new Hospital__c();
-                delete hospital;
-                return wrapper;
+        try {
 
-            }catch (Exception e){
-                return   errorResponse(e);
-            }
-        }
+            Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(
+                    RestContext.request.requestBody.toString()
+            );
+            String name = (String)params.get('name');
+            String email = (String)params.get('email');
+            String country =(String) params.get('country');
+            String id =(String) params.get('id');
 
-        private static HD_HospitalResonseWrapper errorResponse(Exception e){
-            HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper();
-            wrapper.isSuccess = false;
-            wrapper.message = e.getMessage();
+
+
+            Hospital__c hospital = new Hospital__c();
+            hospital.Name = name;
+            hospital.Email__c = email;
+            hospital.Country__c = country;
+
+            hospital.Id = id;
+            System.debug(hospital.id);
+            upsert hospital;
+            HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper(hospital);
+            System.debug(wrapper);
             return wrapper;
+        } catch (Exception e) {
+            return errorResponse(e);
         }
+    }
+
+    @HttpDelete
+    global static HD_HospitalResonseWrapper deleteHospital() {
+        try {
+
+            RestRequest req = RestContext.request;
+            Map<String,String> requestParams = req.params;
+            String id = requestParams.get('id');
+            Hospital__c hospital = new Hospital__c();
+            hospital.Id = id;
+            delete hospital;
+            HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper(hospital);
+            return wrapper;
+
+        } catch (Exception e) {
+            return errorResponse(e);
+        }
+    }
+
+    private static HD_HospitalResonseWrapper errorResponse(Exception e) {
+        HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper();
+        wrapper.isSuccess = false;
+        wrapper.message = e.getMessage();
+        return wrapper;
+    }
+
+
 }

@@ -16,7 +16,6 @@ global class DB_DoctorCountriesResponseWrapper {
 
     public DB_DoctorCountriesResponseWrapper(){
 
-
     }
 
 }
