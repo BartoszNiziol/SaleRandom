@@ -6,15 +6,15 @@ global class DB_DoctorCountriesResponseWrapper {
 
     webService List<String> countries;
     webService String message;
-    webService Boolean isSuccess;
+    webService Boolean status;
 
     public DB_DoctorCountriesResponseWrapper(List<String> countries){
         this.countries = countries;
-        isSuccess = true;
-        message = 'Success';
+        status = true;
     }
 
     public DB_DoctorCountriesResponseWrapper(){
+
 
     }
 

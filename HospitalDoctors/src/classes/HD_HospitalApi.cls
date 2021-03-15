@@ -8,9 +8,7 @@ global with sharing class HD_HospitalApi {
     global static List<HD_HospitalResonseWrapper> getHospitals() {
         try {
             RestRequest req = RestContext.request;
-
             Map<String,String> requestParams = req.params;
-
             String id = requestParams.get('id');
             String name = requestParams.get('name');
             String email = requestParams.get('email');
@@ -58,8 +56,6 @@ global with sharing class HD_HospitalApi {
             String country =(String) params.get('country');
             String id =(String) params.get('id');
 
-
-
             Hospital__c hospital = new Hospital__c();
             hospital.Name = name;
             hospital.Email__c = email;
@@ -94,12 +90,12 @@ global with sharing class HD_HospitalApi {
         }
     }
 
-    private static HD_HospitalResonseWrapper errorResponse(Exception e) {
-        HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper();
-        wrapper.isSuccess = false;
-        wrapper.message = e.getMessage();
-        return wrapper;
-    }
+        private static HD_HospitalResonseWrapper errorResponse(Exception e) {
+            HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper();
+            wrapper.isSuccess = false;
+            wrapper.message = e.getMessage();
+            return wrapper;
+        }
 
 
 }

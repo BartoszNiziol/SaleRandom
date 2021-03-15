@@ -17,6 +17,7 @@ global class DB_DoctorValuesWebService {
             DB_DoctorCountriesResponseWrapper responseStatus = new DB_DoctorCountriesResponseWrapper();
             responseStatus.status = false;
             responseStatus.message = e.getMessage();
+
             return responseStatus;
         }
     }

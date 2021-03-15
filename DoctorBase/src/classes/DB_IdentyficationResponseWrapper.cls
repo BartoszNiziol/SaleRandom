@@ -9,5 +9,6 @@ global class DB_IdentyficationResponseWrapper {
     }
 
     public DB_IdentyficationResponseWrapper(){
+        
     }
 }

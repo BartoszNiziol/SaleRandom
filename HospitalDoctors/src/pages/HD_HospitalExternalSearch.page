@@ -1,0 +1,14 @@
+
+<apex:page id="HD_HospitalExternalSearch" standardStylesheets="false" lightningStylesheets="true" controller="HD_HospitalExternalSearchController" sideBar="false">
+    <apex:includeScript value="{!$Resource.jQuery}"/>
+    <apex:slds/>
+    <c:HD_SpinnerComponent/>
+    <style>
+    .slds-form-element__label
+    {
+        font-weight:bold;
+    }
+    </style>
+
+
+</apex:page>

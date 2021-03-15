@@ -1,9 +1,7 @@
 /**
- * Created by BRITENET on 12.03.2021.
+ * Created by BRITENET on 15.03.2021.
  */
-
-global class HD_HospitalResonseWrapper {
-
+global class HospitalResponseWrapper {
     webService String id;
     webService String hospitalName;
     webService String email;
@@ -12,7 +10,17 @@ global class HD_HospitalResonseWrapper {
     webService String message;
     webService Boolean isSuccess;
 
-    public HD_HospitalResonseWrapper(Hospital__c hospital) {
+    public HospitalResponseWrapper (String hospitalName, String email, String country, String city, String id){
+        this.id = Id;
+        this.hospitalName = hospitalName;
+        this.email = email;
+        this.country = country;
+        this.city = city;
+        this.message = 'Succes';
+        this.isSuccess = true;
+    }
+
+    public HospitalResponseWrapper (Hospital__c hospital){
         this.id = hospital.Id;
         this.hospitalName = hospital.Name;
         this.email = hospital.Email__c;
@@ -22,21 +30,10 @@ global class HD_HospitalResonseWrapper {
         this.isSuccess = true;
     }
 
-    public HD_HospitalResonseWrapper(String id, String name,String email, String country, String city) {
-        this.id = Id;
-        this.hospitalName = name;
-        this.email = email;
-        this.country = country;
-        this.city = city;
+
+
+    public HospitalResponseWrapper(){
         this.message = 'Succes';
         this.isSuccess = true;
     }
-
-
-    public HD_HospitalResonseWrapper() {
-        this.message = 'Succes';
-        this.isSuccess = true;
-    }
-
-
 }
