@@ -50,8 +50,7 @@ public with sharing class HD_DoctorExternalSearchController {
             isDialogReadyToClose = false;
             ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, wrap.message);
             ApexPages.addMessage(myMsg);
-            System.debug('message');
-            System.debug(myMsg);
+
         } else {
             isDialogReadyToClose = true;
         }

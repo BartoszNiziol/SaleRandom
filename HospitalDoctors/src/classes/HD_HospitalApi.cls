@@ -17,14 +17,7 @@ global with sharing class HD_HospitalApi {
             if(email != null){
                 email = email.toLowerCase();
             }
-
-            System.debug(name);
-            System.debug(email);
-            System.debug(country);
-
-
             List<Hospital__c> result = HD_HospitalHandler.queryHospitals(name,email,country);
-            System.debug(result);
             List<HD_HospitalResonseWrapper> hospitalResponseWrappers = new List<HD_HospitalResonseWrapper>();
 
             for (Hospital__c hospital: result){
@@ -47,7 +40,6 @@ global with sharing class HD_HospitalApi {
     global static HD_HospitalResonseWrapper upsertHospital() {
 
         try {
-
             Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
@@ -60,7 +52,6 @@ global with sharing class HD_HospitalApi {
             hospital.Name = name;
             hospital.Email__c = email;
             hospital.Country__c = country;
-
             hospital.Id = id;
             System.debug(hospital.id);
             upsert hospital;
@@ -75,7 +66,6 @@ global with sharing class HD_HospitalApi {
     @HttpDelete
     global static HD_HospitalResonseWrapper deleteHospital() {
         try {
-
             RestRequest req = RestContext.request;
             Map<String,String> requestParams = req.params;
             String id = requestParams.get('id');
@@ -89,13 +79,10 @@ global with sharing class HD_HospitalApi {
             return errorResponse(e);
         }
     }
-
         private static HD_HospitalResonseWrapper errorResponse(Exception e) {
             HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper();
             wrapper.isSuccess = false;
             wrapper.message = e.getMessage();
             return wrapper;
         }
-
-
 }

@@ -31,7 +31,7 @@ public with sharing class HD_HospitalExternalSearchController {
 
         String nameSearchValue = inputSearchFormHospital.name;
         String emailSearchValue = inputSearchFormHospital.email;
-        String countrySearchValue = inputSearchFormHospital.country;
+        String countrySearchValue = selectedCountryForSearch;
         String endpointString = 'https://britenet62-dev-ed.my.salesforce.com//services/apexrest/Hospital?';
         endpointString += 'name=' + nameSearchValue + '&' + 'email=' + emailSearchValue + '&' + 'country=' + countrySearchValue;
 
@@ -59,10 +59,7 @@ public with sharing class HD_HospitalExternalSearchController {
             singleWrapper.id = (String) parsedHospital.get('id');
             rewritedHospitals.add(singleWrapper);
         }
-
         foundHospitals = rewritedHospitals;
-
-
     }
 
     public void saveButtonAction() {
@@ -72,12 +69,31 @@ public with sharing class HD_HospitalExternalSearchController {
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
         req.setHeader('Authorization', authorization);
-        req.setBody(
-                'id=' + inputUpsertFormHospital.Id + '&name=' + inputUpsertFormHospital.name + '&email=' + inputUpsertFormHospital.email + '&country=' + inputUpsertFormHospital.country
-        );
 
+        String input = '{"name":"paulo","age":42, "car" : {"model" : "outlander", "year" : "2016"}}';
+        req.setBody(
+                 '{"name" : "' + inputUpsertFormHospital.name + '", "email" : "' + inputUpsertFormHospital.email + '" , "country" : "' + selectedCountryForUpsert +'","id" : "' + inputUpsertFormHospital.Id+'"}'
+        );
         Http http = new Http();
+        System.debug(req.getBody());
         HttpResponse res = http.send(req);
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                res.getBody()
+        );
+        System.debug(params);
+        Boolean isSuccess =(Boolean) params.get('isSuccess');
+        String message =(String) params.get('message');
+        System.debug(isSuccess);
+        System.debug(message);
+        if (isSuccess == false) {
+            isDialogReadyToClose = false;
+            ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, message);
+            ApexPages.addMessage(myMsg);
+        } else {
+            isDialogReadyToClose = true;
+        }
+        searchButtonAction();
+
     }
 
     public void deleteButtonAction() {
@@ -123,6 +139,7 @@ public with sharing class HD_HospitalExternalSearchController {
         for (String country : countriesList) {
             countriesSet.add(new SelectOption(country, country));
         }
+
     }
 
     public void login() {
@@ -166,6 +183,7 @@ public with sharing class HD_HospitalExternalSearchController {
         for (HD_HospitalFormWrapper hospital : foundHospitals) {
             if (hospital.Id == toEditId) {
                 inputUpsertFormHospital = hospital;
+                selectedCountryForUpsert = hospital.country;
                 break;
             }
         }
