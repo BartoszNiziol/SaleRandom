@@ -17,7 +17,9 @@ global class DB_HospitalRestWebService {
             if (email != null) {
                 email = email.toLowerCase();
             }
+
             List<HospitalResponseWrapper> result = DB_HospitalHandler.queryHospitals(name, email, country);
+            System.debug(result);
             return result;
 
         } catch (Exception e) {
