@@ -163,7 +163,7 @@
                                     <label class="slds-form-element__label"
                                            for="input-01">{!$Label.Email_Label}</label>
                                     <div class="slds-form-element__control">
-                                        <apex:inputText value="{!inputUpsertFormHospital.email}"
+                                        <apex:inputText value="{!inputUpsertFormHospital.email}" required="true"
                                                         styleClass="slds-input"/>
                                     </div>
                                 </div>
