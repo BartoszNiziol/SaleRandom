@@ -94,28 +94,14 @@ public with sharing class HD_HospitalDBHandler {
     }
 
     public Boolean upsertRequest(String authorization, String name, String email, String country, String id) {
-        Boolean isDialogReadyToClose;
-        String endpointString = HD_Utils.retrieveCredentials('databaseEndpoint');
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint(endpointString);
-        req.setMethod('POST');
-        req.setHeader('Content-Type', 'application/json');
-        req.setHeader('Authorization', authorization);
 
-        req.setBody(
-                '{"name" : "' + name + '", "email" : "' + email + '" , "country" : "' + country + '","id" : "' + id + '"}'
-        );
-        Http http = new Http();
-        System.debug(req.getBody());
-        HttpResponse res = http.send(req);
+        HttpResponse res = upsertCallout(authorization,name,email,country,id);
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 res.getBody()
         );
-        System.debug(params);
         Boolean isSuccess = (Boolean) params.get('isSuccess');
         String message = (String) params.get('message');
-        System.debug(isSuccess);
-        System.debug(message);
+        Boolean isDialogReadyToClose;
         if (isSuccess == false) {
             isDialogReadyToClose = false;
             ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, message);
@@ -125,8 +111,22 @@ public with sharing class HD_HospitalDBHandler {
         }
         return isDialogReadyToClose;
     }
+    private HttpResponse upsertCallout(String authorization, String name, String email, String country, String id){
 
-    public void deleteRequest(String authorization, String id) {
+        String endpointString = HD_Utils.retrieveCredentials('databaseEndpoint');
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(endpointString);
+        req.setMethod('POST');
+        req.setHeader('Content-Type', 'application/json');
+        req.setHeader('Authorization', authorization);
+        req.setBody(
+                '{"name" : "' + name + '", "email" : "' + email + '" , "country" : "' + country + '","id" : "' + id + '"}'
+        );
+        Http http = new Http();
+        return http.send(req);
+    }
+
+    public HttpResponse deleteRequest(String authorization, String id) {
         String endpointString = HD_Utils.retrieveCredentials('databaseEndpoint') + '?';
         endpointString += 'id=' + id;
         HttpRequest req = new HttpRequest();
@@ -137,6 +137,8 @@ public with sharing class HD_HospitalDBHandler {
         Http http = new Http();
         HD_HospitalFormWrapper hospToRemoveFromList;
         HttpResponse res = http.send(req);
+        return res;
     }
+
 
 }
