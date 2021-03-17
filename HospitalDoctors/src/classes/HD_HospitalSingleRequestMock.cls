@@ -6,9 +6,10 @@ global class HD_HospitalSingleRequestMock implements HttpCalloutMock {
 
    public HttpResponse respond(HttpRequest request) {
        HttpResponse response = new HttpResponse();
-       System.debug(request.getEndpoint());
+       System.debug('RequestBody');
+       System.debug(request.getBody());
 
-       if ( request.getMethod() == 'GET') {
+       if ( request.getMethod() == 'GET' ) {
            response.setStatusCode(200);
            response.setStatus('success');
            response.setBody('[{"message":"Succes","isSuccess":true,"id":"a0409000001jNLOAA2","hospitalName":"St Monica","email":"jakies@wp.pl","country":"USA","city":"Kanzas"}' +
@@ -16,7 +17,7 @@ global class HD_HospitalSingleRequestMock implements HttpCalloutMock {
           response.setHeader('Content-Type','application/json');
            return response;
 
-       }  else if(request.getMethod() == 'POST' && request.getEndpoint().contains('token')) {
+       } else if(request.getMethod() == 'POST' && request.getEndpoint().contains('token')) {
            response.setHeader('Content-Type', 'application/json');
            response.setBody('{ "access_token" : "00D5J000000Gh79!ARUAQG.i9os6CoXRz4Oa7Q.KyCGPsFXvaNb7F6M4HIMShkDrzAuAXV3BgYkLAALtNykrGTTEa3iPFsXSCCiHQi9BrxUhOEuP",' +
                    '"instance_url":"https://britenet62-dev-ed.my.salesforce.com","id":"https://login.salesforce.com/id/00D09000006y2iiEAA/00509000001F3iHAAS"' +
@@ -36,16 +37,14 @@ global class HD_HospitalSingleRequestMock implements HttpCalloutMock {
            response.setHeader('Authorization', 'authorization');
            response.setBody('{"isSuccess" : true , "message" : "Success" }');
            response.setStatusCode(200);
-
            return response;
+
        } else if(request.getMethod() == 'PUT') {
            response.setHeader('Content-Type', 'application/json');
            response.setHeader('Authorization', 'authorization');
            response.setBody('{"status":true,"message":null,"countries":["NL","PL","UA","UK","USA","DE","FR"]}');
            response.setStatusCode(200);
-
            return response;
-
        }
          return  null;
 

@@ -12,6 +12,7 @@ public class HD_HospitalCalloutsTest {
         setting.Value__c = 'https://britenet62-dev-ed.my.salesforce.com//services/apexrest/Hospital';
         insert setting;
     }
+
     @IsTest
     public  static void shouldLogIn(){
         //given
@@ -58,6 +59,19 @@ public class HD_HospitalCalloutsTest {
     }
 
     @IsTest
+    public static void shouldNotAddHospital() {
+        //given
+        Test.setMock(HttpCalloutMock.class,new HD_HospitalSingleRequestMock());
+        HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
+        //when
+        Test.startTest();
+        Boolean isReadyToClose = handler.upsertRequest('authorizaton',null,'ogolny@pl.com','Pl',null);
+        Test.stopTest();
+        //then
+        System.assertEquals(true,isReadyToClose);
+    }
+
+    @IsTest
     public static void shouldDeleteOneHospital() {
         //given
         Test.setMock(HttpCalloutMock.class,new HD_HospitalSingleRequestMock());
@@ -82,7 +96,6 @@ public class HD_HospitalCalloutsTest {
         Test.stopTest();
         //then
         System.assert(selectedCountries.contains(option));
-
     }
 
 

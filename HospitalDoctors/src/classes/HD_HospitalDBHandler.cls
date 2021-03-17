@@ -4,6 +4,15 @@
 
 public with sharing class HD_HospitalDBHandler {
 
+    public String authorization { get; set; }
+
+    public void loginCacheResourcesCheck() {
+        if (Cache.Session.get('authorization') == null) {
+            login();
+        }
+        authorization = (String) Cache.Session.get('authorization');
+    }
+
     public HttpResponse login() {
         HttpResponse res = loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
@@ -13,7 +22,6 @@ public with sharing class HD_HospitalDBHandler {
         String authorization = 'Bearer ' + accesToken;
         Cache.Session.put('authorization', authorization);
         return res;
-
     }
 
     public HttpResponse loginCallout(){
@@ -35,8 +43,8 @@ public with sharing class HD_HospitalDBHandler {
         return res;
     }
 
-    public List<SelectOption> populateCountriesList(String authorization) {
-
+    public List<SelectOption> populateCountriesList() {
+        loginCacheResourcesCheck();
         HttpRequest req = new HttpRequest();
         req.setEndpoint(HD_Utils.retrieveCredentials('databaseEndpoint'));
         req.setMethod('PUT');
@@ -50,20 +58,17 @@ public with sharing class HD_HospitalDBHandler {
         System.debug(res.getBody());
         List<String> singleCountries = new List<String>();
         List<Object> countries = (List<Object>) params.get('countries');
-        for (Object o : countries) {
-            singleCountries.add(String.valueOf(o));
-        }
         List<SelectOption> countriesSet = new List<SelectOption>();
-        for (String country : singleCountries) {
-            countriesSet.add(new SelectOption(country, country));
+        for (Object o : countries) {
+            countriesSet.add(new SelectOption( String.valueOf(o),String.valueOf(o)));
         }
         Cache.Org.put('countriesValues', countriesSet);
-
         return countriesSet;
     }
 
-    public List<HD_HospitalFormWrapper> searchRequest(String authorization, String nameSearchValue, String emailSearchValue, String countrySearchValue) {
-        HttpResponse res = searchCallout( authorization,nameSearchValue,emailSearchValue,countrySearchValue);
+    public List<HD_HospitalFormWrapper> searchRequest( String nameSearchValue, String emailSearchValue, String countrySearchValue) {
+        loginCacheResourcesCheck();
+        HttpResponse res = searchCallout(nameSearchValue,emailSearchValue,countrySearchValue);
         System.debug(res);
         List <Object> params = (List<Object>) JSON.deserializeUntyped(
                 res.getBody()
@@ -82,7 +87,7 @@ public with sharing class HD_HospitalDBHandler {
         return rewritedHospitals;
     }
 
-    public HttpResponse searchCallout(String authorization, String nameSearchValue, String emailSearchValue, String countrySearchValue){
+    public HttpResponse searchCallout(String nameSearchValue, String emailSearchValue, String countrySearchValue){
         if (emailSearchValue == '') {
             emailSearchValue = null;
         }
@@ -98,9 +103,9 @@ public with sharing class HD_HospitalDBHandler {
         return res;
     }
 
-    public Boolean upsertRequest(String authorization, String name, String email, String country, String id) {
-
-        HttpResponse res = upsertCallout(authorization,name,email,country,id);
+    public Boolean upsertRequest(String name, String email, String country, String id) {
+        loginCacheResourcesCheck();
+        HttpResponse res = upsertCallout(name,email,country,id);
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 res.getBody()
         );
@@ -116,7 +121,8 @@ public with sharing class HD_HospitalDBHandler {
         }
         return isDialogReadyToClose;
     }
-    public HttpResponse upsertCallout(String authorization, String name, String email, String country, String id){
+
+    public HttpResponse upsertCallout(String name, String email, String country, String id){
 
         String endpointString = HD_Utils.retrieveCredentials('databaseEndpoint');
         HttpRequest req = new HttpRequest();
@@ -131,7 +137,8 @@ public with sharing class HD_HospitalDBHandler {
         return http.send(req);
     }
 
-    public HttpResponse deleteRequest(String authorization, String id) {
+    public HttpResponse deleteRequest( String id) {
+        loginCacheResourcesCheck();
         String endpointString = HD_Utils.retrieveCredentials('databaseEndpoint') + '?';
         endpointString += 'id=' + id;
         HttpRequest req = new HttpRequest();
