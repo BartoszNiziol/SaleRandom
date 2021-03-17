@@ -39,7 +39,7 @@ global class HD_HospitalSingleRequestMock implements HttpCalloutMock {
            response.setStatusCode(200);
            return response;
 
-       } else if(request.getMethod() == 'PUT') {
+       } else if(request.getMethod() == 'GET' && request.getEndpoint().endsWith('Countries')) {
            response.setHeader('Content-Type', 'application/json');
            response.setHeader('Authorization', 'authorization');
            response.setBody('{"status":true,"message":null,"countries":["NL","PL","UA","UK","USA","DE","FR"]}');

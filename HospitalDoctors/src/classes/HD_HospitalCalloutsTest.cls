@@ -37,12 +37,11 @@ public class HD_HospitalCalloutsTest {
         HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
         //when
         Test.startTest();
-        List<HD_HospitalFormWrapper> wrappers = handler.searchRequest('a','s',null,'USA');
+        List<HD_HospitalFormWrapper> wrappers = handler.searchRequest('s',null,'USA');
         Test.stopTest();
         //then
         System.assertEquals('St Monica',wrappers[0].name);
         System.assertEquals('St Maria',wrappers[1].name);
-
     }
 
     @IsTest
@@ -52,7 +51,7 @@ public class HD_HospitalCalloutsTest {
         HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
         //when
         Test.startTest();
-        Boolean isReadyToClose = handler.upsertRequest('authorizaton','Ogolny','ogolny@pl.com','Pl',null);
+        Boolean isReadyToClose = handler.upsertRequest('Ogolny','ogolny@pl.com','Pl',null);
         Test.stopTest();
         //then
         System.assertEquals(true,isReadyToClose);
@@ -65,7 +64,7 @@ public class HD_HospitalCalloutsTest {
         HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
         //when
         Test.startTest();
-        Boolean isReadyToClose = handler.upsertRequest('authorizaton',null,'ogolny@pl.com','Pl',null);
+        Boolean isReadyToClose = handler.upsertRequest(null,'ogolny@pl.com','Pl',null);
         Test.stopTest();
         //then
         System.assertEquals(true,isReadyToClose);
@@ -78,7 +77,7 @@ public class HD_HospitalCalloutsTest {
         HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
         //when
         Test.startTest();
-        HttpResponse response = handler.deleteRequest('authorizaton','IDTODELETE');
+        HttpResponse response = handler.deleteRequest('IDTODELETE');
         Test.stopTest();
         //then
         System.assertEquals(200,response.getStatusCode());
@@ -86,13 +85,17 @@ public class HD_HospitalCalloutsTest {
 
     @IsTest
     public static void shouldPopulateCountriesList(){
+        HD_Setting__c setting = new HD_Setting__c();
+        setting.Name = 'countriesEndpoint';
+        setting.Value__c = 'https://britenet62-dev-ed.my.salesforce.com//services/apexrest/HospitalCountries';
+        insert setting;
         //given
         Test.setMock(HttpCalloutMock.class,new HD_HospitalSingleRequestMock());
         HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
         SelectOption option = new SelectOption('PL','PL');
         //when
         Test.startTest();
-        List<SelectOption> selectedCountries  = handler.populateCountriesList('authorizaton');
+        List<SelectOption> selectedCountries  = handler.populateCountriesList();
         Test.stopTest();
         //then
         System.assert(selectedCountries.contains(option));

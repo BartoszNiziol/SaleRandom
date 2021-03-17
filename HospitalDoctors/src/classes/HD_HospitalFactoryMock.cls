@@ -4,16 +4,22 @@
 
 
     public with sharing class HD_HospitalFactoryMock implements  HttpCalloutMock {
-        Map<String,HttpCalloutMock> requests;
+       public Map<String,HttpCalloutMock> requests;
 
         public HD_HospitalFactoryMock (Map<String,HttpCalloutMock> requests){
             this.requests = requests;
         }
 
         public HttpResponse respond(HttpRequest request){
+            System.debug('requests');
+            System.debug(requests);
+            System.debug('request.getEndpoint()');
+            System.debug(request.getEndpoint());
             HttpCalloutMock mock = requests.get(request.getEndpoint());
+
             if (mock != null) {
-                return mock.respond(request);
+                 HttpResponse mc = mock.respond(request);
+                return mc;
             } else {
                 throw new HD_DateException('HTTP callout not supported for test methods');
             }

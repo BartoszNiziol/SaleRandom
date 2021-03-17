@@ -23,7 +23,6 @@ public with sharing class HD_HospitalExternalSearchController {
         foundHospitals = new List<HD_HospitalFormWrapper>();
         inputUpsertFormHospital = new HD_HospitalFormWrapper();
         countriesCacheResourcesCheck();
-        countriesSet = (List<SelectOption>) Cache.Org.get('countriesValues');
     }
 
     public void searchButtonAction() {
@@ -74,6 +73,7 @@ public with sharing class HD_HospitalExternalSearchController {
         if ((List<SelectOption>) Cache.Org.get('countriesValues') == null) {
             dbHandler.populateCountriesList();
         }
+        countriesSet = (List<SelectOption>) Cache.Org.get('countriesValues');
     }
 
 }

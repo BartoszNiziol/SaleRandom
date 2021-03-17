@@ -46,8 +46,8 @@ public with sharing class HD_HospitalDBHandler {
     public List<SelectOption> populateCountriesList() {
         loginCacheResourcesCheck();
         HttpRequest req = new HttpRequest();
-        req.setEndpoint(HD_Utils.retrieveCredentials('databaseEndpoint'));
-        req.setMethod('PUT');
+        req.setEndpoint(HD_Utils.retrieveCredentials('countriesEndpoint'));
+        req.setMethod('GET');
         req.setHeader('Content-Type', 'application/json');
         req.setHeader('Authorization', authorization);
         Http http = new Http();
