@@ -17,6 +17,13 @@ public with sharing class HD_HospitalFormWrapper {
         this.city = city;
         this.id = id;
     }
+    public HD_HospitalFormWrapper( Map<String, Object> parsedHospital){
+        this.name = (String) parsedHospital.get('hospitalName');
+        this.email = (String) parsedHospital.get('email');
+        this.country = (String) parsedHospital.get('country');
+        this.city = (String) parsedHospital.get('city');
+        this.id = (String) parsedHospital.get('id');
+    }
 
    public HD_HospitalFormWrapper(){
 

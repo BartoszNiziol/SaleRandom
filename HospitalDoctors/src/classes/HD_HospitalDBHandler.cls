@@ -75,13 +75,8 @@ public with sharing class HD_HospitalDBHandler {
         );
         List<HD_HospitalFormWrapper> rewritedHospitals = new List<HD_HospitalFormWrapper>();
         for (Object o : params) {
-            HD_HospitalFormWrapper singleWrapper = new HD_HospitalFormWrapper();
             Map<String, Object> parsedHospital = (Map<String, Object>) o;
-            singleWrapper.name = (String) parsedHospital.get('hospitalName');
-            singleWrapper.email = (String) parsedHospital.get('email');
-            singleWrapper.country = (String) parsedHospital.get('country');
-            singleWrapper.city = (String) parsedHospital.get('city');
-            singleWrapper.id = (String) parsedHospital.get('id');
+            HD_HospitalFormWrapper singleWrapper = new HD_HospitalFormWrapper(parsedHospital);
             rewritedHospitals.add(singleWrapper);
         }
         return rewritedHospitals;
