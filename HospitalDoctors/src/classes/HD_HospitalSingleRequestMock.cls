@@ -1,32 +1,55 @@
 /**
  * Created by BRITENET on 16.03.2021.
  */
-
-public with sharing class HD_HospitalSingleRequestMock implements HttpCalloutMock {
-
-    public Integer code;
-    public String status;
-    public String bodyAsString;
-    public Map<String, String> responseHeaders;
-
-    public HD_HospitalSingleRequestMock(Integer code,String status,String bodyAsString,Map<String,String> responseHeaders){
-        this.code = code;
-        this.status = status;
-        this.responseHeaders = responseHeaders;
-        this.bodyAsString = bodyAsString;
-    }
+@IsTest
+global class HD_HospitalSingleRequestMock implements HttpCalloutMock {
 
    public HttpResponse respond(HttpRequest request) {
        HttpResponse response = new HttpResponse();
-       response.setStatusCode(code);
-       response.setStatus(status);
-       response.setBody(bodyAsString);
+       System.debug(request.getEndpoint());
 
-       if (responseHeaders != null){
-           for(String key : responseHeaders.keySet()){
-               response.setHeader(key,responseHeaders.get(key));
-           }
+       if ( request.getMethod() == 'GET') {
+           response.setStatusCode(200);
+           response.setStatus('success');
+           response.setBody('[{"message":"Succes","isSuccess":true,"id":"a0409000001jNLOAA2","hospitalName":"St Monica","email":"jakies@wp.pl","country":"USA","city":"Kanzas"}' +
+                   ',{"message":"Succes","isSuccess":true,"id":"a0409000001jMkCAAU","hospitalName":"St Maria","email":"stmari@com.op","country":"USA","city":"Kanzas"}]');
+          response.setHeader('Content-Type','application/json');
+           return response;
+
+       }  else if(request.getMethod() == 'POST' && request.getEndpoint().contains('token')) {
+           response.setHeader('Content-Type', 'application/json');
+           response.setBody('{ "access_token" : "00D5J000000Gh79!ARUAQG.i9os6CoXRz4Oa7Q.KyCGPsFXvaNb7F6M4HIMShkDrzAuAXV3BgYkLAALtNykrGTTEa3iPFsXSCCiHQi9BrxUhOEuP",' +
+                   '"instance_url":"https://britenet62-dev-ed.my.salesforce.com","id":"https://login.salesforce.com/id/00D09000006y2iiEAA/00509000001F3iHAAS"' +
+                   ',"token_type":"Bearer","issued_at":"1615965407230","signature":"FAudEjKzBjXTiP/rdJa7p97K2XahCDgyVrnsg3Kjd10="}');
+           response.setStatusCode(200);
+           return response;
+
+       }else if(request.getMethod() == 'POST' && request.getEndpoint().endsWith('Hospital')) {
+           response.setHeader('Content-Type', 'application/json');
+           response.setHeader('Authorization', 'authorization');
+           response.setBody('{"isSuccess" : true , "message" : "Success" }');
+           response.setStatusCode(200);
+           return response;
+
+       } else if(request.getMethod() == 'DELETE') {
+           response.setHeader('Content-Type', 'application/json');
+           response.setHeader('Authorization', 'authorization');
+           response.setBody('{"isSuccess" : true , "message" : "Success" }');
+           response.setStatusCode(200);
+
+           return response;
+       } else if(request.getMethod() == 'PUT') {
+           response.setHeader('Content-Type', 'application/json');
+           response.setHeader('Authorization', 'authorization');
+           response.setBody('{"status":true,"message":null,"countries":["NL","PL","UA","UK","USA","DE","FR"]}');
+           response.setStatusCode(200);
+
+           return response;
+
        }
-        return response;
+         return  null;
+
+
+
     }
 }

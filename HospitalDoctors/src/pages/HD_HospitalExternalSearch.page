@@ -156,7 +156,7 @@
                                     <label class="slds-form-element__label" for="input-01">{!$Label.Hospital_Name_Label}</label>
                                     <div class="slds-form-element__control">
                                         <apex:inputText value="{!inputUpsertFormHospital.name}" required="true"
-                                                        styleClass="slds-input"/>
+                                                        styleClass="slds-input" id ="NameField"/>
                                     </div>
                                 </div>
                                 <div class="slds-form-element">
@@ -164,7 +164,7 @@
                                            for="input-01">{!$Label.Email_Label}</label>
                                     <div class="slds-form-element__control">
                                         <apex:inputText value="{!inputUpsertFormHospital.email}" required="true"
-                                                        styleClass="slds-input"/>
+                                                        styleClass="slds-input" id ="EmailField"/>
                                     </div>
                                 </div>
                                 <div class="slds-form-element">

@@ -4,20 +4,87 @@
 
 @IsTest
 public class HD_HospitalCalloutsTest {
-    public static testMethod void shouldFoundTwoHospitals() {
-        HD_HospitalSingleRequestMock fakeSearchResp = new HD_HospitalSingleRequestMock
-                (200, 'Success','[{"message":"Succes","isSuccess":true,"id":"a0409000001jNLOAA2","hospitalName":"St Monica","email":"jakies@wp.pl","country":"USA","city":"Kanzas"}' +
-                        ',{"message":"Succes","isSuccess":true,"id":"a0409000001jMkCAAU","hospitalName":"St Maria","email":"stmari@com.op","country":"USA","city":"Kanzas"}]',null);
 
-        Map<String, HttpCalloutMock> endpointForTestRespoonse =
-                new Map<String, HttpCalloutMock>();
-        endpointForTestRespoonse.put(HD_Utils.retrieveCredentials('databaseEndpoint')+'?name=s&email=null&country=USA',fakeSearchResp);
+    @TestSetup
+    public static void setupTestData(){
+        HD_Setting__c setting = new HD_Setting__c();
+        setting.Name = 'databaseEndpoint';
+        setting.Value__c = 'https://britenet62-dev-ed.my.salesforce.com//services/apexrest/Hospital';
+        insert setting;
+    }
+    @IsTest
+    public  static void shouldLogIn(){
+        //given
+        HD_Setting__c setting = new HD_Setting__c();
+        setting.Name = 'LoginEndpoint';
+        setting.Value__c = 'https://login.salesforce.com/services/oauth2/token';
+        insert setting;
+        Test.setMock(HttpCalloutMock.class,new HD_HospitalSingleRequestMock());
+        HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
+        //when
+        Test.startTest();
+        HttpResponse response = handler.login();
+        Test.stopTest();
+        //then
+        System.assertEquals(200,response.getStatusCode());
+    }
 
-        HttpCalloutMock multiCalloutMock = new HD_HospitalSearchMock(endpointForTestRespoonse);
-
-        Test.setMock(HttpCalloutMock.class,multiCalloutMock);
-        HD_HospitalExternalSearchController controller = new HD_HospitalExternalSearchController();
-        controller.searchButtonAction();
+    @IsTest
+    public static void shouldFoundTwoHospitals() {
+        //given
+        Test.setMock(HttpCalloutMock.class,new HD_HospitalSingleRequestMock());
+        HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
+        //when
+        Test.startTest();
+        List<HD_HospitalFormWrapper> wrappers = handler.searchRequest('a','s',null,'USA');
+        Test.stopTest();
+        //then
+        System.assertEquals('St Monica',wrappers[0].name);
+        System.assertEquals('St Maria',wrappers[1].name);
 
     }
+
+    @IsTest
+    public static void shouldAddHospital() {
+        //given
+        Test.setMock(HttpCalloutMock.class,new HD_HospitalSingleRequestMock());
+        HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
+        //when
+        Test.startTest();
+        Boolean isReadyToClose = handler.upsertRequest('authorizaton','Ogolny','ogolny@pl.com','Pl',null);
+        Test.stopTest();
+        //then
+        System.assertEquals(true,isReadyToClose);
+    }
+
+    @IsTest
+    public static void shouldDeleteOneHospital() {
+        //given
+        Test.setMock(HttpCalloutMock.class,new HD_HospitalSingleRequestMock());
+        HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
+        //when
+        Test.startTest();
+        HttpResponse response = handler.deleteRequest('authorizaton','IDTODELETE');
+        Test.stopTest();
+        //then
+        System.assertEquals(200,response.getStatusCode());
+    }
+
+    @IsTest
+    public static void shouldPopulateCountriesList(){
+        //given
+        Test.setMock(HttpCalloutMock.class,new HD_HospitalSingleRequestMock());
+        HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
+        SelectOption option = new SelectOption('PL','PL');
+        //when
+        Test.startTest();
+        List<SelectOption> selectedCountries  = handler.populateCountriesList('authorizaton');
+        Test.stopTest();
+        //then
+        System.assert(selectedCountries.contains(option));
+
+    }
+
+
+
 }

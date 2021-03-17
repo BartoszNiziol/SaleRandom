@@ -18,7 +18,6 @@ public with sharing class HD_HospitalExternalSearchController {
     public List <SelectOption> countriesSet { get; set; }
     public HD_HospitalDBHandler dbHandler { get; set; }
 
-
     public HD_HospitalExternalSearchController() {
         dbHandler = new HD_HospitalDBHandler();
         inputSearchFormHospital = new HD_HospitalFormWrapper();
