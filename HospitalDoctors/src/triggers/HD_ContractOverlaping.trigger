@@ -3,6 +3,7 @@
  */
 
 trigger HD_ContractOverlaping on Contract__c (before insert, before update) {
+
     Map<String, List<Contract__c>> oldDoctorsHospitalsIdToContracts = new Map<String, List< Contract__c>>();
     List<Id> doctorsToAddIdList = new List<Id>();
     List<Id> hospitalsToAddIdList = new List<Id>();
