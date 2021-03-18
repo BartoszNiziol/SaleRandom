@@ -3,6 +3,6 @@
  */
 
 public interface HD_TriggerInterface {
-    void bulkBefore();
-    void bulkAfter();
+    void bulkBefore(List<sObject> newObjects, List<sObject> oldObjects);
+    void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects);
 }

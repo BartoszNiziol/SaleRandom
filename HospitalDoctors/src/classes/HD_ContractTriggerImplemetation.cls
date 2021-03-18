@@ -4,18 +4,18 @@
 
 public with sharing class HD_ContractTriggerImplemetation {
 
-    public void applayTrigger() {
+    public static void applayTrigger(List<Contract__c> newObjects, List<Contract__c> oldObjects) {
         Map<String, List<Contract__c>> oldDoctorsHospitalsIdToContracts = new Map<String, List< Contract__c>>();
         List<Id> doctorsToAddIdList = new List<Id>();
         List<Id> hospitalsToAddIdList = new List<Id>();
         Map<Contract__c, String> contractsWithError = new Map<Contract__c, String>();
 
-        for (Contract__c contractToAdd : Trigger.new) {
+        for (Contract__c contractToAdd : newObjects) {
             doctorsToAddIdList.add(contractToAdd.Doctor__c);
             hospitalsToAddIdList.add(contractToAdd.Hospital__c);
         }
 
-        for (Contract__c contractToAdd : Trigger.new) {
+        for (Contract__c contractToAdd : newObjects) {
             if (contractToAdd.End_Date__c != null) {
                 if (contractToAdd.End_Date__c < contractToAdd.Start_Date__c || contractToAdd.End_Date__c < System.today()) {
                     contractsWithError.put(contractToAdd, 'Contract Error, Check End Date');
@@ -42,7 +42,7 @@ public with sharing class HD_ContractTriggerImplemetation {
         }
 
         String errorMessage = Label.Overlapping_Error;
-        for (Contract__c contractsToAdd : Trigger.new) {
+        for (Contract__c contractsToAdd : newObjects) {
 
             String doctorHospitalToAddIds = String.valueOf(contractsToAdd.Doctor__c) + String.valueOf(contractsToAdd.Hospital__c);
 
@@ -92,7 +92,7 @@ public with sharing class HD_ContractTriggerImplemetation {
             }
         }
 
-        for (Contract__c contractToAdd : Trigger.new) {
+        for (Contract__c contractToAdd : newObjects) {
             if (contractToAdd.End_Date__c != null) {
                 if (contractToAdd.End_Date__c < contractToAdd.Start_Date__c || contractToAdd.End_Date__c < System.today()) {
 
@@ -105,34 +105,34 @@ public with sharing class HD_ContractTriggerImplemetation {
 
             contract.addError(contractsWithError.get(contract) + '\n');
         }
-
-        private Boolean isOverlapped(Contract__c oldContract, Contract__c newContract) {
-        if(oldContract.Id.equals(newContract.Id)){
-        return false;
     }
-    if(newContract.End_Date__c == null && oldContract.End_Date__c == null){
-    return true;
-}
-if (oldContract.End_Date__c == null) {
-if (oldContract.Start_Date__c <= newContract.End_Date__c || oldContract.Start_Date__c <= newContract.Start_Date__c) {
-return true;
-}
-}
-if (newContract.End_Date__c == null) {
+    private static Boolean isOverlapped(Contract__c oldContract, Contract__c newContract) {
+        if (oldContract.Id.equals(newContract.Id)) {
+            return false;
+        }
+            if (newContract.End_Date__c == null && oldContract.End_Date__c == null) {
+                return true;
+            }
+            if (oldContract.End_Date__c == null) {
+                if (oldContract.Start_Date__c <= newContract.End_Date__c || oldContract.Start_Date__c <= newContract.Start_Date__c) {
+                    return true;
+                }
+            }
+            if (newContract.End_Date__c == null) {
 
-if (oldContract.End_Date__c >= newContract.Start_Date__c) {
-return true;
-}
-}
-if ((oldContract.Start_Date__c >= newContract.Start_Date__c) && (oldContract.Start_Date__c <= newContract.End_Date__c)
-|| (oldContract.End_Date__c >= newContract.Start_Date__c && oldContract.End_Date__c <= newContract.End_Date__c)
-|| (oldContract.Start_Date__c <= newContract.Start_Date__c && oldContract.End_Date__c >= newContract.End_Date__c)
-|| (oldContract.Start_Date__c >= newContract.Start_Date__c && oldContract.End_Date__c <= newContract.End_Date__c)) {
-return true;
-}
-return false;
-}
+                if (oldContract.End_Date__c >= newContract.Start_Date__c) {
+                    return true;
+                }
+            }
+            if ((oldContract.Start_Date__c >= newContract.Start_Date__c) && (oldContract.Start_Date__c <= newContract.End_Date__c)
+                    || (oldContract.End_Date__c >= newContract.Start_Date__c && oldContract.End_Date__c <= newContract.End_Date__c)
+                    || (oldContract.Start_Date__c <= newContract.Start_Date__c && oldContract.End_Date__c >= newContract.End_Date__c)
+                    || (oldContract.Start_Date__c >= newContract.Start_Date__c && oldContract.End_Date__c <= newContract.End_Date__c)) {
+                return true;
+            }
+            return false;
+        }
 
-}
 
-}
+    }
+

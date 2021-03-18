@@ -11,10 +11,6 @@
         }
 
         public HttpResponse respond(HttpRequest request){
-            System.debug('requests');
-            System.debug(requests);
-            System.debug('request.getEndpoint()');
-            System.debug(request.getEndpoint());
             HttpCalloutMock mock = requests.get(request.getEndpoint());
 
             if (mock != null) {

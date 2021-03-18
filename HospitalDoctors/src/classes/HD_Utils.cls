@@ -17,7 +17,7 @@ public with sharing class HD_Utils {
 
     public static Boolean isContractTriggerEnabled(){
         HD_TriggerException__c triggerException = HD_TriggerException__c.getOrgDefaults();
-        return triggerException.Contract__c;
+        return (!triggerException.Contract__c);
     }
 
     public static Boolean isSettingEnabled(String settingName, String valueToCheck) {

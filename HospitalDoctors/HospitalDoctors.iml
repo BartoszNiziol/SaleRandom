@@ -228,10 +228,6 @@
                             <option name="selected" value="true" />
                           </MetadataEntry>
                           <MetadataEntry>
-                            <option name="name" value="HD_HospitalSingleRequestMock" />
-                            <option name="selected" value="true" />
-                          </MetadataEntry>
-                          <MetadataEntry>
                             <option name="name" value="HD_SingleMock" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
@@ -241,10 +237,6 @@
                           </MetadataEntry>
                           <MetadataEntry>
                             <option name="name" value="HD_HospitalFactoryMock" />
-                            <option name="selected" value="true" />
-                          </MetadataEntry>
-                          <MetadataEntry>
-                            <option name="name" value="HD_HospitalTriggerInterface" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
                           <MetadataEntry>
@@ -265,6 +257,10 @@
                           </MetadataEntry>
                           <MetadataEntry>
                             <option name="name" value="HD_TriggerFactory" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="HD_DummyTriggerHandler" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
                         </list>

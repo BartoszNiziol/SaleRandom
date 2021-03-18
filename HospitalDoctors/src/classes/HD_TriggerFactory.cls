@@ -14,18 +14,20 @@ public with sharing class HD_TriggerFactory {
 
     private static void execute(HD_TriggerInterface handler) {
         if (Trigger.isBefore) {
-            handler.bulkBefore();
+            handler.bulkBefore(Trigger.new,Trigger.old);
         } else {
-            handler.bulkAfter();
+            handler.bulkAfter(Trigger.new,Trigger.old);
         }
     }
 
     private static HD_TriggerInterface getHandler(Schema.sObjectType soType) {
 
         if (soType == Contract__c.sObjectType ) {
+            System.debug('hereBro');
             if (HD_Utils.isContractTriggerEnabled()) {
                 return new HD_ContractTriggerHandler();
             }
+            else return new HD_DummyTriggerHandler();
         }
         return null;
     }
