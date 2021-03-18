@@ -1,9 +1,8 @@
 /**
- * Created by BRITENET on 17.03.2021.
+ * Created by BRITENET on 18.03.2021.
  */
 
-public with sharing class ContractTriggerHandler implements HD_HospitalTriggerInterface{
-
+public with sharing class HD_ContractTriggerHandler implements HD_TriggerInterface{
     public void bulkBefore() {
         if(trigger.isInsert) {
 
@@ -27,5 +26,4 @@ public with sharing class ContractTriggerHandler implements HD_HospitalTriggerIn
 
         }
     }
-
 }
