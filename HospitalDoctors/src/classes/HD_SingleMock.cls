@@ -26,9 +26,6 @@ public with sharing class HD_SingleMock implements HttpCalloutMock {
             }
         }
         return response;
-
-
-
     }
 
 }

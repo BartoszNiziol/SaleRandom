@@ -220,10 +220,6 @@
                             <option name="selected" value="true" />
                           </MetadataEntry>
                           <MetadataEntry>
-                            <option name="name" value="HD_HospitalSearchMock" />
-                            <option name="selected" value="true" />
-                          </MetadataEntry>
-                          <MetadataEntry>
                             <option name="name" value="HD_HospitalCalloutsTest" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
