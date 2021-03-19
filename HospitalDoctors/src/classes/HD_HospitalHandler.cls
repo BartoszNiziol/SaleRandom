@@ -24,4 +24,20 @@ public with sharing class HD_HospitalHandler {
         return fieldLike;
     }
 
+    public static Hospital__c parseHospitalFromResponseWrapper(HD_HospitalResonseWrapper wrapper){
+
+        Hospital__c hospital = new Hospital__c();
+        hospital.Id =wrapper.id;
+        hospital.Name = wrapper.hospitalName;
+        hospital.City__c = wrapper.city;
+        hospital.Country__c = wrapper.country;
+        hospital.Email__c = wrapper.email;
+        hospital.Hospital_External_Id__c = wrapper.hospitalExternalId;
+        hospital.Phone_Number__c = wrapper.phoneNumber;
+        hospital.Street__c = wrapper.street;
+        hospital.Web_Page__c = wrapper.webPage;
+
+        return hospital;
+    }
+
 }

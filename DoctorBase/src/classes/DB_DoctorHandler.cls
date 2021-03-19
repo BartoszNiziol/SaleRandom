@@ -22,5 +22,22 @@ public with sharing class DB_DoctorHandler {
         return fieldLike;
     }
 
+    public static Doctor__c parseDoctorFromRespnseWrapper(DB_DoctorResponseWrapper wrapper ){
+        Doctor__c doctor = new Doctor__c();
+        doctor.Id = wrapper.id;
+        doctor.Name = wrapper.lastName;
+        doctor.Birthday_Date__c = wrapper.birthdayDate;
+        doctor.City__c = wrapper.city;
+        doctor.Country__c = wrapper.country;
+        doctor.Doctor_External_Id__c = wrapper.doctorExternalId;
+        doctor.Email__c = wrapper.email;
+        doctor.First_Name__c = wrapper.firstName;
+        doctor.License_Number__c = wrapper.licenseNumber;
+        doctor.Phone_Number__c = wrapper.phoneNumber;
+        doctor.Street__c = wrapper.street;
+
+        return doctor;
+    }
+
 
 }

@@ -12,7 +12,16 @@ public with sharing class DB_Utils {
         }
         String credentialValue = settingItem.Value__c;
         return credentialValue;
-
     }
+
+    public static String retrieveCredentials(String credentialName){
+        DB_Setting__c settingItem = DB_Setting__c.getInstance(credentialName);
+        if (settingItem == null) {
+            return '';
+        }
+        String credentialValue = settingItem.Value__c;
+        return credentialValue;
+    }
+
 
 }

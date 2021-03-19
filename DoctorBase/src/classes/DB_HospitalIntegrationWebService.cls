@@ -1,7 +1,7 @@
 /**
  * Created by BRITENET on 18.03.2021.
  */
-@RestResource(urlMapping = '/Integration/Hospital')
+@RestResource(urlMapping = '/IntegrationHospital')
 global class DB_HospitalIntegrationWebService {
 
 
@@ -11,7 +11,7 @@ global class DB_HospitalIntegrationWebService {
             Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
-            for ()
+
             String name = (String) params.get('name');
             String email = (String) params.get('email');
             String country = (String) params.get('country');

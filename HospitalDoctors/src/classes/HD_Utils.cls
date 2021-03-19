@@ -16,6 +16,7 @@ public with sharing class HD_Utils {
 
     public static Boolean isTriggerEnabled(Schema.sObjectType soType){
         HD_TriggerException__c triggerException = HD_TriggerException__c.getInstance();
+
         if (soType  ==  Contract__c.SObjectType) {
             return !triggerException.Contract__c;
         }

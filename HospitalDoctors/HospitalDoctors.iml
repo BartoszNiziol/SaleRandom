@@ -267,6 +267,10 @@
                             <option name="name" value="HD_DoctorResponseWrapper" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="HD_IntegrationLoginHandler" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
                         </list>
                       </option>
                       <option name="name" value="ApexClass" />
