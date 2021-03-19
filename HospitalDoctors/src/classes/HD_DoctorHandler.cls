@@ -86,4 +86,9 @@ public with sharing class HD_DoctorHandler {
         }
         return fieldLike;
     }
+
+    public static void integrateUpsertDoctor(List<Doctor__c> newObjects, List<Doctor__c> oldObjects){
+                newObjects
+
+    }
 }

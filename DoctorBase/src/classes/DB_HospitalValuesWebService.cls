@@ -4,6 +4,6 @@
 
 
 public with sharing class DB_HospitalValuesWebService {
-    webService
+
 
 }

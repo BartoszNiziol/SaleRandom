@@ -25,7 +25,6 @@ public class HD_HospitalMockFactoryTest {
     }
 
     public static HD_HospitalFactoryMock prepareFactory() {
-
         HD_SingleMock fakeLoginResp = new HD_SingleMock(200, 'Success', '{ "access_token" : "00D5J000000Gh79!ARUAQG.i9os6CoXRz4Oa7Q.KyCGPsFXvaNb7F6M4HIMShkDrzAuAXV3BgYkLAALtNykrGTTEa3iPFsXSCCiHQi9BrxUhOEuP",' +
                 '"instance_url":"https://britenet62-dev-ed.my.salesforce.com","id":"https://login.salesforce.com/id/00D09000006y2iiEAA/00509000001F3iHAAS"' +
                 ',"token_type":"Bearer","issued_at":"1615965407230","signature":"FAudEjKzBjXTiP/rdJa7p97K2XahCDgyVrnsg3Kjd10="}'
@@ -50,7 +49,6 @@ public class HD_HospitalMockFactoryTest {
                         'Content-Type' => 'application/json', 'Authorization' => 'authorization'
                 });
 
-
         Map<String, HttpCalloutMock> endpointToTestResponse = new Map<String, HttpCalloutMock>();
         endpointToTestResponse.put('https://login.salesforce.com/services/oauth2/token', fakeLoginResp);
         endpointToTestResponse.put('https://britenet62-dev-ed.my.salesforce.com//services/apexrest/HospitalCountries', fakeCountriesResp);
@@ -58,22 +56,15 @@ public class HD_HospitalMockFactoryTest {
         endpointToTestResponse.put('https://britenet62-dev-ed.my.salesforce.com//services/apexrest/Hospital', fakeHospitalUpsertResp);
         endpointToTestResponse.put('https://britenet62-dev-ed.my.salesforce.com//services/apexrest/Hospital?id=DELETEID', fakeHospitalDeleteResp);
         HD_HospitalFactoryMock factory = new HD_HospitalFactoryMock(endpointToTestResponse);
-        System.debug('endpointToTestResponse');
-        System.debug(endpointToTestResponse);
         return factory;
-
     }
 
     public static testMethod void shouldLogin() {
         HD_HospitalDBHandler handler = new HD_HospitalDBHandler();
         HD_HospitalFactoryMock factory = prepareFactory();
-        System.debug('factory in login test');
-        System.debug(factory.requests);
         Test.setMock(HttpCalloutMock.class, factory);
         Test.startTest();
         HttpResponse loginResponse = handler.login();
-        System.debug('loginResponse');
-        System.debug(loginResponse);
         Test.stopTest();
         System.assertEquals(200,loginResponse.getStatusCode());
     }

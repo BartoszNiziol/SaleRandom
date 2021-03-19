@@ -1,9 +1,8 @@
 /**
- * Created by BRITENET on 15.03.2021.
+ * Created by BRITENET on 18.03.2021.
  */
 @RestResource(urlMapping = '/Hospital')
-global class DB_HospitalRestWebService {
-
+global  class DB_HospitallRestWebService {
 
     @HttpGet
     global static List<HospitalResponseWrapper> getHospitals() {
@@ -20,9 +19,7 @@ global class DB_HospitalRestWebService {
             if(email == ''){
                 email = null;
             }
-
             List<HospitalResponseWrapper> result = DB_HospitalHandler.queryHospitals(name, email, country);
-            System.debug(result);
             return result;
 
         } catch (Exception e) {
@@ -39,7 +36,6 @@ global class DB_HospitalRestWebService {
             Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
-            System.debug(params);
             String name = (String) params.get('name');
             String email = (String) params.get('email');
             String country = (String) params.get('country');
@@ -63,7 +59,6 @@ global class DB_HospitalRestWebService {
             hospital.Email__c = email;
             hospital.Country__c = country;
             hospital.Id = id;
-            System.debug(hospital);
             upsert hospital;
             HospitalResponseWrapper wrapper = new HospitalResponseWrapper(hospital);
             return wrapper;
@@ -88,28 +83,11 @@ global class DB_HospitalRestWebService {
         }
     }
 
-//    @HttpPut
-//    global static DB_HospitalCountriesResponseWrapper deployCountries() {
-//        try {
-//            String[] singleCountries = DB_Utils.retrieveAvalibleCountries().split(',');
-//            List<String> pickListValuesList = new List<String>();
-//            for (String country : singleCountries) {
-//                pickListValuesList.add(country);
-//            }
-//            DB_HospitalCountriesResponseWrapper wrapper = new DB_HospitalCountriesResponseWrapper(pickListValuesList);
-//            return wrapper;
-//        } catch (Exception e) {
-//            DB_HospitalCountriesResponseWrapper responseStatus = new DB_HospitalCountriesResponseWrapper();
-//            responseStatus.status = false;
-//            responseStatus.message = e.getMessage();
-//            return responseStatus;
-//        }
-//    }
-
     private static HospitalResponseWrapper errorResponse(Exception e) {
         HospitalResponseWrapper wrapper = new HospitalResponseWrapper();
         wrapper.isSuccess = false;
         wrapper.message = e.getMessage();
         return wrapper;
     }
+
 }

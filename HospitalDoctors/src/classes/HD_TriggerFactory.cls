@@ -14,21 +14,24 @@ public with sharing class HD_TriggerFactory {
 
     private static void execute(HD_TriggerInterface handler) {
         if (Trigger.isBefore) {
-            handler.bulkBefore(Trigger.new,Trigger.old);
+            handler.bulkBefore(Trigger.new, Trigger.old);
         } else {
-            handler.bulkAfter(Trigger.new,Trigger.old);
+            handler.bulkAfter(Trigger.new, Trigger.old);
         }
     }
 
     private static HD_TriggerInterface getHandler(Schema.sObjectType soType) {
-
-        if (soType == Contract__c.sObjectType ) {
-            System.debug('hereBro');
-            if (HD_Utils.isContractTriggerEnabled()) {
+        if (HD_Utils.isTriggerEnabled(soType)) {
+            if (soType == Contract__c.sObjectType) {
                 return new HD_ContractTriggerHandler();
+            } else if (soType == Doctor__c.sObjectType) {
+                return new HD_DoctorTriggerHandler();
+            } else if (soType == Hospital__c.sObjectType) {
+                return new HD_HospitalTriggerHandler();
             }
             else return new HD_DummyTriggerHandler();
         }
-        return null;
+        else return new HD_DummyTriggerHandler();
+
     }
 }

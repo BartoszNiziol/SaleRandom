@@ -220,10 +220,6 @@
                             <option name="selected" value="true" />
                           </MetadataEntry>
                           <MetadataEntry>
-                            <option name="name" value="HD_HospitalCalloutsTest" />
-                            <option name="selected" value="true" />
-                          </MetadataEntry>
-                          <MetadataEntry>
                             <option name="name" value="HD_SingleMock" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
@@ -257,6 +253,18 @@
                           </MetadataEntry>
                           <MetadataEntry>
                             <option name="name" value="HD_DummyTriggerHandler" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="HD_DoctorTriggerHandler" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="HD_HospitalTriggerHandler" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="HD_DoctorResponseWrapper" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
                         </list>
@@ -550,6 +558,14 @@
                           </MetadataEntry>
                           <MetadataEntry>
                             <option name="name" value="SsqlTriggerBulk" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="HD_HospitalTrigger" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="HD_DoctorTrigger" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
                         </list>

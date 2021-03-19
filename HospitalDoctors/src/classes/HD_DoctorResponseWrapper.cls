@@ -1,4 +1,8 @@
-global class DB_DoctorResponseWrapper {
+/**
+ * Created by BRITENET on 19.03.2021.
+ */
+
+global class HD_DoctorResponseWrapper {
     webService String firstName;
     webService String lastName;
     webService String email;
@@ -13,8 +17,7 @@ global class DB_DoctorResponseWrapper {
     webService String message;
     webService Boolean isSuccess;
 
-
-    public DB_DoctorResponseWrapper(String id,String lastName, String firstName, String email, String country,Date birthdayDate, String city, String doctorExternalId,Decimal licenseNumber, String phoneNumber, String street){
+    public HD_DoctorResponseWrapper(String id,String lastName, String firstName, String email, String country,Date birthdayDate, String city, String doctorExternalId,Decimal licenseNumber, String phoneNumber, String street){
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -30,7 +33,7 @@ global class DB_DoctorResponseWrapper {
         message ='Success';
     }
 
-    public DB_DoctorResponseWrapper(Doctor__c doctor) {
+    public HD_DoctorResponseWrapper(Doctor__c doctor) {
         this.firstname = doctor.First_Name__c;
         this.lastName = doctor.Name;
         this.email = doctor.Email__c;
@@ -48,8 +51,9 @@ global class DB_DoctorResponseWrapper {
         isSuccess = true;
     }
 
-    public DB_DoctorResponseWrapper(){
+    public HD_DoctorResponseWrapper(){
         isSuccess = true;
         message ='Success';
     }
+
 }

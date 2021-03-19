@@ -56,10 +56,6 @@
                             <option name="selected" value="true" />
                           </MetadataEntry>
                           <MetadataEntry>
-                            <option name="name" value="DB_HospitalRestWebService" />
-                            <option name="selected" value="true" />
-                          </MetadataEntry>
-                          <MetadataEntry>
                             <option name="name" value="DB_HospitalHandler" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
@@ -81,6 +77,18 @@
                           </MetadataEntry>
                           <MetadataEntry>
                             <option name="name" value="DB_HospitalCountriesRestWebService" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="DB_HospitallRestWebService" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="DB_HospitalIntegrationWebService" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="HD_DoctorIntegrationWebService" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
                         </list>
