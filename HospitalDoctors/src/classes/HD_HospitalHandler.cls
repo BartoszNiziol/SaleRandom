@@ -41,18 +41,41 @@ public with sharing class HD_HospitalHandler {
 
         return hospital;
     }
-    @Future
-    public static void upsertHospitalToExternalDB(List <Hospital__c> newHospitals, List<Hospital__c> oldHospitals) {
-        System.debug('IM LOGINNG');
-        if (Cache.Session.get('authorization') == null) {
-           HD_IntegrationLoginHandler.login();
-        }
-        String authorization = (String) Cache.Session.get('authorization');
-        System.debug(authorization);
 
+    @Future(callout = true)
+    public static void upsertHospitalToExternalDB(String upsertBody) {
+        HttpRequest loginRequest = new HttpRequest();
+        loginRequest.setEndpoint(HD_Utils.retrieveCredentials('LoginEndpoint'));
+        loginRequest.setMethod('POST');
+        String username = HD_Utils.retrieveCredentials('DBLogin');
+        String password = HD_Utils.retrieveCredentials('DBPassword');
+        String grantType = 'password';
+        String clientId = HD_Utils.retrieveCredentials('clientID');
+        String clientSecret = HD_Utils.retrieveCredentials('clientSecret');
+        loginRequest.setBody(
+                'grant_type=password' +
+                        '&client_id=' + clientId + '&client_secret=' + clientSecret + '&username=' + username + '&password=' + password
+        );
+        Http http = new Http();
+        HttpResponse logHttpResponse = http.send(loginRequest);
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                logHttpResponse.getBody()
+        );
+        String accesToken = (String) params.get('access_token');
+        String authorization = 'Bearer ' + accesToken;
+        String endpointString = HD_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
 
+        HttpRequest upsertRequest = new HttpRequest();
+        upsertRequest.setEndpoint(endpointString);
+        upsertRequest.setMethod('POST');
+        upsertRequest.setHeader('Content-Type', 'application/json');
+        upsertRequest.setHeader('Authorization', authorization);
+        upsertRequest.setBody(upsertBody);
 
-
+        Http upsertHttp = new Http();
+       HttpResponse response = upsertHttp.send(upsertRequest);
+        System.debug(response);
+        System.debug(response);
     }
 
 

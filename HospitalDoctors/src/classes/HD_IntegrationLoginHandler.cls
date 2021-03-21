@@ -6,7 +6,7 @@ public with sharing class HD_IntegrationLoginHandler {
 
 
 
-    public static void login() {
+    public static String login() {
         HttpRequest req = new HttpRequest();
         req.setEndpoint(HD_Utils.retrieveCredentials('LoginEndpoint'));
         req.setMethod('POST');
@@ -21,13 +21,13 @@ public with sharing class HD_IntegrationLoginHandler {
         );
         Http http = new Http();
         HttpResponse res = http.send(req);
-
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 res.getBody()
         );
         String accesToken = (String) params.get('access_token');
         String authorization = 'Bearer ' + accesToken;
-        Cache.Session.put('authorization', authorization);
+       // Cache.Session.put('authorization', authorization);
+        return authorization;
 
     }
 

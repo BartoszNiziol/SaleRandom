@@ -17,13 +17,15 @@ public with sharing class HD_DoctorTriggerHandler implements HD_TriggerInterface
     }
 
     public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects) {
-        if(trigger.isInsert) {
-
-        } else if(trigger.isUpdate) {
-
-        } else if(trigger.isDelete) {
-
-        } else if(trigger.isUndelete) {
+        if (trigger.isInsert) {
+            String postBody = JSON.serialize(newObjects);
+            HD_DoctorHandler.upsertDoctorToExternalDB(postBody);
+        } else if (trigger.isUpdate) {
+            String postBody = JSON.serialize(newObjects);
+            HD_DoctorHandler.upsertDoctorToExternalDB(postBody);
+        } else if (trigger.isDelete) {
+            HD_DoctorHandler.deleteDoctorFromExternalDB((List<Doctor__c>) newObjects, (List<Doctor__c>) oldObjects);
+        } else if (trigger.isUndelete) {
 
         }
     }
