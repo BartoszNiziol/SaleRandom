@@ -39,5 +39,51 @@ public with sharing class DB_DoctorHandler {
         return doctor;
     }
 
+    @Future(callout = true)
+    public static void upsertDoctorToExternalDB(String upsertBody) {
+        HttpRequest loginRequest = new HttpRequest();
+        loginRequest.setEndpoint(DB_Utils.retrieveCredentials('LoginEndpoint'));
+        loginRequest.setMethod('POST');
+        String username = DB_Utils.retrieveCredentials('HDLogin');
+        String password = DB_Utils.retrieveCredentials('HDPassword');
+        String grantType = 'password';
+        String clientId = DB_Utils.retrieveCredentials('clientID');
+        String clientSecret = DB_Utils.retrieveCredentials('clientSecret');
+        loginRequest.setBody(
+                'grant_type=password' +
+                        '&client_id=' + clientId + '&client_secret=' + clientSecret + '&username=' + username + '&password=' + password
+        );
+        Http http = new Http();
+        HttpResponse logHttpResponse = http.send(loginRequest);
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                logHttpResponse.getBody()
+        );
+        String accesToken = (String) params.get('access_token');
+        String authorization = 'Bearer ' + accesToken;
+        String endpointString = DB_Utils.retrieveCredentials('HDDoctorIntegrationEndpoint');
+
+        HttpRequest upsertRequest = new HttpRequest();
+        upsertRequest.setEndpoint(endpointString);
+        upsertRequest.setMethod('POST');
+        upsertRequest.setHeader('Content-Type', 'application/json');
+        upsertRequest.setHeader('Authorization', authorization);
+        upsertRequest.setBody(upsertBody);
+
+        Http upsertHttp = new Http();
+        HttpResponse response = upsertHttp.send(upsertRequest);
+
+        Doctor__c doctor =[SELECT Id FROM Doctor__c WHERE Id =: response.getHeader('externalId')];
+        doctor.Doctor_External_Id__c = response.getHeader('addedId');
+
+        DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+        upsert doctor;
+        DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+
+    }
+    public static void deleteDoctorFromExternalDB(List <Doctor__c> newDoctors, List<Doctor__c> oldDoctors) {
+
+
+    }
+
 
 }

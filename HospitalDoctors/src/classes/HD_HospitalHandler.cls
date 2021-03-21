@@ -5,7 +5,6 @@
 public with sharing class HD_HospitalHandler {
 
 
-
     public static List<Hospital__c> queryHospitals(String name, String email, String country) {
 
         String query = 'SELECT ID,Name,Email__c,Country__c ' +
@@ -73,9 +72,17 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setBody(upsertBody);
 
         Http upsertHttp = new Http();
-       HttpResponse response = upsertHttp.send(upsertRequest);
-        System.debug(response);
-        System.debug(response);
+        HttpResponse response = upsertHttp.send(upsertRequest);
+        System.debug('response');
+        System.debug(response.getHeader('externalId'));
+
+        Hospital__c hospital = [SELECT Id FROM Hospital__c WHERE Id =:response.getHeader('externalId')];
+
+        hospital.Hospital_External_Id__c = response.getHeader('addedId');
+        HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+        upsert hospital;
+        HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+
     }
 
 

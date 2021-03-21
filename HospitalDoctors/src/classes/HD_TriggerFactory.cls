@@ -24,7 +24,7 @@ public with sharing class HD_TriggerFactory {
 
     private static HD_TriggerInterface getHandler(Schema.sObjectType soType) {
 
-        if (HD_Utils.isTriggerEnabled(soType)) {
+        if (!HD_Utils.isTriggerExceptionEnabled(soType)) {
             if (soType == Contract__c.sObjectType) {
                 return new HD_ContractTriggerHandler();
             } else if (soType == Doctor__c.sObjectType) {

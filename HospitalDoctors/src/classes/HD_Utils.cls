@@ -14,20 +14,47 @@ public with sharing class HD_Utils {
         return credentialValue;
     }
 
-    public static Boolean isTriggerEnabled(Schema.sObjectType soType){
+
+    public static Boolean isTriggerExceptionEnabled(Schema.sObjectType soType){
+        String objectName = soType.getDescribe().getName();
+
+        Boolean isEnabled = false;
+        try{
+            isEnabled = (Boolean) HD_TriggerException__c.getInstance().get(objectName);
+        }catch (SObjectException e){
+            System.debug(e.getMessage());
+        }
+        return isEnabled;
+    }
+    public  static void turnOffTrigger (Schema.sObjectType soType){
+        String objectName = soType.getDescribe().getName();
+
+        HD_TriggerException__c triggerException = HD_TriggerException__c.getInstance();
+        if (soType  ==  Contract__c.SObjectType) {
+           triggerException.Contract__c =true;
+        }
+        if (soType  ==  Doctor__c.SObjectType) {
+            triggerException.Doctor__c = true;
+        }
+        if (soType  ==  Hospital__c.SObjectType) {
+            triggerException.Hospital__c = true;
+        }
+        upsert  triggerException;
+    }
+    public  static void turnOnTrigger (Schema.sObjectType soType){
+
         HD_TriggerException__c triggerException = HD_TriggerException__c.getInstance();
 
         if (soType  ==  Contract__c.SObjectType) {
-            return !triggerException.Contract__c;
+            triggerException.Contract__c =false;
         }
         if (soType  ==  Doctor__c.SObjectType) {
-            return !triggerException.Doctor__c;
+            triggerException.Doctor__c = false;
         }
         if (soType  ==  Hospital__c.SObjectType) {
-            return !triggerException.Hospital__c;
+            triggerException.Hospital__c = false;
         }
-
-       return false;
+        upsert triggerException;
 
     }
 

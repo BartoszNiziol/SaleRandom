@@ -20,7 +20,7 @@ global class HD_DoctorIntegrationWebService {
             String email = (String) params.get('Email__c');
             String country = (String) params.get('Country__c');
             String city = (String) params.get ('City__c');
-            String licenseNumber = (String) params.get('License_Number__c');
+            Integer licenseNumber = (Integer) params.get('License_Number__c');
             String id = (String) params.get('Id');
             String birthDayDate = (String) params.get('Birthday_Date__c');
             String street = (String) params.get('Street__c');
@@ -32,18 +32,20 @@ global class HD_DoctorIntegrationWebService {
             doctor.Email__c = email;
             doctor.Country__c = country;
             doctor.City__c = city;
-            System.debug(licenseNumber);
             if (licenseNumber != null) {
                 doctor.License_Number__c = Decimal.valueOf(licenseNumber);
             }
-            System.debug(birthDayDate);
             if(birthDayDate != null){
                 doctor.Birthday_Date__c = Date.valueOf(birthDayDate);
             }
             doctor.Street__c = street;
             doctor.Phone_Number__c = phoneNumber;
             doctor.Doctor_External_Id__c = Id;
+            DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
             upsert doctor;
+            DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            RestContext.response.addHeader('addedId',doctor.Id);
+            RestContext.response.addHeader('externalId',doctor.Doctor_External_Id__c);
 
         } catch (Exception e) {
             System.debug(e);

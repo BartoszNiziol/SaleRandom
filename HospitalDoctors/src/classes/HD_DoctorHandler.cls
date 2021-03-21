@@ -138,8 +138,14 @@ public with sharing class HD_DoctorHandler {
 
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
-        System.debug(response);
-        System.debug(response);
+
+        Doctor__c doctor =[SELECT Id FROM Doctor__c WHERE Id =: response.getHeader('externalId')];
+        doctor.Doctor_External_Id__c = response.getHeader('addedId');
+
+        HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+        upsert doctor;
+        HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+
     }
     public static void deleteDoctorFromExternalDB(List <Doctor__c> newDoctors, List<Doctor__c> oldDoctors) {
 

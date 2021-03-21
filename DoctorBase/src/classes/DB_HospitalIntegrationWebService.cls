@@ -18,6 +18,7 @@ global class DB_HospitalIntegrationWebService {
             String name = (String) params.get('Name');
             String email = (String) params.get('Email__c');
             String country = (String) params.get('Country__c');
+            String city = (String) params.get('City__c');
             String id = (String) params.get('Id');
             String webPage = (String) params.get('Web_Page__c');
             String street = (String) params.get('Street__c');
@@ -27,12 +28,21 @@ global class DB_HospitalIntegrationWebService {
             hospital.Name = name;
             hospital.Email__c = email;
             hospital.Country__c = country;
+            hospital.City__c = city;
             hospital.Web_Page__c = webPage;
             hospital.Street__c = street;
             hospital.Phone_Number__c = phoneNumber;
             hospital.Hospital_External_Id__c = id;
+            DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
             upsert hospital;
-            HospitalResponseWrapper wrapper = new HospitalResponseWrapper(hospital);
+            DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+            System.debug('hospital.Id');
+            System.debug(hospital.Id);
+            System.debug('ext');
+            System.debug(hospital.Hospital_External_Id__c);
+            RestContext.response.addHeader('addedId', hospital.Id);
+            RestContext.response.addHeader('externalId', hospital.Hospital_External_Id__c);
+
         } catch (Exception e) {
             System.debug(e);
         }
@@ -53,9 +63,6 @@ global class DB_HospitalIntegrationWebService {
             return errorResponse(e);
         }
     }
-
-
-
 
     private static HospitalResponseWrapper errorResponse(Exception e) {
         HospitalResponseWrapper wrapper = new HospitalResponseWrapper();
