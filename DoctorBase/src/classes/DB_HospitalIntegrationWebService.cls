@@ -30,8 +30,8 @@ global class DB_HospitalIntegrationWebService {
             hospital.Web_Page__c = webPage;
             hospital.Street__c = street;
             hospital.Phone_Number__c = phoneNumber;
+            hospital.Hospital_External_Id__c = id;
             upsert hospital;
-
             HospitalResponseWrapper wrapper = new HospitalResponseWrapper(hospital);
         } catch (Exception e) {
             System.debug(e);
@@ -53,6 +53,8 @@ global class DB_HospitalIntegrationWebService {
             return errorResponse(e);
         }
     }
+
+
 
 
     private static HospitalResponseWrapper errorResponse(Exception e) {

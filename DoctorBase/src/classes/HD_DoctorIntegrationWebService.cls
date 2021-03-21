@@ -42,7 +42,7 @@ global class HD_DoctorIntegrationWebService {
             }
             doctor.Street__c = street;
             doctor.Phone_Number__c = phoneNumber;
-            doctor.Doctor_External_Id__c = doctorExternalId;
+            doctor.Doctor_External_Id__c = Id;
             upsert doctor;
 
         } catch (Exception e) {

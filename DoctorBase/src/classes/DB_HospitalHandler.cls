@@ -52,4 +52,23 @@ public with sharing class DB_HospitalHandler {
 
     }
 
+    public static void updateExternalId (String currentId){
+        HttpRequest loginRequest = new HttpRequest();
+        loginRequest.setEndpoint(HD_Utils.retrieveCredentials('LoginEndpoint'));
+        loginRequest.setMethod('POST');
+        String username = HD_Utils.retrieveCredentials('HDLogin');
+        String password = HD_Utils.retrieveCredentials('HDPassword');
+        String grantType = 'password';
+        String clientId = HD_Utils.retrieveCredentials('clientID');
+        String clientSecret = HD_Utils.retrieveCredentials('clientSecret');
+        loginRequest.setBody(
+                'grant_type=password' +
+                        '&client_id=' + clientId + '&client_secret=' + clientSecret + '&username=' + username + '&password=' + password
+        );
+        Http http = new Http();
+        HttpResponse logHttpResponse = http.send(loginRequest);
+
+
+    }
+
 }
