@@ -13,6 +13,8 @@ public with sharing class HD_TriggerFactory {
     }
 
     private static void execute(HD_TriggerInterface handler) {
+        System.debug(handler);
+        System.debug('Execute');
         if (Trigger.isBefore) {
             handler.bulkBefore(Trigger.new, Trigger.old);
         } else {
@@ -21,6 +23,9 @@ public with sharing class HD_TriggerFactory {
     }
 
     private static HD_TriggerInterface getHandler(Schema.sObjectType soType) {
+        System.debug('Inside getHandler');
+        System.debug(soType);
+        System.debug(HD_Utils.isTriggerEnabled(soType));
         if (HD_Utils.isTriggerEnabled(soType)) {
             if (soType == Contract__c.sObjectType) {
                 return new HD_ContractTriggerHandler();

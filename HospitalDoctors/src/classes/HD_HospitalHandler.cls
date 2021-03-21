@@ -4,6 +4,8 @@
 
 public with sharing class HD_HospitalHandler {
 
+
+
     public static List<Hospital__c> queryHospitals(String name, String email, String country) {
 
         String query = 'SELECT ID,Name,Email__c,Country__c ' +
@@ -24,10 +26,10 @@ public with sharing class HD_HospitalHandler {
         return fieldLike;
     }
 
-    public static Hospital__c parseHospitalFromResponseWrapper(HD_HospitalResonseWrapper wrapper){
+    public static Hospital__c parseHospitalFromResponseWrapper(HD_HospitalResonseWrapper wrapper) {
 
         Hospital__c hospital = new Hospital__c();
-        hospital.Id =wrapper.id;
+        hospital.Id = wrapper.id;
         hospital.Name = wrapper.hospitalName;
         hospital.City__c = wrapper.city;
         hospital.Country__c = wrapper.country;
@@ -39,5 +41,23 @@ public with sharing class HD_HospitalHandler {
 
         return hospital;
     }
+    @Future
+    public static void upsertHospitalToExternalDB(List <Hospital__c> newHospitals, List<Hospital__c> oldHospitals) {
+        System.debug('IM LOGINNG');
+        if (Cache.Session.get('authorization') == null) {
+           HD_IntegrationLoginHandler.login();
+        }
+        String authorization = (String) Cache.Session.get('authorization');
+        System.debug(authorization);
 
+
+
+
+    }
+
+
+    public static void deleteHospitalFromExternalDB(List <Hospital__c> newHospitals, List<Hospital__c> oldHospitals) {
+
+
+    }
 }

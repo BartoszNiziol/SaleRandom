@@ -20,6 +20,13 @@ public with sharing class HD_Utils {
         if (soType  ==  Contract__c.SObjectType) {
             return !triggerException.Contract__c;
         }
+        if (soType  ==  Doctor__c.SObjectType) {
+            return !triggerException.Doctor__c;
+        }
+        if (soType  ==  Hospital__c.SObjectType) {
+            return !triggerException.Hospital__c;
+        }
+
        return false;
 
     }

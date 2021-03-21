@@ -17,12 +17,13 @@ public with sharing class HD_HospitalTriggerHandler implements HD_TriggerInterfa
     }
 
     public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects) {
+        System.debug('in bulk after');
         if(trigger.isInsert) {
-
+            HD_HospitalHandler.upsertHospitalToExternalDB((List<Hospital__c>) newObjects,(List<Hospital__c>) oldObjects);
         } else if(trigger.isUpdate) {
-
+            HD_HospitalHandler.upsertHospitalToExternalDB((List<Hospital__c>) newObjects,(List<Hospital__c>) oldObjects);
         } else if(trigger.isDelete) {
-
+            HD_HospitalHandler.deleteHospitalFromExternalDB((List<Hospital__c>) newObjects,(List<Hospital__c>) oldObjects);
         } else if(trigger.isUndelete) {
 
         }
