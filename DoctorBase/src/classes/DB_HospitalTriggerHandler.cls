@@ -5,13 +5,9 @@
 public with sharing class DB_HospitalTriggerHandler implements DB_TriggerInterface{
     public void bulkBefore(List<sObject> newObjects, List<sObject> oldObjects) {
         if (trigger.isInsert) {
-
         } else if (trigger.isUpdate) {
-
         } else if (trigger.isDelete) {
-
         } else if (trigger.isUndelete) {
-
         }
     }
 
@@ -28,9 +24,6 @@ public with sharing class DB_HospitalTriggerHandler implements DB_TriggerInterfa
             String postBody = JSON.serialize(oldObjects);
             DB_HospitalHandler.deleteHospitalFromExternalDB(postBody);
         } else if (trigger.isUndelete) {
-
         }
-
     }
-
 }

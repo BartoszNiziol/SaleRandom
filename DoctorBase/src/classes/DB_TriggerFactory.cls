@@ -6,7 +6,6 @@ public with sharing class DB_TriggerFactory {
     public static final Schema.sObjectType DOCTOR_API_NAME = Doctor__c.SObjectType;
     public static final Schema.sObjectType HOSPITAL_API_NAME = Hospital__c.SObjectType;
 
-
     public static void createHandler(Schema.sObjectType soType) {
         DB_TriggerInterface handler = getHandler(soType);
         if (handler == null) {
@@ -33,7 +32,5 @@ public with sharing class DB_TriggerFactory {
             }
         }
         return new DB_DummyTriggerHandler();
-
     }
-
 }

@@ -6,13 +6,9 @@ public with sharing class DB_DoctorTriggerHandler implements DB_TriggerInterface
 
     public void bulkBefore(List<sObject> newObjects, List<sObject> oldObjects) {
         if(trigger.isInsert) {
-
         } else if(trigger.isUpdate) {
-
         } else if(trigger.isDelete) {
-
         } else if(trigger.isUndelete) {
-
         }
     }
 
@@ -29,8 +25,6 @@ public with sharing class DB_DoctorTriggerHandler implements DB_TriggerInterface
             String postBody = JSON.serialize(oldObjects);
             DB_DoctorHandler.deleteDoctorFromExternalDB(postBody);
         } else if (trigger.isUndelete) {
-
         }
     }
-
 }

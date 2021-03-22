@@ -4,7 +4,6 @@
 @RestResource(urlMapping = '/HospitalIntegration')
 global class DB_HospitalIntegrationWebService {
 
-
     @HttpPost
     global static void upsertHospital() {
         try {
@@ -37,13 +36,9 @@ global class DB_HospitalIntegrationWebService {
             try {
                 DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
                 upsert hospital;
-
             }finally {
                 DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
             }
-
-
-
             RestContext.response.addHeader('addedId', hospital.Id);
             RestContext.response.addHeader('externalId', hospital.Hospital_External_Id__c);
 
@@ -71,9 +66,6 @@ global class DB_HospitalIntegrationWebService {
             }finally {
                 DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
             }
-
-
-
         } catch (Exception e) {
             System.debug( errorResponse(e));
         }
@@ -85,5 +77,4 @@ global class DB_HospitalIntegrationWebService {
         wrapper.message = e.getMessage();
         return wrapper;
     }
-
 }

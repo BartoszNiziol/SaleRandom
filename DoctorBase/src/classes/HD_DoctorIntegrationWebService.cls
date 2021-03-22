@@ -45,12 +45,11 @@ global class HD_DoctorIntegrationWebService {
             try {
                 DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                 upsert doctor;
-            }finally {
+            } finally {
                 DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
             RestContext.response.addHeader('addedId', doctor.Id);
             RestContext.response.addHeader('externalId', doctor.Doctor_External_Id__c);
-
         } catch (Exception e) {
             System.debug('upsertDoctorService');
             System.debug(e);
@@ -58,7 +57,6 @@ global class HD_DoctorIntegrationWebService {
     }
     @HttpDelete
     global static void deleteDoctor() {
-
         try {
             Map<String, Object> params;
             List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
@@ -78,7 +76,6 @@ global class HD_DoctorIntegrationWebService {
             } finally {
                 DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
-
         } catch (Exception e) {
             System.debug('deleteDoctorService');
             System.debug(e);

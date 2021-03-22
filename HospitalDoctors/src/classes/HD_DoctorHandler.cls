@@ -89,7 +89,6 @@ public with sharing class HD_DoctorHandler {
 
     public static Doctor__c parseDoctorFromResponseWrapper(HD_DoctorResponseWrapper wrapper) {
         Doctor__c doctor = new Doctor__c();
-
         doctor.Id = wrapper.id;
         doctor.Name = wrapper.lastName;
         doctor.Birthday_Date__c = wrapper.birthdayDate;
@@ -101,11 +100,9 @@ public with sharing class HD_DoctorHandler {
         doctor.License_Number__c = wrapper.licenseNumber;
         doctor.Phone_Number__c = wrapper.phoneNumber;
         doctor.Street__c = wrapper.street;
-
         return doctor;
-
-
     }
+
     @Future(callout = true)
     public static void upsertDoctorToExternalDB(String upsertBody) {
         HttpRequest loginRequest = new HttpRequest();
@@ -171,7 +168,6 @@ public with sharing class HD_DoctorHandler {
         );
         String accesToken = (String) params.get('access_token');
         String authorization = 'Bearer ' + accesToken;
-        System.debug(authorization);
         String endpointString = HD_Utils.retrieveCredentials('DBDoctorIntegrationEndpoint');
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
@@ -181,9 +177,5 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setBody(upsertBody);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
-        System.debug(response);
-
     }
-
-
 }

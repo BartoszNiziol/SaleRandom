@@ -13,8 +13,6 @@ public with sharing class HD_TriggerFactory {
     }
 
     private static void execute(HD_TriggerInterface handler) {
-        System.debug(handler);
-        System.debug('Execute');
         if (Trigger.isBefore) {
             handler.bulkBefore(Trigger.new, Trigger.old);
         } else {

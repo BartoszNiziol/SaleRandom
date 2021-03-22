@@ -7,11 +7,6 @@ public with sharing class DB_HospitalHandler {
 
     public static List<HospitalResponseWrapper> queryHospitals(String name, String email, String country) {
         List<HospitalResponseWrapper> responseWrappers= new List<HospitalResponseWrapper>();
-
-        System.debug(name);
-        System.debug(email);
-        System.debug(country);
-
         String query = 'SELECT ID,Name,City__c,Email__c,Country__c ' +
                 ' FROM Hospital__c ' +
                 ' WHERE Name LIKE \'' + dynamicQueryLikeGenerator(name) + '\'' +
@@ -19,7 +14,6 @@ public with sharing class DB_HospitalHandler {
                 ' AND Country__c LIKE \'' + dynamicQueryLikeGenerator(country) + '\'' ;
 
         List<Hospital__c> hospital = Database.query(query);
-        System.debug(query);
         for (Hospital__c hos: hospital){
             responseWrappers.add(new HospitalResponseWrapper(hos.Name,hos.Email__c,hos.Country__c,hos.City__c,hos.Id));
         }
@@ -47,9 +41,7 @@ public with sharing class DB_HospitalHandler {
         hospital.Phone_Number__c = wrapper.phoneNumber;
         hospital.Street__c = wrapper.street;
         hospital.Web_Page__c = wrapper.webPage;
-
         return hospital;
-
     }
 
     @Future(callout = true)
@@ -90,17 +82,13 @@ public with sharing class DB_HospitalHandler {
 
         Hospital__c hospital =[SELECT Id FROM Hospital__c WHERE Id =: response.getHeader('externalId')];
         hospital.Hospital_External_Id__c = response.getHeader('addedId');
-
         try{
             DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
             upsert hospital;
         }finally {
             DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
-
-
     }
-
 
     @Future(callout = true)
     public static void deleteHospitalFromExternalDB(String upsertBody) {
@@ -124,7 +112,6 @@ public with sharing class DB_HospitalHandler {
         );
         String accesToken = (String) params.get('access_token');
         String authorization = 'Bearer ' + accesToken;
-        System.debug(authorization);
 
         String endpointString = DB_Utils.retrieveCredentials('HDHospitalIntegrationEndpoint');
         HttpRequest upsertRequest = new HttpRequest();
@@ -135,8 +122,5 @@ public with sharing class DB_HospitalHandler {
         upsertRequest.setBody(upsertBody);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
-        System.debug(response);
-
     }
-
 }

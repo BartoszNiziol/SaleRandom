@@ -40,9 +40,8 @@ global class HD_HospitalIntegrationWebService {
             } finally {
                 HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
             }
-            RestContext.response.addHeader('addedId',hospital.Id);
-            RestContext.response.addHeader('externalId',hospital.Hospital_External_Id__c);
-
+            RestContext.response.addHeader('addedId', hospital.Id);
+            RestContext.response.addHeader('externalId', hospital.Hospital_External_Id__c);
         } catch (Exception e) {
             System.debug(e);
         }
@@ -61,16 +60,14 @@ global class HD_HospitalIntegrationWebService {
             String hospitalExternalId = (String) params.get('Hospital_External_Id__c');
             Hospital__c hospital = new Hospital__c();
             hospital.Id = hospitalExternalId;
-
             try {
                 HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
                 delete hospital;
             } finally {
                 HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
             }
-
         } catch (Exception e) {
-            System.debug( errorResponse(e));
+            System.debug(errorResponse(e));
         }
     }
 

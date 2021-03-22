@@ -11,7 +11,6 @@ global class HD_DoctorIntegrationWebService {
             List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
-            System.debug(responseJ);
             for (Object obj : responseJ) {
                 params = (Map<string, Object>) obj;
             }
@@ -50,7 +49,6 @@ global class HD_DoctorIntegrationWebService {
             }
             RestContext.response.addHeader('addedId', doctor.Id);
             RestContext.response.addHeader('externalId', doctor.Doctor_External_Id__c);
-
         } catch (Exception e) {
             System.debug(e);
         }
@@ -76,10 +74,8 @@ global class HD_DoctorIntegrationWebService {
             } finally {
                 HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
-
-        } catch (Exception e){
-
+        } catch (Exception e) {
+            System.debug(e);
         }
     }
-
 }

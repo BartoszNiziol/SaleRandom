@@ -3,8 +3,6 @@
  */
 
 public with sharing class DB_Utils {
-
-
     public static String retrieveAvalibleCountries(){
         DB_Setting__c settingItem = DB_Setting__c.getInstance('AvalibleCountries');
         if (settingItem == null) {
@@ -40,7 +38,6 @@ public with sharing class DB_Utils {
             String objectName = soType.getDescribe().getName();
             triggerException.put(objectName,true);
             upsert triggerException;
-
         } catch (Exception e) {
             System.debug('toggle exc');
             System.debug(e);
