@@ -18,13 +18,15 @@ public with sharing class DB_DoctorTriggerHandler implements DB_TriggerInterface
 
     public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects) {
         if (trigger.isInsert) {
+            System.debug('insert in doctrighand');
             String postBody = JSON.serialize(newObjects);
             DB_DoctorHandler.upsertDoctorToExternalDB(postBody);
         } else if (trigger.isUpdate) {
+            System.debug('update in doctrighand');
             String postBody = JSON.serialize(newObjects);
             DB_DoctorHandler.upsertDoctorToExternalDB(postBody);
         } else if (trigger.isDelete) {
-            String postBody = JSON.serialize(newObjects);
+            String postBody = JSON.serialize(oldObjects);
             DB_DoctorHandler.deleteDoctorFromExternalDB(postBody);
         } else if (trigger.isUndelete) {
 

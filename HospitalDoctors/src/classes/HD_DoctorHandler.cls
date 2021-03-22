@@ -168,6 +168,7 @@ public with sharing class HD_DoctorHandler {
         );
         String accesToken = (String) params.get('access_token');
         String authorization = 'Bearer ' + accesToken;
+        System.debug(authorization);
         String endpointString = HD_Utils.retrieveCredentials('DBDoctorIntegrationEndpoint');
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
@@ -177,6 +178,7 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setBody(upsertBody);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
+        System.debug(response);
 
     }
 

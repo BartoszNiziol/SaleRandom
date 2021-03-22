@@ -41,6 +41,7 @@ public with sharing class DB_DoctorHandler {
 
     @Future(callout = true)
     public static void upsertDoctorToExternalDB(String upsertBody) {
+        try {
         HttpRequest loginRequest = new HttpRequest();
         loginRequest.setEndpoint(DB_Utils.retrieveCredentials('LoginEndpoint'));
         loginRequest.setMethod('POST');
@@ -68,19 +69,26 @@ public with sharing class DB_DoctorHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-
+            System.debug('authorization');
+            System.debug(authorization);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
-
+        System.debug(response);
         Doctor__c doctor =[SELECT Id FROM Doctor__c WHERE Id =: response.getHeader('externalId')];
         doctor.Doctor_External_Id__c = response.getHeader('addedId');
-
         DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
         upsert doctor;
         DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
 
+    } catch (Exception e){
+            System.debug('upsertDoctorExc');
+            System.debug(e);
+        }
     }
+    @Future(callout = true)
+
     public static void deleteDoctorFromExternalDB(String upsertBody) {
+        try{
         HttpRequest loginRequest = new HttpRequest();
         loginRequest.setEndpoint(DB_Utils.retrieveCredentials('LoginEndpoint'));
         loginRequest.setMethod('POST');
@@ -100,7 +108,7 @@ public with sharing class DB_DoctorHandler {
         );
         String accesToken = (String) params.get('access_token');
         String authorization = 'Bearer ' + accesToken;
-        String endpointString = DB_Utils.retrieveCredentials('DBDoctorIntegrationEndpoint');
+        String endpointString = DB_Utils.retrieveCredentials('HDDoctorIntegrationEndpoint');
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
         upsertRequest.setMethod('DELETE');
@@ -109,7 +117,10 @@ public with sharing class DB_DoctorHandler {
         upsertRequest.setBody(upsertBody);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
-
+      }catch (Exception e){
+            System.debug('deleteDoctorcallout');
+            System.debug(e);
+        }
     }
 
 

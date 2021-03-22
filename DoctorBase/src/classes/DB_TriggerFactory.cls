@@ -23,10 +23,15 @@ public with sharing class DB_TriggerFactory {
     }
 
     private static DB_TriggerInterface getHandler(Schema.sObjectType soType) {
+        System.debug('soType');
+        System.debug(soType);
+
+        System.debug(DB_Utils.isTriggerExceptionEnabled(soType));
 
         if (!DB_Utils.isTriggerExceptionEnabled(soType)) {
             if (soType == Doctor__c.sObjectType) {
                 return new DB_DoctorTriggerHandler();
+
             } else if (soType == Hospital__c.sObjectType) {
                 return new DB_HospitalTriggerHandler();
             }

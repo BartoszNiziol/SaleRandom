@@ -49,6 +49,7 @@ global class HD_DoctorIntegrationWebService {
             RestContext.response.addHeader('externalId',doctor.Doctor_External_Id__c);
 
         } catch (Exception e) {
+            System.debug('upsertDoctorService');
             System.debug(e);
         }
     }
@@ -72,7 +73,8 @@ global class HD_DoctorIntegrationWebService {
             DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
 
         } catch (Exception e){
-
+            System.debug('deleteDoctorService');
+            System.debug(e);
         }
     }
 

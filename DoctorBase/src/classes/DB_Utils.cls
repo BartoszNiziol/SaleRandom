@@ -26,12 +26,17 @@ public with sharing class DB_Utils {
     public static Boolean isTriggerExceptionEnabled(Schema.sObjectType soType){
         String objectName = soType.getDescribe().getName();
 
+        System.debug('initial trigger value' + soType);
+        System.debug(DB_TriggerException__c.getInstance().get(objectName));
+
         Boolean isEnabled = false;
         try{
             isEnabled = (Boolean) DB_TriggerException__c.getInstance().get(objectName);
         }catch (SObjectException e){
             System.debug(e.getMessage());
         }
+        System.debug('isEnabled');
+        System.debug(isEnabled);
         return isEnabled;
     }
     public  static void turnOffTrigger (Schema.sObjectType soType){
@@ -40,7 +45,7 @@ public with sharing class DB_Utils {
         if (soType  ==  Doctor__c.SObjectType) {
             triggerException.Doctor__c = true;
         }
-        if (soType  ==  Hospital__c.SObjectType) {
+       else if (soType  ==  Hospital__c.SObjectType) {
             triggerException.Hospital__c = true;
         }
         upsert  triggerException;
@@ -51,7 +56,7 @@ public with sharing class DB_Utils {
         if (soType  ==  Doctor__c.SObjectType) {
             triggerException.Doctor__c = false;
         }
-        if (soType  ==  Hospital__c.SObjectType) {
+       else if (soType  ==  Hospital__c.SObjectType) {
             triggerException.Hospital__c = false;
         }
         upsert triggerException;
