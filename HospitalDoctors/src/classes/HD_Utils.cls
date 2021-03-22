@@ -4,7 +4,6 @@
 
 public with sharing class HD_Utils {
 
-
     public static String retrieveCredentials(String credentialName) {
         HD_Setting__c settingItem = HD_Setting__c.getInstance(credentialName);
         if (settingItem == null) {
@@ -29,35 +28,26 @@ public with sharing class HD_Utils {
 
 
     public static void turnOffTrigger(Schema.sObjectType soType) {
-        String objectName = soType.getDescribe().getName();
-
-        HD_TriggerException__c triggerException = HD_TriggerException__c.getInstance();
-        if (soType == Contract__c.SObjectType) {
-            triggerException.Contract__c = true;
+        try {
+            HD_TriggerException__c triggerException = HD_TriggerException__c.getInstance();
+            String objectName = soType.getDescribe().getName();
+            triggerException.put(objectName, true);
+            upsert triggerException;
+        } catch (Exception e) {
+            System.debug('toggle exc');
+            System.debug(e);
         }
-        if (soType == Doctor__c.SObjectType) {
-            triggerException.Doctor__c = true;
-        }
-        if (soType == Hospital__c.SObjectType) {
-            triggerException.Hospital__c = true;
-        }
-        upsert triggerException;
     }
     public static void turnOnTrigger(Schema.sObjectType soType) {
-
-        HD_TriggerException__c triggerException = HD_TriggerException__c.getInstance();
-
-        if (soType == Contract__c.SObjectType) {
-            triggerException.Contract__c = false;
+        try {
+            HD_TriggerException__c triggerException = HD_TriggerException__c.getInstance();
+            String objectName = soType.getDescribe().getName();
+            triggerException.put(objectName, false);
+            upsert triggerException;
+        } catch (Exception e) {
+            System.debug('toggle exc');
+            System.debug(e);
         }
-        if (soType == Doctor__c.SObjectType) {
-            triggerException.Doctor__c = false;
-        }
-        if (soType == Hospital__c.SObjectType) {
-            triggerException.Hospital__c = false;
-        }
-        upsert triggerException;
-
     }
 
     public static Boolean isSettingEnabled(String settingName, String valueToCheck) {
@@ -75,12 +65,15 @@ public with sharing class HD_Utils {
         }
         return settingValueExist;
     }
+
     public static Boolean isSettingEnabledFOrCurrentUserCountry(String settingName) {
         return isSettingEnabled(settingName, getCurrentUser().Country);
     }
+
     public static User getCurrentUser() {
         return getUser(UserInfo.getUserId());
     }
+
     public static User getUser(String userID) {
         List<User> userList = [SELECT Email, Country FROM User WHERE Id = :userID];
         if (userList.isEmpty()) {

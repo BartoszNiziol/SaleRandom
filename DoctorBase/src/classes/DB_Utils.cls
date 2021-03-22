@@ -25,7 +25,6 @@ public with sharing class DB_Utils {
 
     public static Boolean isTriggerExceptionEnabled(Schema.sObjectType soType){
         String objectName = soType.getDescribe().getName();
-
         Boolean isEnabled = false;
         try{
             isEnabled = (Boolean) DB_TriggerException__c.getInstance().get(objectName);
@@ -34,28 +33,29 @@ public with sharing class DB_Utils {
         }
         return isEnabled;
     }
-    public  static void turnOffTrigger (Schema.sObjectType soType){
 
-        DB_TriggerException__c triggerException = DB_TriggerException__c.getInstance();
-        if (soType  ==  Doctor__c.SObjectType) {
-            triggerException.Doctor__c = true;
+    public  static void turnOffTrigger (Schema.sObjectType soType){
+        try {
+            DB_TriggerException__c triggerException = DB_TriggerException__c.getInstance();
+            String objectName = soType.getDescribe().getName();
+            triggerException.put(objectName,true);
+            upsert triggerException;
+
+        } catch (Exception e) {
+            System.debug('toggle exc');
+            System.debug(e);
         }
-       else if (soType  ==  Hospital__c.SObjectType) {
-            triggerException.Hospital__c = true;
-        }
-        upsert  triggerException;
     }
 
     public  static void turnOnTrigger (Schema.sObjectType soType){
-
-        DB_TriggerException__c triggerException = DB_TriggerException__c.getInstance();
-        if (soType  ==  Doctor__c.SObjectType) {
-            triggerException.Doctor__c = false;
+        try {
+            DB_TriggerException__c triggerException = DB_TriggerException__c.getInstance();
+            String objectName = soType.getDescribe().getName();
+            triggerException.put(objectName,false);
+            upsert triggerException;
+        } catch (Exception e) {
+            System.debug('toggle exc');
+            System.debug(e);
         }
-       else if (soType  ==  Hospital__c.SObjectType) {
-            triggerException.Hospital__c = false;
-        }
-        upsert triggerException;
-
     }
 }

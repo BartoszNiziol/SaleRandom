@@ -3,9 +3,12 @@
  */
 
 public with sharing class DB_TriggerFactory {
+    public static final Schema.sObjectType DOCTOR_API_NAME = Doctor__c.SObjectType;
+    public static final Schema.sObjectType HOSPITAL_API_NAME = Hospital__c.SObjectType;
+
+
     public static void createHandler(Schema.sObjectType soType) {
         DB_TriggerInterface handler = getHandler(soType);
-
         if (handler == null) {
             throw new DB_TriggerException('No Trigger Handler registered for Object Type: ' + soType);
         }
@@ -13,8 +16,6 @@ public with sharing class DB_TriggerFactory {
     }
 
     private static void execute(DB_TriggerInterface handler) {
-        System.debug(handler);
-        System.debug('Execute');
         if (Trigger.isBefore) {
             handler.bulkBefore(Trigger.new, Trigger.old);
         } else {
@@ -23,21 +24,15 @@ public with sharing class DB_TriggerFactory {
     }
 
     private static DB_TriggerInterface getHandler(Schema.sObjectType soType) {
-        System.debug('soType');
-        System.debug(soType);
-
-        System.debug(DB_Utils.isTriggerExceptionEnabled(soType));
 
         if (!DB_Utils.isTriggerExceptionEnabled(soType)) {
-            if (soType == Doctor__c.sObjectType) {
+            if (soType === DOCTOR_API_NAME) {
                 return new DB_DoctorTriggerHandler();
-
-            } else if (soType == Hospital__c.sObjectType) {
+            } else if (soType === HOSPITAL_API_NAME) {
                 return new DB_HospitalTriggerHandler();
             }
-            else return new DB_DummyTriggerHandler();
         }
-        else return new DB_DummyTriggerHandler();
+        return new DB_DummyTriggerHandler();
 
     }
 
