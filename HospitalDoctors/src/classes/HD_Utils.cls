@@ -17,7 +17,6 @@ public with sharing class HD_Utils {
 
     public static Boolean isTriggerExceptionEnabled(Schema.sObjectType soType) {
         String objectName = soType.getDescribe().getName();
-
         Boolean isEnabled = false;
         try {
             isEnabled = (Boolean) HD_TriggerException__c.getInstance().get(objectName);
@@ -26,6 +25,7 @@ public with sharing class HD_Utils {
         }
         return isEnabled;
     }
+
     public static void turnOffTrigger(Schema.sObjectType soType) {
         String objectName = soType.getDescribe().getName();
 

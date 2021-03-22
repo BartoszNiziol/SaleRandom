@@ -25,7 +25,8 @@ public with sharing class DB_HospitalTriggerHandler implements DB_TriggerInterfa
             String postBody = JSON.serialize(newObjects);
             DB_HospitalHandler.upsertHospitalToExternalDB(postBody);
         } else if (trigger.isDelete) {
-            DB_HospitalHandler.deleteHospitalFromExternalDB((List<Hospital__c>) newObjects, (List<Hospital__c>) oldObjects);
+            String postBody = JSON.serialize(oldObjects);
+            DB_HospitalHandler.deleteHospitalFromExternalDB(postBody);
         } else if (trigger.isUndelete) {
 
         }

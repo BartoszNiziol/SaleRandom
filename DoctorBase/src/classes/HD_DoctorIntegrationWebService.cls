@@ -42,9 +42,9 @@ global class HD_DoctorIntegrationWebService {
             doctor.Phone_Number__c = phoneNumber;
             doctor.Doctor_External_Id__c = Id;
             doctor.Id = doctorExternalId;
-            DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+            DB_Utils.toggleTrigger(Doctor__c.getSObjectType());
             upsert doctor;
-            DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            DB_Utils.toggleTrigger(Doctor__c.getSObjectType());
             RestContext.response.addHeader('addedId',doctor.Id);
             RestContext.response.addHeader('externalId',doctor.Doctor_External_Id__c);
 
@@ -69,9 +69,9 @@ global class HD_DoctorIntegrationWebService {
             doctor.Id = doctorExternalId;
             System.debug('doctor');
             System.debug(doctor);
-            DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+            DB_Utils.toggleTrigger(Doctor__c.getSObjectType());
             delete doctor;
-            DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            DB_Utils.toggleTrigger(Doctor__c.getSObjectType());
 
         } catch (Exception e){
 

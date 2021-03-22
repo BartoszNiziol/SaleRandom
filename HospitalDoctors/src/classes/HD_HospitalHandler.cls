@@ -102,7 +102,7 @@ public with sharing class HD_HospitalHandler {
         );
         String accesToken = (String) params.get('access_token');
         String authorization = 'Bearer ' + accesToken;
-
+        System.debug(authorization);
         String endpointString = HD_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);

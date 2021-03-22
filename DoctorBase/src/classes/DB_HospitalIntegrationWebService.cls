@@ -34,9 +34,9 @@ global class DB_HospitalIntegrationWebService {
             hospital.Phone_Number__c = phoneNumber;
             hospital.Hospital_External_Id__c = id;
             hospital.Id = hospitalExternalId;
-            DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+            DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
             upsert hospital;
-            DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+            DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
             RestContext.response.addHeader('addedId', hospital.Id);
             RestContext.response.addHeader('externalId', hospital.Hospital_External_Id__c);
 
@@ -65,9 +65,9 @@ global class DB_HospitalIntegrationWebService {
             hospital.Id = hospitalExternalId;
             System.debug('hopspital');
             System.debug(hospital);
-            DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+            DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
             delete hospital;
-            DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+            DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
 
         } catch (Exception e) {
             System.debug( errorResponse(e));
@@ -80,16 +80,5 @@ global class DB_HospitalIntegrationWebService {
         wrapper.message = e.getMessage();
         return wrapper;
     }
-
-//    private checkNullStringValue(String name, String email, String country, String id, String webPage, String street, String phoneNumber) {
-//        if (name == 'null') name = null;
-//        if (email == 'null') email = null;
-//        if (country == 'null') country = null;
-//        if (id == 'null') id = null;
-//        if (webPage == 'null') webPage = null;
-//        if (street == 'null') street = null;
-//        if (phoneNumber == 'null') phoneNumber = null;
-//    }
-
 
 }

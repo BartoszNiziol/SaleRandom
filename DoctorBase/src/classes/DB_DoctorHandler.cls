@@ -75,9 +75,9 @@ public with sharing class DB_DoctorHandler {
         Doctor__c doctor =[SELECT Id FROM Doctor__c WHERE Id =: response.getHeader('externalId')];
         doctor.Doctor_External_Id__c = response.getHeader('addedId');
 
-        DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+        DB_Utils.toggleTrigger(Doctor__c.getSObjectType());
         upsert doctor;
-        DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+        DB_Utils.toggleTrigger(Doctor__c.getSObjectType());
 
     }
     public static void deleteDoctorFromExternalDB(List <Doctor__c> newDoctors, List<Doctor__c> oldDoctors) {

@@ -46,18 +46,24 @@ global class HD_HospitalIntegrationWebService {
     }
 
     @HttpDelete
-    global static HD_HospitalResonseWrapper deleteHospital() {
+    global static void deleteHospital() {
         try {
-            RestRequest req = RestContext.request;
-            Map<String, String> requestParams = req.params;
-            String id = requestParams.get('id');
+            Map<String, Object> params;
+            List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
+                    RestContext.request.requestBody.toString()
+            );
+            for (Object obj : responseJ) {
+                params = (Map<string, Object>) obj;
+            }
+            String hospitalExternalId = (String) params.get('Hospital_External_Id__c');
             Hospital__c hospital = new Hospital__c();
-            hospital.Id = id;
+            hospital.Id = hospitalExternalId;
+            HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
             delete hospital;
-            HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper(hospital);
-            return wrapper;
+            HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+
         } catch (Exception e) {
-            return errorResponse(e);
+            System.debug( errorResponse(e));
         }
     }
 

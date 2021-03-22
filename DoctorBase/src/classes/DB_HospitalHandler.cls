@@ -91,14 +91,45 @@ public with sharing class DB_HospitalHandler {
         Hospital__c hospital =[SELECT Id FROM Hospital__c WHERE Id =: response.getHeader('externalId')];
         hospital.Hospital_External_Id__c = response.getHeader('addedId');
 
-        DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+        DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
         upsert hospital;
-        DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+        DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
     }
 
 
-    public static void deleteHospitalFromExternalDB(List <Hospital__c> newHospitals, List<Hospital__c> oldHospitals) {
+    @Future(callout = true)
+    public static void deleteHospitalFromExternalDB(String upsertBody) {
+        System.debug('main method Started');
+        HttpRequest loginRequest = new HttpRequest();
+        loginRequest.setEndpoint(DB_Utils.retrieveCredentials('LoginEndpoint'));
+        loginRequest.setMethod('POST');
+        String username = DB_Utils.retrieveCredentials('DBLogin');
+        String password = DB_Utils.retrieveCredentials('DBPassword');
+        String grantType = 'password';
+        String clientId = DB_Utils.retrieveCredentials('clientID');
+        String clientSecret = DB_Utils.retrieveCredentials('clientSecret');
+        loginRequest.setBody(
+                'grant_type=password' +
+                        '&client_id=' + clientId + '&client_secret=' + clientSecret + '&username=' + username + '&password=' + password
+        );
+        Http http = new Http();
+        HttpResponse logHttpResponse = http.send(loginRequest);
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                logHttpResponse.getBody()
+        );
+        String accesToken = (String) params.get('access_token');
+        String authorization = 'Bearer ' + accesToken;
 
+        String endpointString = DB_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
+        HttpRequest upsertRequest = new HttpRequest();
+        upsertRequest.setEndpoint(endpointString);
+        upsertRequest.setMethod('DELETE');
+        upsertRequest.setHeader('Content-Type', 'application/json');
+        upsertRequest.setHeader('Authorization', authorization);
+        upsertRequest.setBody(upsertBody);
+        Http upsertHttp = new Http();
+        HttpResponse response = upsertHttp.send(upsertRequest);
+        System.debug(response);
 
     }
 
