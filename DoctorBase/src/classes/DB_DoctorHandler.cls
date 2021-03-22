@@ -76,9 +76,14 @@ public with sharing class DB_DoctorHandler {
         System.debug(response);
         Doctor__c doctor =[SELECT Id FROM Doctor__c WHERE Id =: response.getHeader('externalId')];
         doctor.Doctor_External_Id__c = response.getHeader('addedId');
-        DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-        upsert doctor;
-        DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+
+            try {
+                DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                upsert doctor;
+            }finally {
+                DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            }
+
 
     } catch (Exception e){
             System.debug('upsertDoctorExc');

@@ -35,18 +35,21 @@ global class HD_DoctorIntegrationWebService {
             if (licenseNumber != null) {
                 doctor.License_Number__c = Decimal.valueOf(licenseNumber);
             }
-            if(birthDayDate != null){
+            if (birthDayDate != null) {
                 doctor.Birthday_Date__c = Date.valueOf(birthDayDate);
             }
             doctor.Street__c = street;
             doctor.Phone_Number__c = phoneNumber;
             doctor.Doctor_External_Id__c = Id;
             doctor.Id = doctorExternalId;
-            DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-            upsert doctor;
-            DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
-            RestContext.response.addHeader('addedId',doctor.Id);
-            RestContext.response.addHeader('externalId',doctor.Doctor_External_Id__c);
+            try {
+                DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                upsert doctor;
+            }finally {
+                DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            }
+            RestContext.response.addHeader('addedId', doctor.Id);
+            RestContext.response.addHeader('externalId', doctor.Doctor_External_Id__c);
 
         } catch (Exception e) {
             System.debug('upsertDoctorService');
@@ -68,17 +71,19 @@ global class HD_DoctorIntegrationWebService {
             String doctorExternalId = (String) params.get('Doctor_External_Id__c');
             Doctor__c doctor = new Doctor__c();
             doctor.Id = doctorExternalId;
-            DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-            delete doctor;
-            DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            try {
+                DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                delete doctor;
 
-        } catch (Exception e){
+            } finally {
+                DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            }
+
+        } catch (Exception e) {
             System.debug('deleteDoctorService');
             System.debug(e);
         }
     }
-
-
 
 
 }

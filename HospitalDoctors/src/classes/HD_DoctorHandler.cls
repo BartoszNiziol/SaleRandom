@@ -26,7 +26,7 @@ public with sharing class HD_DoctorHandler {
 
         return Database.query(query);
     }
-    public List<Doctor__c> queryDoctorsOR (String firstName, String lastName, String email, String country) {
+    public List<Doctor__c> queryDoctorsOR(String firstName, String lastName, String email, String country) {
         String query = 'SELECT ID,First_Name__c,Name,Email__c,Country__c ' +
                 ' FROM Doctor__c ' +
                 ' WHERE First_Name__c LIKE \'' + dynamicQueryLikeGeneratorOR(firstName) + '\'' +
@@ -37,7 +37,7 @@ public with sharing class HD_DoctorHandler {
         return Database.query(query);
     }
 
-    public static List<Doctor__c> queryDoctorsORStartsWith (String firstName, String lastName, String email, String country) {
+    public static List<Doctor__c> queryDoctorsORStartsWith(String firstName, String lastName, String email, String country) {
         String query = 'SELECT ID,First_Name__c,Name,Email__c,Country__c ' +
                 ' FROM Doctor__c ' +
                 ' WHERE First_Name__c LIKE \'' + dynamicQueryLikeGeneratorORStartsWith(firstName) + '\'' +
@@ -66,7 +66,7 @@ public with sharing class HD_DoctorHandler {
     private String dynamicQueryLikeGenerator(String field) {
         String fieldLike;
         if ((field != null) && (field != '')) {
-            fieldLike = + '%'+field+'%';
+            fieldLike = +'%' + field + '%';
         } else {
             fieldLike = '%';
         }
@@ -75,19 +75,19 @@ public with sharing class HD_DoctorHandler {
     private String dynamicQueryLikeGeneratorOR(String field) {
         String fieldLike;
         if ((field != null) && (field != '')) {
-            fieldLike = + '%'+field+'%';
+            fieldLike = +'%' + field + '%';
         }
         return fieldLike;
     }
     private static String dynamicQueryLikeGeneratorORStartsWith(String field) {
         String fieldLike;
         if ((field != null) && (field != '')) {
-            fieldLike = field+'%';
+            fieldLike = field + '%';
         }
         return fieldLike;
     }
 
-    public static Doctor__c parseDoctorFromResponseWrapper(HD_DoctorResponseWrapper wrapper){
+    public static Doctor__c parseDoctorFromResponseWrapper(HD_DoctorResponseWrapper wrapper) {
         Doctor__c doctor = new Doctor__c();
 
         doctor.Id = wrapper.id;
@@ -139,14 +139,17 @@ public with sharing class HD_DoctorHandler {
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
-        Doctor__c doctor =[SELECT Id FROM Doctor__c WHERE Id =: response.getHeader('externalId')];
+        Doctor__c doctor = [SELECT Id FROM Doctor__c WHERE Id = :response.getHeader('externalId')];
         doctor.Doctor_External_Id__c = response.getHeader('addedId');
 
-        HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-        upsert doctor;
-        HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
-
+        try {
+            HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+            upsert doctor;
+        } finally {
+            HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+        }
     }
+
     @Future(callout = true)
     public static void deleteDoctorFromExternalDB(String upsertBody) {
         HttpRequest loginRequest = new HttpRequest();

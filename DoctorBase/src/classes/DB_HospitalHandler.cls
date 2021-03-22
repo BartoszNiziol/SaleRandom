@@ -91,9 +91,14 @@ public with sharing class DB_HospitalHandler {
         Hospital__c hospital =[SELECT Id FROM Hospital__c WHERE Id =: response.getHeader('externalId')];
         hospital.Hospital_External_Id__c = response.getHeader('addedId');
 
-        DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
-        upsert hospital;
-        DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+        try{
+            DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+            upsert hospital;
+        }finally {
+            DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+        }
+
+
     }
 
 

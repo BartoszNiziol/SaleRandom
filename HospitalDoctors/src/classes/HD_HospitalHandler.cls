@@ -76,9 +76,12 @@ public with sharing class HD_HospitalHandler {
         Hospital__c hospital = [SELECT Id FROM Hospital__c WHERE Id =:response.getHeader('externalId')];
         hospital.Hospital_External_Id__c = response.getHeader('addedId');
 
+        try {
             HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
             upsert hospital;
+        } finally {
             HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+        }
     }
 
     @Future(callout = true)

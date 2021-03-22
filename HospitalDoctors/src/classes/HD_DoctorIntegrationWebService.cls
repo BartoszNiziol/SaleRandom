@@ -42,9 +42,12 @@ global class HD_DoctorIntegrationWebService {
             doctor.Phone_Number__c = phoneNumber;
             doctor.Doctor_External_Id__c = Id;
             doctor.Id = doctorExternalId;
-            HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-            upsert doctor;
-            HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            try {
+                HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                upsert doctor;
+            } finally {
+                HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            }
             RestContext.response.addHeader('addedId', doctor.Id);
             RestContext.response.addHeader('externalId', doctor.Doctor_External_Id__c);
 
@@ -55,7 +58,6 @@ global class HD_DoctorIntegrationWebService {
 
     @HttpDelete
     global static void deleteDoctor() {
-
         try {
             Map<String, Object> params;
             List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
@@ -68,9 +70,12 @@ global class HD_DoctorIntegrationWebService {
             String doctorExternalId = (String) params.get('Doctor_External_Id__c');
             Doctor__c doctor = new Doctor__c();
             doctor.Id = doctorExternalId;
-            HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-            delete doctor;
-            HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            try {
+                HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                delete doctor;
+            } finally {
+                HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            }
 
         } catch (Exception e){
 
