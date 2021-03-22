@@ -14,25 +14,16 @@ global class DB_HospitalIntegrationWebService {
             for (Object obj : responseJ) {
                 params = (Map<string, Object>) obj;
             }
-            String name = (String) params.get('Name');
-            String email = (String) params.get('Email__c');
-            String country = (String) params.get('Country__c');
-            String city = (String) params.get('City__c');
-            String id = (String) params.get('Id');
-            String webPage = (String) params.get('Web_Page__c');
-            String street = (String) params.get('Street__c');
-            String phoneNumber = (String) params.get('Phone_Number__c');
-            String hospitalExternalId = (String) params.get('Hospital_External_Id__c');
             Hospital__c hospital = new Hospital__c();
-            hospital.Name = name;
-            hospital.Email__c = email;
-            hospital.Country__c = country;
-            hospital.City__c = city;
-            hospital.Web_Page__c = webPage;
-            hospital.Street__c = street;
-            hospital.Phone_Number__c = phoneNumber;
-            hospital.Hospital_External_Id__c = id;
-            hospital.Id = hospitalExternalId;
+            hospital.Name = (String) params.get('Name');
+            hospital.Email__c = (String) params.get('Email__c');
+            hospital.Country__c = (String) params.get('Country__c');
+            hospital.City__c = (String) params.get('City__c');
+            hospital.Web_Page__c = (String) params.get('Web_Page__c');
+            hospital.Street__c = (String) params.get('Street__c');
+            hospital.Phone_Number__c =(String) params.get('Phone_Number__c');
+            hospital.Hospital_External_Id__c = (String) params.get('Id');
+            hospital.Id = (String) params.get('Hospital_External_Id__c');
             try {
                 DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
                 upsert hospital;
