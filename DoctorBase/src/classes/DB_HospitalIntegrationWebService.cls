@@ -33,13 +33,10 @@ global class DB_HospitalIntegrationWebService {
             hospital.Street__c = street;
             hospital.Phone_Number__c = phoneNumber;
             hospital.Hospital_External_Id__c = id;
+            hospital.Id = hospitalExternalId;
             DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
             upsert hospital;
             DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
-            System.debug('hospital.Id');
-            System.debug(hospital.Id);
-            System.debug('ext');
-            System.debug(hospital.Hospital_External_Id__c);
             RestContext.response.addHeader('addedId', hospital.Id);
             RestContext.response.addHeader('externalId', hospital.Hospital_External_Id__c);
 
@@ -49,18 +46,31 @@ global class DB_HospitalIntegrationWebService {
     }
 
     @HttpDelete
-    global static HospitalResponseWrapper deleteHospital() {
+    global static void deleteHospital() {
         try {
-            RestRequest req = RestContext.request;
-            Map<String, String> requestParams = req.params;
-            String id = requestParams.get('id');
+            System.debug('req bod');
+            System.debug(RestContext.request.requestBody.toString());
+            Map<String, Object> params;
+            List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
+                    RestContext.request.requestBody.toString()
+            );
+            System.debug(responseJ);
+            for (Object obj : responseJ) {
+                params = (Map<string, Object>) obj;
+            }
+            String hospitalExternalId = (String) params.get('Hospital_External_Id__c');
+            System.debug('hospitalExternalId');
+            System.debug(hospitalExternalId);
             Hospital__c hospital = new Hospital__c();
-            hospital.Id = id;
+            hospital.Id = hospitalExternalId;
+            System.debug('hopspital');
+            System.debug(hospital);
+            DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
             delete hospital;
-            HospitalResponseWrapper wrapper = new HospitalResponseWrapper(hospital);
-            return wrapper;
+            DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+
         } catch (Exception e) {
-            return errorResponse(e);
+            System.debug( errorResponse(e));
         }
     }
 

@@ -18,16 +18,14 @@ public with sharing class HD_HospitalTriggerHandler implements HD_TriggerInterfa
 
     public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects) {
         if (trigger.isInsert) {
-
             String postBody = JSON.serialize(newObjects);
             HD_HospitalHandler.upsertHospitalToExternalDB(postBody);
-
         } else if (trigger.isUpdate) {
-
             String postBody = JSON.serialize(newObjects);
             HD_HospitalHandler.upsertHospitalToExternalDB(postBody);
         } else if (trigger.isDelete) {
-            HD_HospitalHandler.deleteHospitalFromExternalDB((List<Hospital__c>) newObjects, (List<Hospital__c>) oldObjects);
+            String postBody = JSON.serialize(oldObjects);
+            HD_HospitalHandler.deleteHospitalFromExternalDB(postBody);
         } else if (trigger.isUndelete) {
 
         }

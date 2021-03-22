@@ -33,6 +33,7 @@ global class HD_HospitalIntegrationWebService {
             hospital.Street__c = street;
             hospital.Phone_Number__c = phoneNumber;
             hospital.Hospital_External_Id__c = id;
+            hospital.Id = hospitalExternalId;
             HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
             upsert hospital;
             HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
