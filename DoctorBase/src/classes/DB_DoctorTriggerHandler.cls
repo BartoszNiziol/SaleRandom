@@ -24,7 +24,8 @@ public with sharing class DB_DoctorTriggerHandler implements DB_TriggerInterface
             String postBody = JSON.serialize(newObjects);
             DB_DoctorHandler.upsertDoctorToExternalDB(postBody);
         } else if (trigger.isDelete) {
-            DB_DoctorHandler.deleteDoctorFromExternalDB((List<Doctor__c>) newObjects, (List<Doctor__c>) oldObjects);
+            String postBody = JSON.serialize(newObjects);
+            DB_DoctorHandler.deleteDoctorFromExternalDB(postBody);
         } else if (trigger.isUndelete) {
 
         }

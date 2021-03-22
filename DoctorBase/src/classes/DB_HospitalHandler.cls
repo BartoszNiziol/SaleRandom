@@ -91,9 +91,9 @@ public with sharing class DB_HospitalHandler {
         Hospital__c hospital =[SELECT Id FROM Hospital__c WHERE Id =: response.getHeader('externalId')];
         hospital.Hospital_External_Id__c = response.getHeader('addedId');
 
-        DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
+        DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
         upsert hospital;
-        DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
+        DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
     }
 
 
@@ -103,8 +103,8 @@ public with sharing class DB_HospitalHandler {
         HttpRequest loginRequest = new HttpRequest();
         loginRequest.setEndpoint(DB_Utils.retrieveCredentials('LoginEndpoint'));
         loginRequest.setMethod('POST');
-        String username = DB_Utils.retrieveCredentials('DBLogin');
-        String password = DB_Utils.retrieveCredentials('DBPassword');
+        String username = DB_Utils.retrieveCredentials('HDLogin');
+        String password = DB_Utils.retrieveCredentials('HDPassword');
         String grantType = 'password';
         String clientId = DB_Utils.retrieveCredentials('clientID');
         String clientSecret = DB_Utils.retrieveCredentials('clientSecret');
@@ -119,8 +119,9 @@ public with sharing class DB_HospitalHandler {
         );
         String accesToken = (String) params.get('access_token');
         String authorization = 'Bearer ' + accesToken;
+        System.debug(authorization);
 
-        String endpointString = DB_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
+        String endpointString = DB_Utils.retrieveCredentials('HDHospitalIntegrationEndpoint');
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
         upsertRequest.setMethod('DELETE');

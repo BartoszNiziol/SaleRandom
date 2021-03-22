@@ -53,4 +53,28 @@ global class HD_DoctorIntegrationWebService {
         }
     }
 
+    @HttpDelete
+    global static void deleteDoctor() {
+
+        try {
+            Map<String, Object> params;
+            List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
+                    RestContext.request.requestBody.toString()
+            );
+            System.debug(responseJ);
+            for (Object obj : responseJ) {
+                params = (Map<string, Object>) obj;
+            }
+            String doctorExternalId = (String) params.get('Doctor_External_Id__c');
+            Doctor__c doctor = new Doctor__c();
+            doctor.Id = doctorExternalId;
+            HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+            delete doctor;
+            HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+
+        } catch (Exception e){
+
+        }
+    }
+
 }

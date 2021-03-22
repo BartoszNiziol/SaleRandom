@@ -34,9 +34,9 @@ global class DB_HospitalIntegrationWebService {
             hospital.Phone_Number__c = phoneNumber;
             hospital.Hospital_External_Id__c = id;
             hospital.Id = hospitalExternalId;
-            DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
+            DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
             upsert hospital;
-            DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
+            DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
             RestContext.response.addHeader('addedId', hospital.Id);
             RestContext.response.addHeader('externalId', hospital.Hospital_External_Id__c);
 
@@ -48,26 +48,19 @@ global class DB_HospitalIntegrationWebService {
     @HttpDelete
     global static void deleteHospital() {
         try {
-            System.debug('req bod');
-            System.debug(RestContext.request.requestBody.toString());
             Map<String, Object> params;
             List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
-            System.debug(responseJ);
             for (Object obj : responseJ) {
                 params = (Map<string, Object>) obj;
             }
             String hospitalExternalId = (String) params.get('Hospital_External_Id__c');
-            System.debug('hospitalExternalId');
-            System.debug(hospitalExternalId);
             Hospital__c hospital = new Hospital__c();
             hospital.Id = hospitalExternalId;
-            System.debug('hopspital');
-            System.debug(hospital);
-            DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
+            DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
             delete hospital;
-            DB_Utils.toggleTrigger(Hospital__c.getSObjectType());
+            DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
 
         } catch (Exception e) {
             System.debug( errorResponse(e));

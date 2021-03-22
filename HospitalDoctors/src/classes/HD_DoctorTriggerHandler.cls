@@ -24,7 +24,8 @@ public with sharing class HD_DoctorTriggerHandler implements HD_TriggerInterface
             String postBody = JSON.serialize(newObjects);
             HD_DoctorHandler.upsertDoctorToExternalDB(postBody);
         } else if (trigger.isDelete) {
-            HD_DoctorHandler.deleteDoctorFromExternalDB((List<Doctor__c>) newObjects, (List<Doctor__c>) oldObjects);
+            String postBody = JSON.serialize(oldObjects);
+            HD_DoctorHandler.deleteDoctorFromExternalDB(postBody);
         } else if (trigger.isUndelete) {
 
         }
