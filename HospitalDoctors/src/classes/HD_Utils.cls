@@ -13,7 +13,6 @@ public with sharing class HD_Utils {
         return credentialValue;
     }
 
-
     public static Boolean isTriggerExceptionEnabled(Schema.sObjectType soType) {
         String objectName = soType.getDescribe().getName();
         Boolean isEnabled = false;
@@ -24,7 +23,6 @@ public with sharing class HD_Utils {
         }
         return isEnabled;
     }
-
 
     public static void turnOffTrigger(Schema.sObjectType soType) {
         try {
@@ -37,6 +35,7 @@ public with sharing class HD_Utils {
             System.debug(e);
         }
     }
+
     public static void turnOnTrigger(Schema.sObjectType soType) {
         try {
             HD_TriggerException__c triggerException = HD_TriggerException__c.getInstance();

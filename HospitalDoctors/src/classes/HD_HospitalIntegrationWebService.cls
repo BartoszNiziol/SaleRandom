@@ -6,7 +6,6 @@ global class HD_HospitalIntegrationWebService {
 
     @HttpPost
     global static void upsertHospital() {
-        System.debug('enter upsert');
         try {
             Map<String, Object> params;
             List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
