@@ -38,7 +38,7 @@ public with sharing class DB_DoctorHandler {
 
     @Future(callout = true)
     public static void upsertDoctorToExternalDB(String upsertBody) {
-        try {
+
             HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
             Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                     logHttpResponse.getBody()
@@ -73,13 +73,12 @@ public with sharing class DB_DoctorHandler {
                 DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
 
-        } catch (Exception e) {
-        }
+        DB_LoggerHandler.createLog(Doctor__c.SObjectType,endpointString,upsertRequest,response,'Upsert');
     }
 
     @Future(callout = true)
     public static void deleteDoctorFromExternalDB(String upsertBody) {
-        try {
+
             HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
             Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                     logHttpResponse.getBody()
@@ -95,9 +94,7 @@ public with sharing class DB_DoctorHandler {
             upsertRequest.setBody(upsertBody);
             Http upsertHttp = new Http();
             HttpResponse response = upsertHttp.send(upsertRequest);
-        } catch (Exception e) {
-            System.debug('deleteDoctorcallout');
-            System.debug(e);
-        }
+
+        DB_LoggerHandler.createLog(Doctor__c.SObjectType,endpointString,upsertRequest,response,'Delete');
     }
 }

@@ -6,6 +6,7 @@ public with sharing class HD_IntegrationLoginHandler {
 
     public static  HttpResponse loginCallout(){
         HttpRequest loginRequest = new HttpRequest();
+        String endpointString = HD_Utils.retrieveCredentials('LoginEndpoint');
         loginRequest.setEndpoint(HD_Utils.retrieveCredentials('LoginEndpoint'));
         loginRequest.setMethod('POST');
         String username = HD_Utils.retrieveCredentials('DBLogin');
@@ -18,7 +19,9 @@ public with sharing class HD_IntegrationLoginHandler {
                         '&client_id=' + clientId + '&client_secret=' + clientSecret + '&username=' + username + '&password=' + password
         );
         Http http = new Http();
-        return http.send(loginRequest);
+        HttpResponse response = http.send(loginRequest);
+
+        return response;
     }
 
 

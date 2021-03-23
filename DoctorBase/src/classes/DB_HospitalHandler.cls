@@ -80,6 +80,8 @@ public with sharing class DB_HospitalHandler {
         } finally {
             DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
+
+        DB_LoggerHandler.createLog(Hospital__c.SObjectType,endpointString,upsertRequest,response,'Upsert');
     }
 
     @Future(callout = true)
@@ -100,5 +102,7 @@ public with sharing class DB_HospitalHandler {
         upsertRequest.setBody(upsertBody);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
+
+        DB_LoggerHandler.createLog(Hospital__c.SObjectType,endpointString,upsertRequest,response,'Delete');
     }
 }

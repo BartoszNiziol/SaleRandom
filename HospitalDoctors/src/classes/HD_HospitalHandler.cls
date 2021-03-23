@@ -41,42 +41,47 @@ public with sharing class HD_HospitalHandler {
 
     @Future(callout = true)
     public static void upsertHospitalToExternalDB(String upsertBody) {
-        HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
-        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
-                logHttpResponse.getBody()
-        );
-        String accesToken = (String) params.get('access_token');
-        String authorization = 'Bearer ' + accesToken;
-        System.debug(authorization);
-        String endpointString = HD_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
 
-        HttpRequest upsertRequest = new HttpRequest();
-        upsertRequest.setEndpoint(endpointString);
-        upsertRequest.setMethod('POST');
-        upsertRequest.setHeader('Content-Type', 'application/json');
-        upsertRequest.setHeader('Authorization', authorization);
-        upsertRequest.setBody(upsertBody);
+            HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
+            Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                    logHttpResponse.getBody()
+            );
+            String accesToken = (String) params.get('access_token');
+            String authorization = 'Bearer ' + accesToken;
+            String endpointString = HD_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
 
-        Http upsertHttp = new Http();
-        HttpResponse response = upsertHttp.send(upsertRequest);
+            HttpRequest upsertRequest = new HttpRequest();
+            upsertRequest.setEndpoint(endpointString);
+            upsertRequest.setMethod('POST');
+            upsertRequest.setHeader('Content-Type', 'application/json');
+            upsertRequest.setHeader('Authorization', authorization);
+            upsertRequest.setBody(upsertBody);
 
-        List<Hospital__c> idHospital = new List<Hospital__c>();
-        Integer counter = 0;
+            Http upsertHttp = new Http();
+            HttpResponse response = upsertHttp.send(upsertRequest);
 
-        while (response.getHeaderKeys().contains('addedId'+ counter)){
-            Hospital__c hospital = new Hospital__c();
-            hospital.Id = response.getHeader('externalId'+counter);
-            hospital.Hospital_External_Id__c = response.getHeader('addedId'+counter);
-            idHospital.add(hospital);
-            counter++;
-        }
+            List<Hospital__c> idHospital = new List<Hospital__c>();
+            Integer counter = 0;
+            while (response.getHeaderKeys().contains('addedId'+ counter)){
+                Hospital__c hospital = new Hospital__c();
+                hospital.Id = response.getHeader('externalId'+counter);
+                hospital.Hospital_External_Id__c = response.getHeader('addedId'+counter);
+                idHospital.add(hospital);
+                counter++;
+            }
+            try {
+                HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+                upsert idHospital;
+            } finally {
+                HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+            }
 
-        try {
-            HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
-            upsert idHospital;
-        } finally {
-            HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
-        }
+            HD_LoggerHandler.createLog(Hospital__c.SObjectType,endpointString,upsertRequest,response,'Upsert',null);
+
+
+
+
+
 
     }
 
@@ -98,5 +103,7 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setBody(upsertBody);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
+
+        HD_LoggerHandler.createLog(Hospital__c.SObjectType,endpointString,upsertRequest,response,'Delete',null);
     }
 }

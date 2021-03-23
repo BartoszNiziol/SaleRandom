@@ -138,6 +138,8 @@ public with sharing class HD_DoctorHandler {
         } finally {
             HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
         }
+
+        HD_LoggerHandler.createLog(Doctor__c.SObjectType,endpointString,upsertRequest,response,'Upsert',null);
     }
 
     @Future(callout = true)
@@ -157,5 +159,7 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setBody(upsertBody);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
+
+        HD_LoggerHandler.createLog(Doctor__c.SObjectType,endpointString,upsertRequest,response,'Delete',null);
     }
 }
