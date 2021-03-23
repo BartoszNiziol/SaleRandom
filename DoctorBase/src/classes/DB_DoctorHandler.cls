@@ -46,24 +46,33 @@ public with sharing class DB_DoctorHandler {
             String accesToken = (String) params.get('access_token');
             String authorization = 'Bearer ' + accesToken;
             String endpointString = DB_Utils.retrieveCredentials('HDDoctorIntegrationEndpoint');
+
             HttpRequest upsertRequest = new HttpRequest();
             upsertRequest.setEndpoint(endpointString);
             upsertRequest.setMethod('POST');
             upsertRequest.setHeader('Content-Type', 'application/json');
             upsertRequest.setHeader('Authorization', authorization);
             upsertRequest.setBody(upsertBody);
+
             Http upsertHttp = new Http();
             HttpResponse response = upsertHttp.send(upsertRequest);
 
-            Doctor__c doctor = new Doctor__c();
-            doctor.Id = response.getHeader('externalId');
-            doctor.Doctor_External_Id__c = response.getHeader('addedId');
+            List<Doctor__c> idDoctors = new List<Doctor__c>();
+            Integer counter = 0;
+            while (response.getHeaderKeys().contains('addedId'+ counter)){
+                Doctor__c doctor = new Doctor__c();
+                doctor.Id = response.getHeader('externalId' + counter);
+                doctor.Doctor_External_Id__c = response.getHeader('addedId' + counter);
+                idDoctors.add(doctor);
+                counter++;
+            }
             try {
                 DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-                upsert doctor;
+                upsert idDoctors;
             } finally {
                 DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
+
         } catch (Exception e) {
         }
     }

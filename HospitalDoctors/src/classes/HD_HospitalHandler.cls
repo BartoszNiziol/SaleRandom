@@ -49,6 +49,7 @@ public with sharing class HD_HospitalHandler {
         String authorization = 'Bearer ' + accesToken;
         System.debug(authorization);
         String endpointString = HD_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
+
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
         upsertRequest.setMethod('POST');
@@ -59,16 +60,24 @@ public with sharing class HD_HospitalHandler {
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
-        Hospital__c hospital = new Hospital__c();
-        hospital.Id = response.getHeader('externalId');
-        hospital.Hospital_External_Id__c = response.getHeader('addedId');
+        List<Hospital__c> idHospital = new List<Hospital__c>();
+        Integer counter = 0;
+
+        while (response.getHeaderKeys().contains('addedId'+ counter)){
+            Hospital__c hospital = new Hospital__c();
+            hospital.Id = response.getHeader('externalId'+counter);
+            hospital.Hospital_External_Id__c = response.getHeader('addedId'+counter);
+            idHospital.add(hospital);
+            counter++;
+        }
 
         try {
             HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
-            upsert hospital;
+            upsert idHospital;
         } finally {
             HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
+
     }
 
     @Future(callout = true)
