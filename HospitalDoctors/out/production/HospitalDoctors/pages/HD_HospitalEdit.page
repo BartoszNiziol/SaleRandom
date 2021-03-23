@@ -1,0 +1,64 @@
+<!--
+ - Created by BRITENET on 15.02.2021.
+ -->
+
+<apex:page id="HD_HospitalEdit" standardController="Hospital__c">
+    <style>
+    .PageFacet{
+         padding-top: 9px;
+        padding-bottom 6 px;
+       font-size: 23px;
+       padding-left: 10px;
+       font-weight: bold;
+       background-color: transparent;
+       color :black;
+    }
+     #bigHead
+    {
+        font-size: 23px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        margin-left: 5px;
+    }
+    #hospitalPrefix
+    {
+        font-size: 15px;
+        margin-left: 5px;
+    }
+    </style>
+
+    <div style="float:left;"> <img src="/img/icon/custom51_100/stethoscope32.png" height="40px" style="margin-right:10px;"/></div>
+    <div id="hospitalPrefix">{!$Label.Hospital_Label}</div>
+    <div id="bigHead"></div>
+    <apex:pageBlock >
+        <apex:facet name="header">
+            <div class="PageFacet">{!$Label.Hospital_Edit_Label}</div>
+        </apex:facet>
+        <apex:form >
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Save}" value="{!$Label.Save_Button}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel_Button}"/>
+            </div>
+            <apex:pageBlockSection title="{!$Label.Details_Label}" columns="2" collapsible="false">
+                <apex:inputField value="{!Hospital__c.Name}"/>
+                <apex:inputField value="{!Hospital__c.Phone_Number__c}"/>
+                <apex:inputField value="{!Hospital__c.Web_Page__c}" required="true"/>
+                <apex:inputField value="{!Hospital__c.Email__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Address_Label}" collapsible="false">
+                <apex:inputField value="{!Hospital__c.City__c}"/>
+                <apex:inputField value="{!Hospital__c.Country__c}"/>
+                <apex:inputField value="{!Hospital__c.Street__c}"/>
+            </apex:pageBlockSection>
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Save}" value="{!$Label.Save_Button}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel_Button}"/>
+            </div>
+        </apex:form>
+    </apex:pageBlock>
+
+    <script>
+     document.getElementById("bigHead").innerHTML ="{!Hospital__c.Name}"
+    </script>
+
+</apex:page>

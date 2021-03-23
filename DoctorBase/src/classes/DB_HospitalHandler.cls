@@ -46,28 +46,13 @@ public with sharing class DB_HospitalHandler {
 
     @Future(callout = true)
     public static void upsertHospitalToExternalDB(String upsertBody) {
-        System.debug('upsert Call');
-        HttpRequest loginRequest = new HttpRequest();
-        loginRequest.setEndpoint(DB_Utils.retrieveCredentials('LoginEndpoint'));
-        loginRequest.setMethod('POST');
-        String username = DB_Utils.retrieveCredentials('HDLogin');
-        String password = DB_Utils.retrieveCredentials('HDPassword');
-        String grantType = 'password';
-        String clientId = DB_Utils.retrieveCredentials('clientID');
-        String clientSecret = DB_Utils.retrieveCredentials('clientSecret');
-        loginRequest.setBody(
-                'grant_type=password' +
-                        '&client_id=' + clientId + '&client_secret=' + clientSecret + '&username=' + username + '&password=' + password
-        );
-        Http http = new Http();
-        HttpResponse logHttpResponse = http.send(loginRequest);
+        HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
         );
         String accesToken = (String) params.get('access_token');
         String authorization = 'Bearer ' + accesToken;
         String endpointString = DB_Utils.retrieveCredentials('HDHospitalIntegrationEndpoint');
-
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
         upsertRequest.setMethod('POST');
@@ -77,11 +62,11 @@ public with sharing class DB_HospitalHandler {
 
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
-        System.debug('response');
-        System.debug(response);
 
-        Hospital__c hospital =[SELECT Id FROM Hospital__c WHERE Id =: response.getHeader('externalId')];
+        Hospital__c hospital = new Hospital__c();
+        hospital.Id = response.getHeader('externalId');
         hospital.Hospital_External_Id__c = response.getHeader('addedId');
+
         try{
             DB_Utils.turnOffTrigger(Hospital__c.getSObjectType());
             upsert hospital;
@@ -92,21 +77,7 @@ public with sharing class DB_HospitalHandler {
 
     @Future(callout = true)
     public static void deleteHospitalFromExternalDB(String upsertBody) {
-        System.debug('main method Started');
-        HttpRequest loginRequest = new HttpRequest();
-        loginRequest.setEndpoint(DB_Utils.retrieveCredentials('LoginEndpoint'));
-        loginRequest.setMethod('POST');
-        String username = DB_Utils.retrieveCredentials('HDLogin');
-        String password = DB_Utils.retrieveCredentials('HDPassword');
-        String grantType = 'password';
-        String clientId = DB_Utils.retrieveCredentials('clientID');
-        String clientSecret = DB_Utils.retrieveCredentials('clientSecret');
-        loginRequest.setBody(
-                'grant_type=password' +
-                        '&client_id=' + clientId + '&client_secret=' + clientSecret + '&username=' + username + '&password=' + password
-        );
-        Http http = new Http();
-        HttpResponse logHttpResponse = http.send(loginRequest);
+        HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
         );

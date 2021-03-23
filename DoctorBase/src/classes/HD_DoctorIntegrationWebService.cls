@@ -8,11 +8,12 @@ global class HD_DoctorIntegrationWebService {
     global static void upsertDoctor() {
         try {
             Map<String, Object> params;
-            List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
+            List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
-            System.debug(responseJ);
-            for (Object obj : responseJ) {
+            List<Doctor__c> doctorsToUpsert = new List<Doctor__c>();
+
+            for (Object obj : responseJSON) {
                 params = (Map<string, Object>) obj;
             }
             Doctor__c doctor = new Doctor__c();
@@ -48,11 +49,10 @@ global class HD_DoctorIntegrationWebService {
     global static void deleteDoctor() {
         try {
             Map<String, Object> params;
-            List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
+            List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
-            System.debug(responseJ);
-            for (Object obj : responseJ) {
+            for (Object obj : responseJSON) {
                 params = (Map<string, Object>) obj;
             }
             String doctorExternalId = (String) params.get('Doctor_External_Id__c');
@@ -61,7 +61,6 @@ global class HD_DoctorIntegrationWebService {
             try {
                 DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                 delete doctor;
-
             } finally {
                 DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }

@@ -39,20 +39,7 @@ public with sharing class DB_DoctorHandler {
     @Future(callout = true)
     public static void upsertDoctorToExternalDB(String upsertBody) {
         try {
-            HttpRequest loginRequest = new HttpRequest();
-            loginRequest.setEndpoint(DB_Utils.retrieveCredentials('LoginEndpoint'));
-            loginRequest.setMethod('POST');
-            String username = DB_Utils.retrieveCredentials('HDLogin');
-            String password = DB_Utils.retrieveCredentials('HDPassword');
-            String grantType = 'password';
-            String clientId = DB_Utils.retrieveCredentials('clientID');
-            String clientSecret = DB_Utils.retrieveCredentials('clientSecret');
-            loginRequest.setBody(
-                    'grant_type=password' +
-                            '&client_id=' + clientId + '&client_secret=' + clientSecret + '&username=' + username + '&password=' + password
-            );
-            Http http = new Http();
-            HttpResponse logHttpResponse = http.send(loginRequest);
+            HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
             Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                     logHttpResponse.getBody()
             );
@@ -67,7 +54,9 @@ public with sharing class DB_DoctorHandler {
             upsertRequest.setBody(upsertBody);
             Http upsertHttp = new Http();
             HttpResponse response = upsertHttp.send(upsertRequest);
-            Doctor__c doctor = [SELECT Id FROM Doctor__c WHERE Id = :response.getHeader('externalId')];
+
+            Doctor__c doctor = new Doctor__c();
+            doctor.Id = response.getHeader('externalId');
             doctor.Doctor_External_Id__c = response.getHeader('addedId');
             try {
                 DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
@@ -82,20 +71,7 @@ public with sharing class DB_DoctorHandler {
     @Future(callout = true)
     public static void deleteDoctorFromExternalDB(String upsertBody) {
         try {
-            HttpRequest loginRequest = new HttpRequest();
-            loginRequest.setEndpoint(DB_Utils.retrieveCredentials('LoginEndpoint'));
-            loginRequest.setMethod('POST');
-            String username = DB_Utils.retrieveCredentials('HDLogin');
-            String password = DB_Utils.retrieveCredentials('HDPassword');
-            String grantType = 'password';
-            String clientId = DB_Utils.retrieveCredentials('clientID');
-            String clientSecret = DB_Utils.retrieveCredentials('clientSecret');
-            loginRequest.setBody(
-                    'grant_type=password' +
-                            '&client_id=' + clientId + '&client_secret=' + clientSecret + '&username=' + username + '&password=' + password
-            );
-            Http http = new Http();
-            HttpResponse logHttpResponse = http.send(loginRequest);
+            HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
             Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                     logHttpResponse.getBody()
             );

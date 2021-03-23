@@ -8,10 +8,10 @@ global class DB_HospitalIntegrationWebService {
     global static void upsertHospital() {
         try {
             Map<String, Object> params;
-            List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
+            List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
-            for (Object obj : responseJ) {
+            for (Object obj : responseJSON) {
                 params = (Map<string, Object>) obj;
             }
             Hospital__c hospital = new Hospital__c();
@@ -42,10 +42,10 @@ global class DB_HospitalIntegrationWebService {
     global static void deleteHospital() {
         try {
             Map<String, Object> params;
-            List <Object> responseJ = (List <Object>) JSON.deserializeUntyped(
+            List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
-            for (Object obj : responseJ) {
+            for (Object obj : responseJSON) {
                 params = (Map<string, Object>) obj;
             }
             String hospitalExternalId = (String) params.get('Hospital_External_Id__c');

@@ -1,0 +1,66 @@
+<apex:page id="HD_DoctorEdit" standardController="Doctor__c">
+
+    <style>
+    .PageFacet{
+         padding-top: 9px;
+        padding-bottom 6 px;
+       font-size: 23px;
+       padding-left: 10px;
+       font-weight: bold;
+       background-color: transparent;
+       color :black;
+    }
+     #bigHead
+    {
+        font-size: 23px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        margin-left: 5px;
+    }
+    #doctorTitlePrefix
+    {
+        font-size: 15px;
+        margin-left: 5px;
+    }
+    </style>
+
+    <div style="float:left;"> <img src="/img/icon/custom51_100/stethoscope32.png" height="40px" style="margin-right:10px;"/></div>
+    <c:Loading_Component ></c:Loading_Component>
+    <div id ="doctorTitlePrefix">{!$Label.Doctor_Label}</div>
+    <div id="bigHead"></div>
+    <apex:pageBlock >
+        <apex:facet name="header">
+            <div class="PageFacet">{!$Label.Doctor_Edit_Label}</div>
+        </apex:facet>
+        <apex:form >
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Save}" value="{!$Label.Save_Button}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel_Button}"/>
+            </div>
+            <apex:pageBlockSection title="{!$Label.Details_Label}" columns="2" collapsible="false">
+                <apex:inputField value="{!Doctor__c.First_Name__c}"/>
+                <apex:inputField value="{!Doctor__c.Phone_Number__c}"/>
+                <apex:inputField value="{!Doctor__c.Name}" required="true"/>
+                <apex:inputField value="{!Doctor__c.Email__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Address_Label}" collapsible="false">
+                <apex:inputField value="{!Doctor__c.City__c}"/>
+                <apex:inputField value="{!Doctor__c.Country__c}"/>
+                <apex:inputField value="{!Doctor__c.Street__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Other_Label}" columns="1" collapsible="false">
+                <apex:inputField value="{!Doctor__c.Birthday_Date__c}"/>
+                <apex:inputField value="{!Doctor__c.License_Number__c}"/>
+            </apex:pageBlockSection>
+            <div style="text-align:center;">
+                <apex:commandButton action="{!Save}" value="{!$Label.Save_Button}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel_Button}"/>
+            </div>
+        </apex:form>
+    </apex:pageBlock>
+
+    <script>
+     document.getElementById("bigHead").innerHTML ="{!Doctor__c.Name}"
+    </script>
+
+</apex:page>
