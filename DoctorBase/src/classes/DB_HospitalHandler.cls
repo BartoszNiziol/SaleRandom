@@ -61,6 +61,7 @@ public with sharing class DB_HospitalHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
+        DB_LoggerHandler.createLog(Hospital__c.SObjectType,endpointString,upsertRequest,null,'Upsert');
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
@@ -81,7 +82,7 @@ public with sharing class DB_HospitalHandler {
             DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
 
-        DB_LoggerHandler.createLog(Hospital__c.SObjectType,endpointString,upsertRequest,response,'Upsert');
+
     }
 
     @Future(callout = true)
