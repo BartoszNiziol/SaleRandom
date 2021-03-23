@@ -42,10 +42,10 @@ global class HD_DoctorIntegrationWebService {
             }
 
             Integer counter = 0;
-            for (Doctor__c doc: doctorsToUpsert){
-                RestContext.response.addHeader('addedId'+counter, doc.Id);
-                RestContext.response.addHeader('externalId'+counter, doc.Doctor_External_Id__c);
-                counter ++ ;
+            for (Doctor__c doc : doctorsToUpsert) {
+                RestContext.response.addHeader('addedId' + counter, doc.Id);
+                RestContext.response.addHeader('externalId' + counter, doc.Doctor_External_Id__c);
+                counter++ ;
             }
 
         } catch (Exception e) {
@@ -61,7 +61,7 @@ global class HD_DoctorIntegrationWebService {
             );
             List<Doctor__c> doctorsToDelete = new List<Doctor__c>();
             for (Object obj : responseJSON) {
-                Map<String, Object> params =  (Map<string, Object>) obj;
+                Map<String, Object> params = (Map<string, Object>) obj;
                 String doctorExternalId = (String) params.get('Doctor_External_Id__c');
                 Doctor__c doctor = new Doctor__c();
                 doctor.Id = doctorExternalId;
