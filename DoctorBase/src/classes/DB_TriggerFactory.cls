@@ -11,14 +11,14 @@ public with sharing class DB_TriggerFactory {
         if (handler == null) {
             throw new DB_TriggerException('No Trigger Handler registered for Object Type: ' + soType);
         }
-        execute(handler);
+        execute(handler,soType);
     }
 
-    private static void execute(DB_TriggerInterface handler) {
+    private static void execute(DB_TriggerInterface handler,Schema.sObjectType soType) {
         if (Trigger.isBefore) {
-            handler.bulkBefore(Trigger.new, Trigger.old);
+            handler.bulkBefore(Trigger.new, Trigger.old,soType);
         } else {
-            handler.bulkAfter(Trigger.new, Trigger.old);
+            handler.bulkAfter(Trigger.new, Trigger.old,soType);
         }
     }
 

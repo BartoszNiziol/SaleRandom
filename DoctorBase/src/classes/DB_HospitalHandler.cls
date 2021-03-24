@@ -44,8 +44,8 @@ public with sharing class DB_HospitalHandler {
         return hospital;
     }
 
-    @Future(callout = true)
-    public static void upsertHospitalToExternalDB(String upsertBody) {
+
+    public static void upsertHospitalToExternalDB(String upsertBody,Schema.SObjectType soType) {
         HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
@@ -80,12 +80,11 @@ public with sharing class DB_HospitalHandler {
         } finally {
             DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
-        DB_LoggerHandler.createLog(Hospital__c.SObjectType,endpointString,upsertRequest,null,'Upsert',null);
 
     }
 
-    @Future(callout = true)
-    public static void deleteHospitalFromExternalDB(String upsertBody) {
+
+    public static void deleteHospitalFromExternalDB(String upsertBody,Schema.sObjectType soType) {
         HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
@@ -103,6 +102,5 @@ public with sharing class DB_HospitalHandler {
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
-        DB_LoggerHandler.createLog(Hospital__c.SObjectType,endpointString,upsertRequest,response,'Delete',null);
     }
 }

@@ -57,6 +57,8 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null);
+
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
@@ -94,6 +96,7 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 

@@ -121,7 +121,7 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'POST', null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null);
 
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
@@ -159,11 +159,11 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'DELETE', null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null);
 
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
-        HD_LoggerHandler.createLog(Doctor__c.SObjectType.getDescribe().name, endpointString, upsertBody, response, 'DELETE', null,logId);
+        HD_LoggerHandler.createLog(Doctor__c.SObjectType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null,logId);
     }
 }

@@ -3,7 +3,7 @@
  */
 
 public with sharing class DB_HospitalTriggerHandler implements DB_TriggerInterface{
-    public void bulkBefore(List<sObject> newObjects, List<sObject> oldObjects) {
+    public void bulkBefore(List<sObject> newObjects, List<sObject> oldObjects,Schema.SObjectType soType) {
         if (trigger.isInsert) {
         } else if (trigger.isUpdate) {
         } else if (trigger.isDelete) {
@@ -11,18 +11,18 @@ public with sharing class DB_HospitalTriggerHandler implements DB_TriggerInterfa
         }
     }
 
-    public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects) {
+    public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects,Schema.SObjectType soType) {
         System.debug('bulk after');
         if (trigger.isInsert) {
             String postBody = JSON.serialize(newObjects);
-            System.debug(postBody);
-            DB_HospitalHandler.upsertHospitalToExternalDB(postBody);
+            ID jobID = System.enqueueJob(new DB_QueueUpsertHospitalToExternal(postBody,soType));
+
         } else if (trigger.isUpdate) {
             String postBody = JSON.serialize(newObjects);
-            DB_HospitalHandler.upsertHospitalToExternalDB(postBody);
+            ID jobID = System.enqueueJob(new DB_QueueUpsertHospitalToExternal(postBody,soType));
         } else if (trigger.isDelete) {
             String postBody = JSON.serialize(oldObjects);
-            DB_HospitalHandler.deleteHospitalFromExternalDB(postBody);
+            ID jobID  = System.enqueueJob(new DB_QueueDeleteHospitalFromExternal(postBody,soType));
         } else if (trigger.isUndelete) {
         }
     }
