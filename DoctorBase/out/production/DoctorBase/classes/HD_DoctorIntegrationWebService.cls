@@ -1,5 +1,5 @@
 /**
- * Created by BRITENET on 21.03.2021.
+ * Created by BRITENET on 18.03.2021.
  */
 @RestResource(urlMapping = '/DoctorIntegration')
 global class HD_DoctorIntegrationWebService {
@@ -13,7 +13,8 @@ global class HD_DoctorIntegrationWebService {
             List<Doctor__c> doctorsToUpsert = new List<Doctor__c>();
 
             for (Object obj : responseJSON) {
-                Map<String, Object> params = (Map<string, Object>) obj;
+                Map<String, Object> params = new Map<String, Object>();
+                params = (Map<string, Object>) obj;
 
                 Doctor__c doctor = new Doctor__c();
                 doctor.Name = (String) params.get('Name');
@@ -34,10 +35,10 @@ global class HD_DoctorIntegrationWebService {
                 doctorsToUpsert.add(doctor);
             }
             try {
-                HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                 upsert doctorsToUpsert;
             } finally {
-                HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
 
             Integer counter = 0;
@@ -52,7 +53,6 @@ global class HD_DoctorIntegrationWebService {
             System.debug(e);
         }
     }
-
     @HttpDelete
     global static void deleteDoctor() {
         try {
@@ -61,20 +61,23 @@ global class HD_DoctorIntegrationWebService {
             );
             List<Doctor__c> doctorsToDelete = new List<Doctor__c>();
             for (Object obj : responseJSON) {
-                Map<String, Object> params =  (Map<string, Object>) obj;
+                Map<String, Object> params = (Map<string, Object>) obj;
                 String doctorExternalId = (String) params.get('Doctor_External_Id__c');
                 Doctor__c doctor = new Doctor__c();
                 doctor.Id = doctorExternalId;
                 doctorsToDelete.add(doctor);
             }
             try {
-                HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                 delete doctorsToDelete;
             } finally {
-                HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
+
         } catch (Exception e) {
             System.debug(e);
         }
     }
+
+
 }

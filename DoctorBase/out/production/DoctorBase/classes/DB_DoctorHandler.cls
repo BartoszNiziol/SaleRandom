@@ -73,7 +73,7 @@ public with sharing class DB_DoctorHandler {
                 DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
 
-        DB_LoggerHandler.createLog(Doctor__c.SObjectType,endpointString,upsertRequest,response,'Upsert',null);
+        DB_LoggerHandler.createLog(Doctor__c.SObjectType,endpointString,upsertRequest,response,'Upsert');
     }
 
     @Future(callout = true)
@@ -95,6 +95,6 @@ public with sharing class DB_DoctorHandler {
             Http upsertHttp = new Http();
             HttpResponse response = upsertHttp.send(upsertRequest);
 
-        DB_LoggerHandler.createLog(Doctor__c.SObjectType,endpointString,upsertRequest,response,'Delete',null);
+        DB_LoggerHandler.createLog(Doctor__c.SObjectType,endpointString,upsertRequest,response,'Delete');
     }
 }

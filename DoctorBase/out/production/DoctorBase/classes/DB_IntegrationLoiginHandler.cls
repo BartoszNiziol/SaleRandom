@@ -2,17 +2,17 @@
  * Created by BRITENET on 19.03.2021.
  */
 
-public with sharing class HD_IntegrationLoginHandler {
+public with sharing class DB_IntegrationLoiginHandler {
 
     public static  HttpResponse loginCallout(){
         HttpRequest loginRequest = new HttpRequest();
-        loginRequest.setEndpoint(HD_Utils.retrieveCredentials('LoginEndpoint'));
+        loginRequest.setEndpoint(DB_Utils.retrieveCredentials('LoginEndpoint'));
         loginRequest.setMethod('POST');
-        String username = HD_Utils.retrieveCredentials('DBLogin');
-        String password = HD_Utils.retrieveCredentials('DBPassword');
+        String username = DB_Utils.retrieveCredentials('HDLogin');
+        String password = DB_Utils.retrieveCredentials('HDPassword');
         String grantType = 'password';
-        String clientId = HD_Utils.retrieveCredentials('clientID');
-        String clientSecret = HD_Utils.retrieveCredentials('clientSecret');
+        String clientId = DB_Utils.retrieveCredentials('clientID');
+        String clientSecret = DB_Utils.retrieveCredentials('clientSecret');
         loginRequest.setBody(
                 'grant_type=password' +
                         '&client_id=' + clientId + '&client_secret=' + clientSecret + '&username=' + username + '&password=' + password

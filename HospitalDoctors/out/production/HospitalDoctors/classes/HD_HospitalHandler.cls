@@ -12,7 +12,7 @@ public with sharing class HD_HospitalHandler {
                 ' AND Email__c LIKE \'' + dynamicQueryLikeGenerator(email) + '\'' +
                 ' AND Country__c LIKE \'' + dynamicQueryLikeGenerator(country) + '\'' ;
         return Database.query(query);
-        System.debug('a');
+
     }
 
     private static String dynamicQueryLikeGenerator(String field) {
@@ -41,14 +41,15 @@ public with sharing class HD_HospitalHandler {
 
     @Future(callout = true)
     public static void upsertHospitalToExternalDB(String upsertBody) {
+
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
         );
         String accesToken = (String) params.get('access_token');
         String authorization = 'Bearer ' + accesToken;
-        System.debug(authorization);
         String endpointString = HD_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
+
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
         upsertRequest.setMethod('POST');
@@ -59,21 +60,27 @@ public with sharing class HD_HospitalHandler {
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
-        Hospital__c hospital = new Hospital__c();
-        hospital.Id = response.getHeader('externalId');
-        hospital.Hospital_External_Id__c = response.getHeader('addedId');
-
+        List<Hospital__c> idHospital = new List<Hospital__c>();
+        Integer counter = 0;
+        while (response.getHeaderKeys().contains('addedId' + counter)) {
+            Hospital__c hospital = new Hospital__c();
+            hospital.Id = response.getHeader('externalId' + counter);
+            hospital.Hospital_External_Id__c = response.getHeader('addedId' + counter);
+            idHospital.add(hospital);
+            counter++;
+        }
         try {
             HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
-            upsert hospital;
+            upsert idHospital;
         } finally {
             HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
+        HD_LoggerHandler.createLog(Hospital__c.SObjectType, endpointString, upsertRequest, response, 'Upsert', null);
     }
 
     @Future(callout = true)
     public static void deleteHospitalFromExternalDB(String upsertBody) {
-        HttpResponse logHttpResponse =HD_IntegrationLoginHandler.loginCallout();
+        HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
         );
@@ -89,5 +96,7 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setBody(upsertBody);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
+
+        HD_LoggerHandler.createLog(Hospital__c.SObjectType, endpointString, upsertRequest, response, 'Delete', null);
     }
 }
