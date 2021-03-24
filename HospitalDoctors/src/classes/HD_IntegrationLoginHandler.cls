@@ -2,7 +2,7 @@
  * Created by BRITENET on 19.03.2021.
  */
 
-public with sharing class HD_IntegrationLoginHandler {
+public with sharing class HD_IntegrationLoginHandler implements Database.AllowsCallouts{
 
     public static  HttpResponse loginCallout(){
         HttpRequest loginRequest = new HttpRequest();

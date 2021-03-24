@@ -39,8 +39,8 @@ public with sharing class HD_HospitalHandler {
         return hospital;
     }
 
-    @Future(callout = true)
-    public static void upsertHospitalToExternalDB(String upsertBody) {
+
+    public static void upsertHospitalToExternalDB(String upsertBody,Schema.SObjectType soType) {
 
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
@@ -75,11 +75,11 @@ public with sharing class HD_HospitalHandler {
         } finally {
             HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
-        HD_LoggerHandler.createLog(Hospital__c.SObjectType, endpointString, upsertRequest, response, 'Upsert', null);
+        HD_LoggerHandler.createLog(Hospital__c.SObjectType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', null,null);
     }
 
-    @Future(callout = true)
-    public static void deleteHospitalFromExternalDB(String upsertBody) {
+
+    public static void deleteHospitalFromExternalDB(String upsertBody,Schema.SObjectType soType) {
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
@@ -97,6 +97,6 @@ public with sharing class HD_HospitalHandler {
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
-        HD_LoggerHandler.createLog(Hospital__c.SObjectType, endpointString, upsertRequest, response, 'Delete', null);
+        HD_LoggerHandler.createLog(Hospital__c.SObjectType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null,null);
     }
 }

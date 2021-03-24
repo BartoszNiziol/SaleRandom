@@ -4,7 +4,7 @@
 
 public with sharing class HD_DummyTriggerHandler implements HD_TriggerInterface{
 
-    public void bulkBefore(List<sObject> newObjects, List<sObject> oldObjects) {
+    public void bulkBefore(List<sObject> newObjects, List<sObject> oldObjects, Schema.SObjectType soType) {
         if(trigger.isInsert) {
 
         } else if(trigger.isUpdate) {
@@ -16,7 +16,7 @@ public with sharing class HD_DummyTriggerHandler implements HD_TriggerInterface{
         }
     }
 
-    public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects) {
+    public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects, Schema.SObjectType soType) {
         if(trigger.isInsert) {
 
         } else if(trigger.isUpdate) {

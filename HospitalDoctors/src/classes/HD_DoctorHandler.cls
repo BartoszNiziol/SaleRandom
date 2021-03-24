@@ -103,8 +103,9 @@ public with sharing class HD_DoctorHandler {
         return doctor;
     }
 
-    @Future(callout = true)
-    public static void upsertDoctorToExternalDB(String upsertBody) {
+    public static void upsertDoctorToExternalDB(String upsertBody, Schema.SObjectType soType) {
+
+
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
@@ -120,17 +121,20 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'POST', null);
+
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
         List<Doctor__c> idDoctors = new List<Doctor__c>();
         Integer counter = 0;
-        while (response.getHeaderKeys().contains('addedId'+ counter)){
-                Doctor__c doctor = new Doctor__c();
-                doctor.Id = response.getHeader('externalId' + counter);
-                doctor.Doctor_External_Id__c = response.getHeader('addedId' + counter);
-                idDoctors.add(doctor);
-                counter++;
+
+        while (response.getHeaderKeys().contains('addedId' + counter)) {
+            Doctor__c doctor = new Doctor__c();
+            doctor.Id = response.getHeader('externalId' + counter);
+            doctor.Doctor_External_Id__c = response.getHeader('addedId' + counter);
+            idDoctors.add(doctor);
+            counter++;
         }
         try {
             HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
@@ -139,11 +143,9 @@ public with sharing class HD_DoctorHandler {
             HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
         }
 
-        HD_LoggerHandler.createLog(Doctor__c.SObjectType,endpointString,upsertRequest,response,'Upsert',null);
+        HD_LoggerHandler.createLog(Doctor__c.SObjectType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', response.getStatus(),logId);
     }
-
-    @Future(callout = true)
-    public static void deleteDoctorFromExternalDB(String upsertBody) {
+    public static void deleteDoctorFromExternalDB(String upsertBody, Schema.SObjectType soType) {
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
@@ -157,9 +159,11 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'DELETE', null);
+
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
-        HD_LoggerHandler.createLog(Doctor__c.SObjectType,endpointString,upsertRequest,response,'Delete',null);
+        HD_LoggerHandler.createLog(Doctor__c.SObjectType.getDescribe().name, endpointString, upsertBody, response, 'DELETE', null,logId);
     }
 }

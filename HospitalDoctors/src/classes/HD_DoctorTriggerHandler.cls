@@ -4,7 +4,9 @@
 
 public with sharing class HD_DoctorTriggerHandler implements HD_TriggerInterface {
 
-    public void bulkBefore(List<sObject> newObjects, List<sObject> oldObjects) {
+
+
+    public void bulkBefore(List<sObject> newObjects, List<sObject> oldObjects,Schema.sObjectType soType) {
         if(trigger.isInsert) {
 
         } else if(trigger.isUpdate) {
@@ -16,16 +18,17 @@ public with sharing class HD_DoctorTriggerHandler implements HD_TriggerInterface
         }
     }
 
-    public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects) {
+    public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects,Schema.sObjectType soType) {
+
         if (trigger.isInsert) {
             String postBody = JSON.serialize(newObjects);
-            HD_DoctorHandler.upsertDoctorToExternalDB(postBody);
+            ID jobID = System.enqueueJob(new QueueUpsertDoctorToExternalDB(postBody,soType));
         } else if (trigger.isUpdate) {
             String postBody = JSON.serialize(newObjects);
-            HD_DoctorHandler.upsertDoctorToExternalDB(postBody);
+            ID jobID = System.enqueueJob(new QueueUpsertDoctorToExternalDB(postBody,soType));
         } else if (trigger.isDelete) {
             String postBody = JSON.serialize(oldObjects);
-            HD_DoctorHandler.deleteDoctorFromExternalDB(postBody);
+            ID jobID  = System.enqueueJob(new HD_QueueDeleteDoctorFormExternalDB(postBody,soType));
         } else if (trigger.isUndelete) {
 
         }

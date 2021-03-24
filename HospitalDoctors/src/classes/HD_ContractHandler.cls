@@ -24,7 +24,7 @@ public with sharing class HD_ContractHandler {
         }
     }
 
-    public static void overlapTriggerCheck(List<Contract__c> newObjects, List<Contract__c> oldObjects){
+    public static void overlapTriggerCheck(List<Contract__c> newObjects, List<Contract__c> oldObjects, Schema.SObjectType soType){
         Map<String, List<Contract__c>> oldDoctorsHospitalsIdToContracts = new Map<String, List< Contract__c>>();
         List<Id> doctorsToAddIdList = new List<Id>();
         List<Id> hospitalsToAddIdList = new List<Id>();

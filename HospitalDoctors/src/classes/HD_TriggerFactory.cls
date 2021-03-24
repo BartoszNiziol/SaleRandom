@@ -9,19 +9,18 @@ public with sharing class HD_TriggerFactory {
         if (handler == null) {
             throw new TriggerException('No Trigger Handler registered for Object Type: ' + soType);
         }
-        execute(handler);
+        execute(handler,soType);
     }
 
-    private static void execute(HD_TriggerInterface handler) {
+    private static void execute(HD_TriggerInterface handler,Schema.sObjectType soType) {
         if (Trigger.isBefore) {
-            handler.bulkBefore(Trigger.new, Trigger.old);
+            handler.bulkBefore(Trigger.new, Trigger.old,soType);
         } else {
-            handler.bulkAfter(Trigger.new, Trigger.old);
+            handler.bulkAfter(Trigger.new, Trigger.old,soType);
         }
     }
 
     private static HD_TriggerInterface getHandler(Schema.sObjectType soType) {
-
         if (!HD_Utils.isTriggerExceptionEnabled(soType)) {
             if (soType == Contract__c.sObjectType) {
                 return new HD_ContractTriggerHandler();
