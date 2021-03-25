@@ -42,9 +42,11 @@ public with sharing class HD_LoggerHandler {
         } else {
             logger.Object_type__c = null;
         }
+        if(logger.Response_Status_Code__c == 200){
+            logger.IsSynchronized__c = true;
+        }
+
         upsert logger;
-        System.debug('logger.Id');
-        System.debug(logger.Id);
         return logger.Id;
     }
 

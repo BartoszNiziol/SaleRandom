@@ -6,7 +6,7 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
 
     String authorization;
     public Iterable<Logger__c> start(Database.BatchableContext bc) {
-        List<Logger__c> logs = [SELECT Request_Body__c,Endpoint__c,Method_Type__c,Object_type__c,Batch_Counter__c FROM Logger__c WHERE Response_Status_Code__c != 200];
+        List<Logger__c> logs = [SELECT Request_Body__c,Endpoint__c,Method_Type__c,Object_type__c,Batch_Counter__c FROM Logger__c WHERE IsSynchronized__c = false];
 
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
@@ -26,32 +26,26 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
             if (log.Batch_Counter__c <3) {
                 if (log.Object_type__c == 'Doctor__c') {
                     if (log.Method_Type__c == 'Upsert') {
-
-                        String endpointString = HD_Utils.retrieveCredentials('DBDoctorIntegrationEndpoint');
-                        HttpRequest upsertRequest = new HttpRequest();
-                        upsertRequest.setEndpoint(endpointString);
-                        upsertRequest.setMethod('POST');
-                        upsertRequest.setHeader('Content-Type', 'application/json');
-                        upsertRequest.setHeader('Authorization', authorization);
-                        upsertRequest.setBody(log.Request_Body__c);
-                        Http upsertHttp = new Http();
-                        HttpResponse response = upsertHttp.send(upsertRequest);
-                        HD_LoggerHandler.sendLogRequest(log.Object_type__c,log.Endpoint__c,log.Request_Body__c,response,'POST',null,log.Batch_Counter__c);
-                        //  ID jobID = System.enqueueJob(new QueueUpsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType()));
+                        log.IsSynchronized__c = HD_DoctorHandler.upsertDoctorToExternalDB(log.Request_Body__c,((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType());
+                        log.Batch_Counter__c++;
                     } else {
-                        //         ID jobID = System.enqueueJob(new HD_QueueDeleteDoctorFormExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType()));
+                        log.IsSynchronized__c = HD_DoctorHandler.deleteDoctorFromExternalDB(log.Request_Body__c,((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType());
+                        log.Batch_Counter__c++;
                     }
                 } else {
                     if (log.Method_Type__c == 'Upsert') {
-
-                        //                    ID jobID = System.enqueueJob(new HD_QueueUpsertHospitalToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType()));
+                        log.IsSynchronized__c = HD_HospitalHandler.upsertHospitalToExternalDB(log.Request_Body__c,((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType());
+                        log.Batch_Counter__c++;
                     } else {
+                        log.IsSynchronized__c = HD_HospitalHandler.deleteHospitalFromExternalDB(log.Request_Body__c,((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType());
+                        log.Batch_Counter__c++;
 
-                        //     ID jobID = System.enqueueJob(new HD_QueueDeleteHospitalFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType()));
                     }
                 }
             }
+            update log;
         }
+
 
     }
 

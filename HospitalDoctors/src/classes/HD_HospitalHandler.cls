@@ -39,7 +39,7 @@ public with sharing class HD_HospitalHandler {
         return hospital;
     }
 
-    public static void upsertHospitalToExternalDB(String upsertBody, Schema.SObjectType soType) {
+    public static Boolean upsertHospitalToExternalDB(String upsertBody, Schema.SObjectType soType) {
 
         HttpResponse response;
         String authorization;
@@ -66,6 +66,8 @@ public with sharing class HD_HospitalHandler {
 
         List<Hospital__c> idHospital = new List<Hospital__c>();
         Integer counter = 0;
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null);
+
         while (response.getHeaderKeys().contains('addedId' + counter)) {
             Hospital__c hospital = new Hospital__c();
             hospital.Id = response.getHeader('externalId' + counter);
@@ -79,11 +81,13 @@ public with sharing class HD_HospitalHandler {
         } finally {
             HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null);
+        if(response.getStatusCode() == 200){
+            return true;
+        }else return false;
     }
 
 
-    public static void deleteHospitalFromExternalDB(String upsertBody, Schema.SObjectType soType) {
+    public static Boolean deleteHospitalFromExternalDB(String upsertBody, Schema.SObjectType soType) {
         HttpResponse response;
         String authorization;
 
@@ -105,5 +109,8 @@ public with sharing class HD_HospitalHandler {
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
         HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), null);
+        if(response.getStatusCode() == 200){
+            return true;
+        }else return false;
     }
 }
