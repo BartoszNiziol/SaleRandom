@@ -16,6 +16,7 @@ public with sharing class HD_HospitalDBHandler {
     public HttpResponse login() {
         HttpResponse res = loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+
                 res.getBody()
         );
         String accesToken = (String) params.get('access_token');

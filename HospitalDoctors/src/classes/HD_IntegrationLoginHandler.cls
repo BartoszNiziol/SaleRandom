@@ -24,5 +24,17 @@ public with sharing class HD_IntegrationLoginHandler implements Database.AllowsC
         return response;
     }
 
+    public static HttpResponse login() {
+        HttpResponse res = loginCallout();
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+
+                res.getBody()
+        );
+        String accesToken = (String) params.get('access_token');
+        String authorization = 'Bearer ' + accesToken;
+        Cache.Session.put('authorization', authorization);
+        return res;
+    }
+
 
 }

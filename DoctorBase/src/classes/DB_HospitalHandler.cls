@@ -44,7 +44,6 @@ public with sharing class DB_HospitalHandler {
         return hospital;
     }
 
-
     public static void upsertHospitalToExternalDB(String upsertBody,Schema.SObjectType soType) {
         HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(

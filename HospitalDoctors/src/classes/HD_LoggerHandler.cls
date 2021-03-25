@@ -46,9 +46,9 @@ public with sharing class HD_LoggerHandler {
         return logger.Id;
     }
 
-    public static String sendLogRequest(String soTypeName, String endpoint, String requestBody, HttpResponse response, String actionType, String errorMessage){
+    public static String sendLogRequest(String soTypeName, String endpoint, String requestBody, HttpResponse response, String actionType, String errorMessage,String logId){
 
-        String logRequestBody =  parseLogInfoToJson( soTypeName,endpoint,requestBody, actionType);
+        String logRequestBody =  parseLogInfoToJson( soTypeName,endpoint,requestBody, actionType, logId);
         String accesToken = UserInfo.getSessionId();
         String authorization = 'Bearer ' + accesToken;
         String endpointString = HD_Utils.retrieveCredentials('LoggerSelfEndpoint');
@@ -67,7 +67,7 @@ public with sharing class HD_LoggerHandler {
 
     }
 
-    private static String parseLogInfoToJson(String soTypeName,String endpoint,String requestBody,String actionType) {
+    private static String parseLogInfoToJson(String soTypeName,String endpoint,String requestBody,String actionType,String logId) {
 
         JSONGenerator generator = JSON.createGenerator(false);
         generator.writeStartObject();
@@ -75,6 +75,7 @@ public with sharing class HD_LoggerHandler {
         generator.writeStringField('soType', soTypeName);
         generator.writeStringField('request', requestBody);
         generator.writeStringField('actionType', actionType);
+        generator.writeStringField('logID', logId);
         generator.writeEndObject();
         return generator.getAsString();
     }
