@@ -10,13 +10,13 @@ doctor.Birthday_Date__c = Date.Today();
 doctor.License_Number__c = 1234567;
 
 Doctor__c doctor2 = new Doctor__c();
-doctor.First_Name__c = 'Jan2';
-doctor.Name = 'Kowalski2';
-doctor.Email__c = 'jk@op2.po';
-doctor.City__c = 'Lublin2';
-doctor.Street__c = 'wolna 4';
-doctor.Birthday_Date__c = Date.Today();
-doctor.License_Number__c = 12345678;
+doctor2.First_Name__c = 'Jan2';
+doctor2.Name = 'Kowalski2';
+doctor2.Email__c = 'jk@op2.po';
+doctor2.City__c = 'Lublin2';
+doctor2.Street__c = 'wolna 4';
+doctor2.Birthday_Date__c = Date.Today();
+doctor2.License_Number__c = 12345678;
 
 doctors.add(doctor);
 doctors.add(doctor2);

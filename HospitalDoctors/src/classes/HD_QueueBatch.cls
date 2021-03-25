@@ -2,24 +2,15 @@
  * Created by BRITENET on 25.03.2021.
  */
 
-public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Database.Stateful, Database.AllowsCallouts{
-
-    String authorization;
-    public Iterable<Logger__c> start(Database.BatchableContext bc) {
-        List<Logger__c> logs = [SELECT Request_Body__c,Endpoint__c,Method_Type__c,Object_type__c,Batch_Counter__c FROM Logger__c WHERE Response_Status_Code__c != 200];
-
-        HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
-        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
-                logHttpResponse.getBody()
-        );
-        String accesToken = (String) params.get('access_token');
-        authorization = 'Bearer ' + accesToken;
-
-        return logs;
+public with sharing class HD_QueueBatch implements Queueable , Database.AllowsCallouts {
+    List<Logger__c> logs {get; set;}
+    public  HD_QueueBatch (List<Logger__c> logs){
+       this.logs = logs;
     }
-    public void execute(Database.BatchableContext bc, List<Logger__c> records){
 
-        for (Logger__c log: records){
+    public void execute (QueueableContext context){
+        String authorization;
+        for (Logger__c log: logs){
             if(log.Batch_Counter__c == null){
                 log.Batch_Counter__c = 0;
             }
@@ -27,6 +18,14 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
                 if (log.Object_type__c == 'Doctor__c') {
                     if (log.Method_Type__c == 'Upsert') {
 
+                        if(authorization == null){
+                            HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
+                            Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                                    logHttpResponse.getBody()
+                            );
+                            String accesToken = (String) params.get('access_token');
+                            authorization = 'Bearer ' + accesToken;
+                        }
                         String endpointString = HD_Utils.retrieveCredentials('DBDoctorIntegrationEndpoint');
                         HttpRequest upsertRequest = new HttpRequest();
                         upsertRequest.setEndpoint(endpointString);
@@ -52,12 +51,6 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
                 }
             }
         }
-
+    }
     }
 
-    public void finish(Database.BatchableContext bc){
-          System.debug('Batch Finish');
-
-            }
-
-}

@@ -39,15 +39,17 @@ public with sharing class HD_HospitalHandler {
         return hospital;
     }
 
-
     public static void upsertHospitalToExternalDB(String upsertBody, Schema.SObjectType soType) {
+
+        HttpResponse response;
+        String authorization;
 
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
         );
         String accesToken = (String) params.get('access_token');
-        String authorization = 'Bearer ' + accesToken;
+        authorization = 'Bearer ' + accesToken;
         String endpointString = HD_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
 
         HttpRequest upsertRequest = new HttpRequest();
@@ -57,10 +59,10 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', null, response.getStatusCode(), response.getStatus(), null);
 
         Http upsertHttp = new Http();
-        HttpResponse response = upsertHttp.send(upsertRequest);
+        response = upsertHttp.send(upsertRequest);
 
         List<Hospital__c> idHospital = new List<Hospital__c>();
         Integer counter = 0;
@@ -77,17 +79,20 @@ public with sharing class HD_HospitalHandler {
         } finally {
             HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
-        HD_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', null,logId);
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null);
     }
 
 
     public static void deleteHospitalFromExternalDB(String upsertBody, Schema.SObjectType soType) {
+        HttpResponse response;
+        String authorization;
+
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
         );
         String accesToken = (String) params.get('access_token');
-        String authorization = 'Bearer ' + accesToken;
+        authorization = 'Bearer ' + accesToken;
         String endpointString = HD_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
 
         HttpRequest upsertRequest = new HttpRequest();
@@ -96,10 +101,9 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', null, response.getStatusCode(), response.getStatus(), null);
         Http upsertHttp = new Http();
-        HttpResponse response = upsertHttp.send(upsertRequest);
-
-        HD_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null,logId);
+        response = upsertHttp.send(upsertRequest);
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), null);
     }
 }
