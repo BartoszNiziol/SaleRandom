@@ -16,7 +16,6 @@ public with sharing class DB_HospitalTriggerHandler implements DB_TriggerInterfa
         if (trigger.isInsert) {
             String postBody = JSON.serialize(newObjects);
             ID jobID = System.enqueueJob(new DB_QueueUpsertHospitalToExternal(postBody,soType));
-
         } else if (trigger.isUpdate) {
             String postBody = JSON.serialize(newObjects);
             ID jobID = System.enqueueJob(new DB_QueueUpsertHospitalToExternal(postBody,soType));

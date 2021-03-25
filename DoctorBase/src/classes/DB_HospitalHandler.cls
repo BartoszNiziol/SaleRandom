@@ -61,6 +61,8 @@ public with sharing class DB_HospitalHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
+        String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null);
+
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
@@ -80,7 +82,7 @@ public with sharing class DB_HospitalHandler {
         } finally {
             DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
-
+        DB_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', response.getStatus(),logId);
     }
 
 
@@ -99,8 +101,10 @@ public with sharing class DB_HospitalHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
+        String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
+        DB_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null,logId);
 
     }
 }

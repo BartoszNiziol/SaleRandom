@@ -77,7 +77,7 @@ public with sharing class HD_HospitalHandler {
         } finally {
             HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
-        HD_LoggerHandler.createLog(Hospital__c.SObjectType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', null,null);
+        HD_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', response.getStatus(),logId);
     }
 
 
@@ -100,6 +100,6 @@ public with sharing class HD_HospitalHandler {
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
-        HD_LoggerHandler.createLog(Hospital__c.SObjectType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null,null);
+        HD_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null,logId);
     }
 }

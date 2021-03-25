@@ -143,7 +143,7 @@ public with sharing class HD_DoctorHandler {
             HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
         }
 
-        HD_LoggerHandler.createLog(Doctor__c.SObjectType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', response.getStatus(),logId);
+        HD_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', response.getStatus(),logId);
     }
     public static void deleteDoctorFromExternalDB(String upsertBody, Schema.SObjectType soType) {
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
@@ -160,10 +160,8 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
         String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null);
-
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
-
-        HD_LoggerHandler.createLog(Doctor__c.SObjectType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null,logId);
+        HD_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null,logId);
     }
 }
