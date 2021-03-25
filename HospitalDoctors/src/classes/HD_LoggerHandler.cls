@@ -11,6 +11,7 @@ public with sharing class HD_LoggerHandler {
 
         Logger__c logger = new Logger__c();
         logger.Created_Record_Id__c =id;
+
         if (logID != null) {
             logger.Id = logID;
         }
@@ -25,11 +26,9 @@ public with sharing class HD_LoggerHandler {
         logger.Request_Body__c = requestBody;
         logger.Error_Message__c = errorMessage;
         if (response != null) {
-
             logger.Response_Body__c = response.getBody();
             logger.Response_Status_Code__c = response.getStatusCode();
             logger.Status__c = response.getStatus();
-
         } else {
             logger.Response_Body__c = null;
             logger.Response_Status_Code__c = null;
@@ -46,9 +45,9 @@ public with sharing class HD_LoggerHandler {
         return logger.Id;
     }
 
-    public static String sendLogRequest(String soTypeName, String endpoint, String requestBody, HttpResponse response, String actionType, String errorMessage,String logId){
+    public static String sendLogRequest(String soTypeName, String endpoint, String requestBody, HttpResponse response, String actionType, String errorMessage){
 
-        String logRequestBody =  parseLogInfoToJson( soTypeName,endpoint,requestBody, actionType, logId);
+        String logRequestBody =  parseLogInfoToJson( soTypeName,endpoint,requestBody, actionType);
         String accesToken = UserInfo.getSessionId();
         String authorization = 'Bearer ' + accesToken;
         String endpointString = HD_Utils.retrieveCredentials('LoggerSelfEndpoint');
@@ -67,7 +66,7 @@ public with sharing class HD_LoggerHandler {
 
     }
 
-    private static String parseLogInfoToJson(String soTypeName,String endpoint,String requestBody,String actionType,String logId) {
+    private static String parseLogInfoToJson(String soTypeName,String endpoint,String requestBody,String actionType) {
 
         JSONGenerator generator = JSON.createGenerator(false);
         generator.writeStartObject();
@@ -75,7 +74,6 @@ public with sharing class HD_LoggerHandler {
         generator.writeStringField('soType', soTypeName);
         generator.writeStringField('request', requestBody);
         generator.writeStringField('actionType', actionType);
-        generator.writeStringField('logID', logId);
         generator.writeEndObject();
         return generator.getAsString();
     }

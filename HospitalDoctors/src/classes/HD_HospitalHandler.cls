@@ -40,7 +40,7 @@ public with sharing class HD_HospitalHandler {
     }
 
 
-    public static void upsertHospitalToExternalDB(String upsertBody, Schema.SObjectType soType, String logIdFomBatch) {
+    public static void upsertHospitalToExternalDB(String upsertBody, Schema.SObjectType soType) {
 
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
@@ -57,7 +57,7 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, logIdFomBatch);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null);
 
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
@@ -77,11 +77,11 @@ public with sharing class HD_HospitalHandler {
         } finally {
             HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
-        HD_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', null, logId);
+        HD_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', null,logId);
     }
 
 
-    public static void deleteHospitalFromExternalDB(String upsertBody, Schema.SObjectType soType, String logIdFomBatch) {
+    public static void deleteHospitalFromExternalDB(String upsertBody, Schema.SObjectType soType) {
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
@@ -96,10 +96,10 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, logIdFomBatch);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null);
         Http upsertHttp = new Http();
         HttpResponse response = upsertHttp.send(upsertRequest);
 
-        HD_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null, logId);
+        HD_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null,logId);
     }
 }

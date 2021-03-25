@@ -74,6 +74,8 @@ public with sharing class DB_DoctorHandler {
         } finally {
             DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
         }
+        System.debug('Response befor Last log');
+        System.debug(response);
         DB_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', response.getStatus(), logId);
 
     }

@@ -9,6 +9,7 @@ public with sharing class DB_LoggerHandler {
 
         Logger__c logger = new Logger__c();
         logger.Created_Record_Id__c =id;
+
         if (logID != null) {
             logger.Id = logID;
         }
@@ -22,11 +23,14 @@ public with sharing class DB_LoggerHandler {
         logger.Method_Type__c = actionType;
         logger.Request_Body__c = requestBody;
         logger.Error_Message__c = errorMessage;
-        if (response != null) {
 
+        if (response != null) {
             logger.Response_Body__c = response.getBody();
+            System.debug(logger.Response_Body__c);
             logger.Response_Status_Code__c = response.getStatusCode();
+            System.debug (logger.Response_Status_Code__c);
             logger.Status__c = response.getStatus();
+            System.debug(logger.Status__c);
 
         } else {
             logger.Response_Body__c = null;

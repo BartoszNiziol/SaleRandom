@@ -14,27 +14,30 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
     }
     public void execute(Database.BatchableContext bc, List<Logger__c> records){
             for (Logger__c log: records){
-
                 if(log.Batch_Counter__c == null){
                     log.Batch_Counter__c = 0;
                 }
                 if (log.Batch_Counter__c <3) {
                     if (log.Object_type__c == 'Doctor__c') {
                         if (log.Method_Type__c == 'Upsert') {
-                            HD_DoctorHandler.upsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Id);
+
+                            ID jobID = System.enqueueJob(new QueueUpsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType()));
                         } else {
-                            HD_DoctorHandler.deleteDoctorFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Id);
+
+                            ID jobID = System.enqueueJob(new HD_QueueDeleteDoctorFormExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType()));
                         }
                     } else {
                         if (log.Method_Type__c == 'Upsert') {
-                            HD_HospitalHandler.upsertHospitalToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Id);
 
+                            ID jobID = System.enqueueJob(new HD_QueueUpsertHospitalToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType()));
                         } else {
-                            HD_HospitalHandler.deleteHospitalFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Id);
+
+                            ID jobID = System.enqueueJob(new HD_QueueDeleteHospitalFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType()));
                         }
                     }
                 }
-                update log;
+                log.Batch_Counter__c ++;
+                insert log;
                 if (log.Batch_Counter__c >=3) {
                     delete log;
                 }
