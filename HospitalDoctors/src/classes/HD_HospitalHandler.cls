@@ -37,7 +37,7 @@ public with sharing class HD_HospitalHandler {
         return hospital;
     }
 
-    public static Boolean upsertHospitalToExternalDB(String upsertBody, Schema.SObjectType soType) {
+    public static Boolean upsertHospitalToExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean isInBatch) {
 
         HttpResponse response;
         String authorization;
@@ -57,14 +57,14 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter, isInBatch);
 
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
 
         List<Hospital__c> idHospital = new List<Hospital__c>();
         Integer counter = 0;
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null);
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), batchCounter, isInBatch);
 
         while (response.getHeaderKeys().contains('addedId' + counter)) {
             Hospital__c hospital = new Hospital__c();
@@ -85,12 +85,12 @@ public with sharing class HD_HospitalHandler {
         updateRequest.setBody(JSON.serialize(idHospital));
         Http updateHttp = new Http();
         HttpResponse updateResponse = updateHttp.send(updateRequest);
-        if(response.getStatusCode() == 200){
+        if (response.getStatusCode() == 200) {
             return true;
-        }else return false;
+        } else return false;
     }
 
-    public static Boolean deleteHospitalFromExternalDB(String upsertBody, Schema.SObjectType soType) {
+    public static Boolean deleteHospitalFromExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean isInBatch) {
         HttpResponse response;
         String authorization;
 
@@ -108,12 +108,12 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter, isInBatch);
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), null);
-        if(response.getStatusCode() == 200){
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), batchCounter, isInBatch);
+        if (response.getStatusCode() == 200) {
             return true;
-        }else return false;
+        } else return false;
     }
 }

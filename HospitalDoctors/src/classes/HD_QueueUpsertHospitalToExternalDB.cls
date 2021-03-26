@@ -11,7 +11,7 @@ public with sharing class HD_QueueUpsertHospitalToExternalDB implements Queueabl
     }
 
     public void execute (QueueableContext context){
-        HD_HospitalHandler.upsertHospitalToExternalDB(upsertBody,soType);
+        HD_HospitalHandler.upsertHospitalToExternalDB(upsertBody,soType,0,false);
     }
 
 }

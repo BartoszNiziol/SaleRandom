@@ -6,16 +6,11 @@ public with sharing class HD_LoggerHandler {
 
 
     public static String createLog(String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
-            String logID, Decimal statusCode, String status, Decimal batchCounter) {
+            String logID, Decimal statusCode, String status, Decimal batchCounter, Boolean isInBatch) {
 
         String id = retrieveAddedId(requestBody);
-
         Logger__c logger = new Logger__c();
         logger.Created_Record_Id__c = id;
-
-        if (logger.Batch_Counter__c != null) {
-            logger.Batch_Counter__c = batchCounter + 1;
-        }
         if (logID != null) {
             logger.Id = logID;
         }
@@ -42,18 +37,24 @@ public with sharing class HD_LoggerHandler {
         } else {
             logger.Object_type__c = null;
         }
-        if(logger.Response_Status_Code__c == 200){
+        if (logger.Response_Status_Code__c == 200) {
             logger.IsSynchronized__c = true;
         }
+        if(logger.Response_Status_Code__c != 200){
+            logger.isSelectedForBatch__c = true;
+        }
 
+        if (batchCounter != null) {
+            logger.Batch_Counter__c = batchCounter + 1;
+        }
         upsert logger;
         return logger.Id;
     }
 
     public static String sendLogRequest(String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
-            String logID, Decimal statusCode, String status, Decimal batchCounter) {
+            String logID, Decimal statusCode, String status, Decimal batchCounter, Boolean isInBatch) {
 
-        String logRequestBody = parseLogInfoToJson(sObjectType, endpoint, requestBody, responseBody, actionType, logId, statusCode, status, batchCounter);
+        String logRequestBody = parseLogInfoToJson(sObjectType, endpoint, requestBody, responseBody, actionType, logId, statusCode, status, batchCounter, isInBatch);
         String accesToken = UserInfo.getSessionId();
         String authorization = 'Bearer ' + accesToken;
         String endpointString = HD_Utils.retrieveCredentials('LoggerSelfEndpoint');
@@ -71,14 +72,20 @@ public with sharing class HD_LoggerHandler {
     }
 
     private static String parseLogInfoToJson(String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
-            String logID, Decimal statusCode, String status, Decimal batchCounter) {
+            String logID, Decimal statusCode, String status, Decimal batchCounter, Boolean isInBatch) {
 
 
         JSONGenerator generator = JSON.createGenerator(false);
         generator.writeStartObject();
-        generator.writeStringField('endpoint', endpoint);
-        generator.writeStringField('soType', sObjectType);
-        generator.writeStringField('request', requestBody);
+        if (endpoint != null) {
+            generator.writeStringField('endpoint', endpoint);
+        }
+        if (sObjectType != null) {
+            generator.writeStringField('soType', sObjectType);
+        }
+        if (responseBody != null) {
+            generator.writeStringField('request', requestBody);
+        }
         if (responseBody != null) {
             generator.writeStringField('response', responseBody);
         }
@@ -95,6 +102,7 @@ public with sharing class HD_LoggerHandler {
         if (batchCounter != null) {
             generator.writeNumberField('batchCounter', batchCounter);
         }
+        generator.writeBooleanField('isInBatch', isInBatch);
         generator.writeEndObject();
         return generator.getAsString();
     }

@@ -12,6 +12,6 @@ public with sharing class HD_QueueDeleteHospitalFromExternalDB implements Queuea
     }
 
     public void execute (QueueableContext context){
-        HD_HospitalHandler.deleteHospitalFromExternalDB(upsertBody,soType);
+        HD_HospitalHandler.deleteHospitalFromExternalDB(upsertBody,soType,0,false);
     }
 }

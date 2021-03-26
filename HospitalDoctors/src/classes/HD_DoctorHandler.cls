@@ -103,7 +103,10 @@ public with sharing class HD_DoctorHandler {
         return doctor;
     }
 
-    public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.SObjectType soType) {
+    public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.SObjectType soType,Decimal batchCounter,Boolean selectedForBatch) {
+
+        System.debug('batchCounter at start uspert');
+        System.debug(batchCounter);
 
         HttpResponse response;
         String authorization;
@@ -120,15 +123,18 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setMethod('POST');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
-//        upsertRequest.setHeader('Authorization', 'aaa');
+        upsertRequest.setHeader('Authorization', 'aaa');
         upsertRequest.setBody(upsertBody);
 
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter,selectedForBatch);
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
+        if (response.getStatusCode() != 200){
+            selectedForBatch = true;
+        }
         List<Doctor__c> idDoctors = new List<Doctor__c>();
         Integer counter = 0;
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null);
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null,selectedForBatch);
 
         while (response.getHeaderKeys().contains('addedId' + counter)) {
             System.debug('in while');
@@ -157,7 +163,7 @@ public with sharing class HD_DoctorHandler {
         } else return false;
     }
 
-    public static Boolean deleteDoctorFromExternalDB(String upsertBody, Schema.SObjectType soType) {
+    public static Boolean deleteDoctorFromExternalDB(String upsertBody, Schema.SObjectType soType,Decimal batchCounter,Boolean isInBatch) {
         HttpResponse response;
         String authorization;
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
@@ -173,10 +179,10 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, null, null, null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, null, null, batchCounter,isInBatch);
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), null);
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), batchCounter,isInBatch);
         if (response.getStatusCode() == 200) {
             return true;
         } else return false;
