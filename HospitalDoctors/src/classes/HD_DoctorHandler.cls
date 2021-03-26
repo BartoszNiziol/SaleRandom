@@ -120,7 +120,7 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setMethod('POST');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
-        upsertRequest.setHeader('Authorization', 'aaa');
+//        upsertRequest.setHeader('Authorization', 'aaa');
         upsertRequest.setBody(upsertBody);
 
         String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, null);
@@ -138,18 +138,23 @@ public with sharing class HD_DoctorHandler {
             idDoctors.add(doctor);
             counter++;
         }
-        System.debug('idDoctors');
-        System.debug(idDoctors);
-        try {
-            HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-            upsert idDoctors;
-        } finally {
-            HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
-        }
 
-        if(response.getStatusCode() == 200){
+        String selfToken = UserInfo.getSessionId();
+        String selfAuth = 'Bearer ' + selfToken;
+        HttpRequest updateRequest = new HttpRequest();
+        updateRequest.setEndpoint(endpointString);
+        updateRequest.setMethod('PUT');
+        updateRequest.setHeader('Content-Type', 'application/json');
+        updateRequest.setHeader('Authorization', selfAuth);
+        updateRequest.setEndpoint(HD_Utils.retrieveCredentials('SelfDoctorEndpoint'));
+        updateRequest.setBody(JSON.serialize(idDoctors));
+        Http updateHttp = new Http();
+        HttpResponse updateResponse = updateHttp.send(updateRequest);
+
+
+        if (response.getStatusCode() == 200) {
             return true;
-        }else return false;
+        } else return false;
     }
 
     public static Boolean deleteDoctorFromExternalDB(String upsertBody, Schema.SObjectType soType) {
@@ -172,8 +177,8 @@ public with sharing class HD_DoctorHandler {
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
         HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), null);
-        if(response.getStatusCode() == 200){
+        if (response.getStatusCode() == 200) {
             return true;
-        }else return false;
+        } else return false;
     }
 }

@@ -75,7 +75,7 @@ public with sharing class DB_DoctorHandler {
             updateRequest.setMethod('PUT');
             updateRequest.setHeader('Content-Type', 'application/json');
             updateRequest.setHeader('Authorization', authorization);
-            String updateBody = JSON.serialize(idDoctors);
+           String updateBody = JSON.serialize(idDoctors);
             upsertRequest.setBody(updateRequest)
 
 
@@ -84,9 +84,9 @@ public with sharing class DB_DoctorHandler {
         } finally {
             DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
         }
-        if (response.getStatusCode() == 200) {
+        if(response.getStatusCode() == 200){
             return true;
-        } else return false;
+        }else return false;
 
     }
 
@@ -110,9 +110,9 @@ public with sharing class DB_DoctorHandler {
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
         DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), null);
-        if (response.getStatusCode() == 200) {
+        if(response.getStatusCode() == 200){
             return true;
-        } else return false;
+        }else return false;
 
     }
 }

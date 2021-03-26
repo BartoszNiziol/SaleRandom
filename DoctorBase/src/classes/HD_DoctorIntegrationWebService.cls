@@ -57,7 +57,6 @@ global class HD_DoctorIntegrationWebService {
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
-
             List<Doctor__c> doctorsToDelete = new List<Doctor__c>();
             for (Object obj : responseJSON) {
                 Map<String, Object> params = (Map<string, Object>) obj;
@@ -79,10 +78,7 @@ global class HD_DoctorIntegrationWebService {
             System.debug(e);
         }
     }
-    @Put
-    global static void updateDoctorExternalId(){
 
-            }
 
 
 }

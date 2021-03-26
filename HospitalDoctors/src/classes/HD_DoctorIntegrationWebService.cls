@@ -61,7 +61,7 @@ global class HD_DoctorIntegrationWebService {
             );
             List<Doctor__c> doctorsToDelete = new List<Doctor__c>();
             for (Object obj : responseJSON) {
-                Map<String, Object> params =  (Map<string, Object>) obj;
+                Map<String, Object> params = (Map<string, Object>) obj;
                 String doctorExternalId = (String) params.get('Doctor_External_Id__c');
                 Doctor__c doctor = new Doctor__c();
                 doctor.Id = doctorExternalId;
@@ -74,6 +74,38 @@ global class HD_DoctorIntegrationWebService {
                 HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
         } catch (Exception e) {
+            System.debug(e);
+        }
+    }
+    @HttpPut
+    global static void updateDoctorExternalId() {
+        System.debug('update fire fire');
+
+        try {
+            List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
+                    RestContext.request.requestBody.toString());
+            List<Doctor__c> doctorsWithID = new List<Doctor__c>();
+            for (Object obj : responseJSON) {
+                System.debug('loop :obj');
+                System.debug(obj);
+                Map<String, Object> params = (Map<string, Object>) obj;
+                String doctorExternalId = (String) params.get('Doctor_External_Id__c');
+                String doctorId = (String) params.get('Id');
+                Doctor__c doctor = new Doctor__c();
+                doctor.Id = doctorId;
+                doctor.Doctor_External_Id__c = doctorExternalId;
+                doctorsWithID.add(doctor);
+            }
+        try {
+            HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+            System.debug('Trigger off');
+            upsert doctorsWithID;
+            System.debug(doctorsWithID);
+        } finally {
+            HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+        }
+    }catch (Exception e){
+            System.debug('Exc');
             System.debug(e);
         }
     }

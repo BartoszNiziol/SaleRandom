@@ -4,7 +4,6 @@
 
 public with sharing class HD_HospitalHandler {
 
-
     public static List<Hospital__c> queryHospitals(String name, String email, String country) {
         String query = 'SELECT ID,Name,Email__c,Country__c ' +
                 ' FROM Hospital__c ' +
@@ -12,7 +11,6 @@ public with sharing class HD_HospitalHandler {
                 ' AND Email__c LIKE \'' + dynamicQueryLikeGenerator(email) + '\'' +
                 ' AND Country__c LIKE \'' + dynamicQueryLikeGenerator(country) + '\'' ;
         return Database.query(query);
-
     }
 
     private static String dynamicQueryLikeGenerator(String field) {
@@ -59,7 +57,7 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', null, response.getStatusCode(), response.getStatus(), null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, null);
 
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
@@ -75,17 +73,22 @@ public with sharing class HD_HospitalHandler {
             idHospital.add(hospital);
             counter++;
         }
-        try {
-            HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
-            upsert idHospital;
-        } finally {
-            HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
-        }
+
+        String selfToken = UserInfo.getSessionId();
+        String selfAuth = 'Bearer ' + selfToken;
+        HttpRequest updateRequest = new HttpRequest();
+        updateRequest.setEndpoint(endpointString);
+        updateRequest.setMethod('PUT');
+        updateRequest.setHeader('Content-Type', 'application/json');
+        updateRequest.setHeader('Authorization', selfAuth);
+        updateRequest.setEndpoint(HD_Utils.retrieveCredentials('SelfHospitalEndpoint'));
+        updateRequest.setBody(JSON.serialize(idHospital));
+        Http updateHttp = new Http();
+        HttpResponse updateResponse = updateHttp.send(updateRequest);
         if(response.getStatusCode() == 200){
             return true;
         }else return false;
     }
-
 
     public static Boolean deleteHospitalFromExternalDB(String upsertBody, Schema.SObjectType soType) {
         HttpResponse response;
@@ -105,7 +108,7 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', null, response.getStatusCode(), response.getStatus(), null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, null);
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
         HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), null);

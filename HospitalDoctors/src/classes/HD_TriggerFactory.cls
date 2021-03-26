@@ -25,7 +25,6 @@ public with sharing class HD_TriggerFactory {
             if (soType == Contract__c.sObjectType) {
                 return new HD_ContractTriggerHandler();
             } else if (soType == Doctor__c.sObjectType) {
-                System.debug('Triggerium');
                 return new HD_DoctorTriggerHandler();
             } else if (soType == Hospital__c.sObjectType) {
                 return new HD_HospitalTriggerHandler();

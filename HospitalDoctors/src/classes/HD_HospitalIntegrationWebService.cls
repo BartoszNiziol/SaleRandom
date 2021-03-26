@@ -69,6 +69,33 @@ global class HD_HospitalIntegrationWebService {
             System.debug(errorResponse(e));
         }
     }
+    @HttpPut
+    global static void updateHospitalExternalId() {
+        try {
+            List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
+                    RestContext.request.requestBody.toString());
+            List<Hospital__c> hospitalsWithID = new List<Hospital__c>();
+            for (Object obj : responseJSON) {
+                Map<String, Object> params = (Map<string, Object>) obj;
+                String hospitalExternalId = (String) params.get('Hospital_External_Id__c');
+                String hospitalId = (String) params.get('Id');
+                Hospital__c hospital = new Hospital__c();
+                hospital.Id = hospitalId;
+                hospital.Hospital_External_Id__c = hospitalExternalId;
+                hospitalsWithID.add(hospital);
+            }
+            try {
+                HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+                System.debug('Trigger off');
+                upsert hospitalsWithID;
+            } finally {
+                HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+            }
+        }catch (Exception e){
+            System.debug('Exc');
+            System.debug(e);
+        }
+    }
 
     private static HD_HospitalResonseWrapper errorResponse(Exception e) {
         HD_HospitalResonseWrapper wrapper = new HD_HospitalResonseWrapper();
