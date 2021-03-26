@@ -7,17 +7,13 @@ global class HD_DoctorIntegrationWebService {
     @HttpPost
     global static void upsertDoctor() {
         try {
-
-
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
             List<Doctor__c> doctorsToUpsert = new List<Doctor__c>();
-
             for (Object obj : responseJSON) {
                 Map<String, Object> params = new Map<String, Object>();
                 params = (Map<string, Object>) obj;
-
                 Doctor__c doctor = new Doctor__c();
                 doctor.Name = (String) params.get('Name');
                 doctor.First_Name__c = (String) params.get('First_Name__c');
@@ -50,7 +46,6 @@ global class HD_DoctorIntegrationWebService {
                 RestContext.response.addHeader('externalId' + counter, doc.Doctor_External_Id__c);
                 counter ++ ;
             }
-
         } catch (Exception e) {
             System.debug('upsertDoctorService');
             System.debug(e);
@@ -59,8 +54,6 @@ global class HD_DoctorIntegrationWebService {
     @HttpDelete
     global static void deleteDoctor() {
         try {
-
-
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
@@ -76,19 +69,20 @@ global class HD_DoctorIntegrationWebService {
                     throw new IntegrationException('External Id expected');
                 }
             }
-
-
             try {
                 DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                 delete doctorsToDelete;
             } finally {
                 DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
-
         } catch (Exception e) {
             System.debug(e);
         }
     }
+    @Put
+    global static void updateDoctorExternalId(){
+
+            }
 
 
 }

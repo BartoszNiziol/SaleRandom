@@ -3,13 +3,18 @@
  */
 
 public with sharing class DB_LoggerHandler {
-    public static String createLog (String sObjectType, String endpoint, String requestBody, HttpResponse response, String actionType, String errorMessage, String logID) {
+    public static String createLog (String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
+            String logID, Decimal statusCode, String status, Decimal batchCounter) {
 
         String id = retrieveAddedId(requestBody);
 
-        Logger__c logger = new Logger__c();
-        logger.Created_Record_Id__c =id;
 
+        Logger__c logger = new Logger__c();
+        logger.Created_Record_Id__c = id;
+
+        if (logger.Batch_Counter__c != null) {
+            logger.Batch_Counter__c = batchCounter + 1;
+        }
         if (logID != null) {
             logger.Id = logID;
         }
@@ -22,16 +27,10 @@ public with sharing class DB_LoggerHandler {
         logger.Endpoint__c = endpoint;
         logger.Method_Type__c = actionType;
         logger.Request_Body__c = requestBody;
-        logger.Error_Message__c = errorMessage;
-
-        if (response != null) {
-            logger.Response_Body__c = response.getBody();
-            System.debug(logger.Response_Body__c);
-            logger.Response_Status_Code__c = response.getStatusCode();
-            System.debug (logger.Response_Status_Code__c);
-            logger.Status__c = response.getStatus();
-            System.debug(logger.Status__c);
-
+        if (responseBody != null) {
+            logger.Response_Body__c = responseBody;
+            logger.Response_Status_Code__c = statusCode;
+            logger.Status__c = status;
         } else {
             logger.Response_Body__c = null;
             logger.Response_Status_Code__c = null;
@@ -42,15 +41,18 @@ public with sharing class DB_LoggerHandler {
         } else {
             logger.Object_type__c = null;
         }
+        if(logger.Response_Status_Code__c == 200){
+            logger.IsSynchronized__c = true;
+        }
+
         upsert logger;
-        System.debug('logger.Id');
-        System.debug(logger.Id);
         return logger.Id;
     }
 
-    public static String sendLogRequest(String soTypeName, String endpoint, String requestBody, HttpResponse response, String actionType, String errorMessage){
+    public static String sendLogRequest(String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
+            String logID, Decimal statusCode, String status, Decimal batchCounter) {
 
-        String logRequestBody =  parseLogInfoToJson( soTypeName,endpoint,requestBody, actionType);
+        String logRequestBody = parseLogInfoToJson(sObjectType, endpoint, requestBody, responseBody, actionType, logId, statusCode, status, batchCounter);
         String accesToken = UserInfo.getSessionId();
         String authorization = 'Bearer ' + accesToken;
         String endpointString = DB_Utils.retrieveCredentials('LoggerSelfEndpoint');
@@ -63,33 +65,46 @@ public with sharing class DB_LoggerHandler {
         Http upsertHttp = new Http();
         HttpResponse logResponse = upsertHttp.send(upsertRequest);
 
-        System.debug('logResponse.getStatus()');
-        System.debug(logResponse.getStatus());
         return (String) logResponse.getHeader('addedId');
 
     }
 
-    private static String parseLogInfoToJson(String soTypeName,String endpoint,String requestBody,String actionType) {
+    private static String parseLogInfoToJson(String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
+            String logID, Decimal statusCode, String status, Decimal batchCounter) {
+
 
         JSONGenerator generator = JSON.createGenerator(false);
         generator.writeStartObject();
         generator.writeStringField('endpoint', endpoint);
-        generator.writeStringField('soType', soTypeName);
+        generator.writeStringField('soType', sObjectType);
         generator.writeStringField('request', requestBody);
+        if (responseBody != null) {
+            generator.writeStringField('response', responseBody);
+        }
         generator.writeStringField('actionType', actionType);
+        if (logID != null) {
+            generator.writeStringField('logID', logID);
+        }
+        if (statusCode != null) {
+            generator.writeNumberField('statusCode', statusCode);
+        }
+        if (status != null) {
+            generator.writeStringField('status', status);
+        }
+        if (batchCounter != null) {
+            generator.writeNumberField('batchCounter', batchCounter);
+        }
         generator.writeEndObject();
         return generator.getAsString();
     }
 
-    private  static String retrieveAddedId(String requestBody){
-
+    private static String retrieveAddedId(String requestBody) {
         List< Object> bodyList = (List < Object>) JSON.deserializeUntyped(
                 requestBody
         );
         Map<String, Object> params = new Map<String, Object>();
         params = (Map<string, Object>) bodyList.get(0);
         return (String) params.get('Id');
-
     }
 
 }

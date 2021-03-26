@@ -44,7 +44,9 @@ public with sharing class DB_HospitalHandler {
         return hospital;
     }
 
-    public static void upsertHospitalToExternalDB(String upsertBody,Schema.SObjectType soType) {
+    public static Boolean upsertHospitalToExternalDB(String upsertBody,Schema.SObjectType soType) {
+        HttpResponse response;
+
         HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
@@ -60,13 +62,15 @@ public with sharing class DB_HospitalHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
-        String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null);
+        String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', null, response.getStatusCode(), response.getStatus(), null);
 
         Http upsertHttp = new Http();
-        HttpResponse response = upsertHttp.send(upsertRequest);
+         response = upsertHttp.send(upsertRequest);
 
         List<Hospital__c> idHospital = new List<Hospital__c>();
         Integer counter = 0;
+        DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null);
+
 
         while (response.getHeaderKeys().contains('addedId'+ counter)){
             Hospital__c hospital = new Hospital__c();
@@ -81,11 +85,14 @@ public with sharing class DB_HospitalHandler {
         } finally {
             DB_Utils.turnOnTrigger(Hospital__c.getSObjectType());
         }
-        DB_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Upsert', response.getStatus(),logId);
+        if(response.getStatusCode() == 200){
+            return true;
+        }else return false;
     }
 
 
-    public static void deleteHospitalFromExternalDB(String upsertBody,Schema.sObjectType soType) {
+    public static Boolean deleteHospitalFromExternalDB(String upsertBody,Schema.sObjectType soType) {
+        HttpResponse response;
         HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
@@ -100,10 +107,12 @@ public with sharing class DB_HospitalHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-        String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null);
+        String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', null, response.getStatusCode(), response.getStatus(), null);
         Http upsertHttp = new Http();
-        HttpResponse response = upsertHttp.send(upsertRequest);
-        DB_LoggerHandler.createLog(soType.getDescribe().name, endpointString, upsertBody, response, 'Delete', null,logId);
-
+        response = upsertHttp.send(upsertRequest);
+        DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), null);
+        if(response.getStatusCode() == 200){
+            return true;
+        }else return false;
     }
 }
