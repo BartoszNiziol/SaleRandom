@@ -144,27 +144,24 @@ public with sharing class HD_DoctorHandler {
             counter++;
         }
         HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null,selectedForBatch,response.getHeader('addedId' + 0));
-        String isSync = 'false';
+
+        String isSync = 'f';
         if (response.getStatusCode() == 200) {
-             isSync = 'true';
+             isSync = 't';
         }
 
         String selfToken = UserInfo.getSessionId();
         String selfAuth = 'Bearer ' + selfToken;
-        System.debug('selfAuth');
-        System.debug(selfAuth);
         HttpRequest updateRequest = new HttpRequest();
         updateRequest.setEndpoint(endpointString);
         updateRequest.setMethod('PUT');
         updateRequest.setHeader('Content-Type', 'application/json');
         updateRequest.setHeader('Authorization', selfAuth);
-        upsertRequest.setHeader('isSynchronized', isSync);
+        updateRequest.setHeader('isSync', isSync);
         updateRequest.setEndpoint(HD_Utils.retrieveCredentials('SelfDoctorEndpoint'));
         updateRequest.setBody(JSON.serialize(idDoctors));
         Http updateHttp = new Http();
         HttpResponse updateResponse = updateHttp.send(updateRequest);
-        System.debug('update ext id response');
-        System.debug(response);
 
         if (response.getStatusCode() == 200) {
             return true;
