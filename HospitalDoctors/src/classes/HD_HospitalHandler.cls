@@ -57,14 +57,13 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter, isInBatch);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter, isInBatch,null);
 
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
 
         List<Hospital__c> idHospital = new List<Hospital__c>();
         Integer counter = 0;
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), batchCounter, isInBatch);
 
         while (response.getHeaderKeys().contains('addedId' + counter)) {
             Hospital__c hospital = new Hospital__c();
@@ -74,7 +73,7 @@ public with sharing class HD_HospitalHandler {
             counter++;
         }
 
-
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), batchCounter, isInBatch,response.getHeader('addedId' + 0));
 
         String selfToken = UserInfo.getSessionId();
         String selfAuth = 'Bearer ' + selfToken;
@@ -110,12 +109,25 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter, isInBatch);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter, isInBatch,receiveExternalId(upsertBody));
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), batchCounter, isInBatch);
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), batchCounter, isInBatch,receiveExternalId(upsertBody));
         if (response.getStatusCode() == 200) {
             return true;
         } else return false;
+    }
+
+    private static String receiveExternalId(String requestBody){
+
+        List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
+                requestBody
+        );
+        String doctorExternalId;
+        for (Object obj : responseJSON) {
+            Map<String, Object> params = (Map<string, Object>) obj;
+            doctorExternalId = (String) params.get('Doctor_External_Id__c');
+        }
+        return doctorExternalId;
     }
 }

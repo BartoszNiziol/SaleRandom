@@ -90,10 +90,21 @@ global class HD_DoctorIntegrationWebService {
                 System.debug(obj);
                 Map<String, Object> params = (Map<string, Object>) obj;
                 String doctorExternalId = (String) params.get('Doctor_External_Id__c');
+                String isSynchronized = (String) params.get('isSynchronized');
                 String doctorId = (String) params.get('Id');
                 Doctor__c doctor = new Doctor__c();
                 doctor.Id = doctorId;
                 doctor.Doctor_External_Id__c = doctorExternalId;
+
+                System.debug('isSynchronized');
+                System.debug(isSynchronized);
+
+                if (isSynchronized == 'true') {
+                    doctor.is_Synchronized__c = true;
+                }else {
+                    doctor.is_Synchronized__c = false;
+                }
+
                 doctorsWithID.add(doctor);
             }
         try {

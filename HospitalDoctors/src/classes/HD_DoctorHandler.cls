@@ -123,10 +123,10 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setMethod('POST');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
-        upsertRequest.setHeader('Authorization', 'aaa');
+//        upsertRequest.setHeader('Authorization', 'aaa');
         upsertRequest.setBody(upsertBody);
 
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter,selectedForBatch);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter,selectedForBatch,null);
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
         if (response.getStatusCode() != 200){
@@ -134,7 +134,6 @@ public with sharing class HD_DoctorHandler {
         }
         List<Doctor__c> idDoctors = new List<Doctor__c>();
         Integer counter = 0;
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null,selectedForBatch);
 
         while (response.getHeaderKeys().contains('addedId' + counter)) {
             System.debug('in while');
@@ -144,19 +143,28 @@ public with sharing class HD_DoctorHandler {
             idDoctors.add(doctor);
             counter++;
         }
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null,selectedForBatch,response.getHeader('addedId' + 0));
+        String isSync = 'false';
+        if (response.getStatusCode() == 200) {
+             isSync = 'true';
+        }
 
         String selfToken = UserInfo.getSessionId();
         String selfAuth = 'Bearer ' + selfToken;
+        System.debug('selfAuth');
+        System.debug(selfAuth);
         HttpRequest updateRequest = new HttpRequest();
         updateRequest.setEndpoint(endpointString);
         updateRequest.setMethod('PUT');
         updateRequest.setHeader('Content-Type', 'application/json');
         updateRequest.setHeader('Authorization', selfAuth);
+        upsertRequest.setHeader('isSynchronized', isSync);
         updateRequest.setEndpoint(HD_Utils.retrieveCredentials('SelfDoctorEndpoint'));
         updateRequest.setBody(JSON.serialize(idDoctors));
         Http updateHttp = new Http();
         HttpResponse updateResponse = updateHttp.send(updateRequest);
-
+        System.debug('update ext id response');
+        System.debug(response);
 
         if (response.getStatusCode() == 200) {
             return true;
@@ -179,12 +187,26 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, null, null, batchCounter,isInBatch);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, null, null, batchCounter,isInBatch,receiveExternalId(upsertBody));
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), batchCounter,isInBatch);
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), batchCounter,isInBatch,receiveExternalId(upsertBody));
         if (response.getStatusCode() == 200) {
             return true;
         } else return false;
+    }
+    private static String receiveExternalId(String requestBody){
+
+        List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
+                requestBody
+        );
+        String doctorExternalId;
+        for (Object obj : responseJSON) {
+            Map<String, Object> params = (Map<string, Object>) obj;
+            doctorExternalId = (String) params.get('Doctor_External_Id__c');
+        }
+       return doctorExternalId;
+
+
     }
 }
