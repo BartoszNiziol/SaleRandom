@@ -73,8 +73,12 @@ public with sharing class HD_HospitalHandler {
             counter++;
         }
 
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), batchCounter, isInBatch,response.getHeader('addedId' + 0));
 
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), batchCounter, isInBatch,response.getHeader('addedId' + 0));
+        String isSync = 'f';
+        if (response.getStatusCode() == 200) {
+            isSync = 't';
+        }
         String selfToken = UserInfo.getSessionId();
         String selfAuth = 'Bearer ' + selfToken;
         HttpRequest updateRequest = new HttpRequest();
@@ -82,6 +86,7 @@ public with sharing class HD_HospitalHandler {
         updateRequest.setMethod('PUT');
         updateRequest.setHeader('Content-Type', 'application/json');
         updateRequest.setHeader('Authorization', selfAuth);
+        updateRequest.setHeader('isSync', isSync);
         updateRequest.setEndpoint(HD_Utils.retrieveCredentials('SelfHospitalEndpoint'));
         updateRequest.setBody(JSON.serialize(idHospital));
         Http updateHttp = new Http();

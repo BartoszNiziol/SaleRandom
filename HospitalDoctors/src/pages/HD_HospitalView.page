@@ -189,7 +189,7 @@
                                                 assignTo="{!doctorRemoveId}"/>
                                 </apex:commandButton>
                             </apex:column>
-                            <apex:column headerValue="{!$Label.Full_Name_Label}">
+                            <apex:column headerValue="{!$Label.Full_Name_Label }">
                                 {!selectedDoctorIdToContractWrapper[doc].contract.Doctor__r.First_Name__c}  {!selectedDoctorIdToContractWrapper[doc].contract.Doctor__r.Name}
                             </apex:column>
                             <apex:column headerValue="{!$Label.Start_Date_Label}">
@@ -222,6 +222,22 @@
                         </div>
                         <apex:messages />
                     </apex:outputPanel>
+                    <apex:pageBlockSection  rendered="true">
+                    <apex:pageBlockTable value="{!logs}" var="log">
+                        <apex:column headerValue="Record Id">
+                            <apex:outputField value="{!log.Created_Record_Id__c}"> </apex:outputField>
+                        </apex:column>
+                        <apex:column>
+                            <apex:outputField value="{!log.Status__c}"> </apex:outputField>
+                        </apex:column>
+                        <apex:column>
+                            <apex:outputField value="{!log.Method_Type__c}"> </apex:outputField>
+                        </apex:column>
+                        <apex:column>
+                            <apex:outputField value="{!log.Create_Date__c}"> </apex:outputField>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                    </apex:pageBlockSection>
                 </apex:form>
             </apex:pageBlock>
         </apex:actionRegion>

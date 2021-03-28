@@ -20,6 +20,8 @@ public with sharing class HD_HospitalViewController {
     public Boolean hireDialogAllowedToClose { get; set; }
     public Boolean inEditMode { get; set; }
     public List<Contract__c> currentContracts { get; set; }
+    public List<Logger__c> logs{get;set;}
+    public List <HD_HospitalLogViewWrapper> hospitalLogs {get;set;}
 
     public HD_HospitalViewController(ApexPages.StandardController standardController) {
         doctorHandler = new HD_DoctorHandler();
@@ -34,6 +36,10 @@ public with sharing class HD_HospitalViewController {
         hireDialogAllowedToClose = false;
         foundDoctors = new List<Doctor__c>();
         inEditMode = false;
+        prepareLogs();
+    }
+    public void prepareLogs(){
+       logs = [SELECT Created_Record_Id__c, Method_Type__c,Status__c,Create_Date__c FROM Logger__c WHERE Object_type__c ='Hospital__c' ORDER BY Create_Date__c DESC ];
     }
 
     public void searchDoctors() {

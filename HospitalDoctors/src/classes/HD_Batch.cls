@@ -46,20 +46,10 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
     }
 
     public void execute(Database.BatchableContext bc, List<Logger__c> records) {
-        Set<String> objectIds = new Set<String>();
-        for (Logger__c log:records){
-            objectIds.add(log.Created_Record_Id__c);
-        }
-
-//        List<Doctor__c> doctorsToBatch = [SELECT ID,is_Synchronized__c FROM Doctor__c WHERE Id IN  AND is_Synchronized__c = false];
         Boolean done = false;
         for (Logger__c log : records) {
             if (log.Batch_Counter__c < 3) {
                 if (log.Object_type__c == 'Doctor__c') {
-                    List<Doctor__c> doctorsToBatch = [SELECT ID,is_Synchronized__c FROM Doctor__c WHERE Id IN :objectIds AND is_Synchronized__c = false];
-
-
-
                     if (log.Method_Type__c == 'Upsert') {
                         done = HD_DoctorHandler.upsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
                     } else {
@@ -73,30 +63,26 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
                     }
                 }
             }
-             //   System.debug(log);
-             //   System.debug(log.Id);
-             //   HD_LoggerHandler.sendLogRequest(null, null, null, null, null, log.Id, null, null, null, !done, null);
-
         }
     }
 
     public void finish(Database.BatchableContext bc) {
-//        AsyncApexJob a = [
-//                SELECT Id, Status, NumberOfErrors, JobItemsProcessed,
-//                        TotalJobItems, CreatedBy.Email
-//                FROM AsyncApexJob
-//                WHERE Id = :bc.getJobId()
-//        ];
-//        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-//        String[] toAddresses = new String[]{
-//                'bartosz.niziol@britenet.com.pl'
-//        };
-//        mail.setToAddresses(toAddresses);
-//        mail.setSubject('Apex Sharing Recalculation ' + a.Status);
-//        mail.setPlainTextBody('The batch Apex job processed ' + a.TotalJobItems +
-//                ' batches with ' + a.NumberOfErrors + ' failures.' + 'KLSMSonBdayBatch');
-//        Messaging.sendEmail(new Messaging.SingleEmailMessage[]{
-//                mail
-//        });
+        AsyncApexJob a = [
+                SELECT Id, Status, NumberOfErrors, JobItemsProcessed,
+                        TotalJobItems, CreatedBy.Email
+                FROM AsyncApexJob
+                WHERE Id = :bc.getJobId()
+        ];
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        String[] toAddresses = new String[]{
+                'bartosz.niziol@britenet.com.pl'
+        };
+        mail.setToAddresses(toAddresses);
+        mail.setSubject('Apex Sharing Recalculation ' + a.Status);
+        mail.setPlainTextBody('The batch Apex job processed ' + a.TotalJobItems +
+                ' batches with ' + a.NumberOfErrors + ' failures.' + 'HospitalDoctor');
+        Messaging.sendEmail(new Messaging.SingleEmailMessage[]{
+                mail
+        });
     }
 }

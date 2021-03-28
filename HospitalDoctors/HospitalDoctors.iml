@@ -311,6 +311,10 @@
                             <option name="name" value="HD_QueueBatch" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="HD_HospitalLogViewWrapper" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
                         </list>
                       </option>
                       <option name="name" value="ApexClass" />

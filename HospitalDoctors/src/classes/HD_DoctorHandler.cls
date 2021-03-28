@@ -105,9 +105,6 @@ public with sharing class HD_DoctorHandler {
 
     public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.SObjectType soType,Decimal batchCounter,Boolean selectedForBatch) {
 
-        System.debug('batchCounter at start uspert');
-        System.debug(batchCounter);
-
         HttpResponse response;
         String authorization;
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
@@ -136,7 +133,6 @@ public with sharing class HD_DoctorHandler {
         Integer counter = 0;
 
         while (response.getHeaderKeys().contains('addedId' + counter)) {
-            System.debug('in while');
             Doctor__c doctor = new Doctor__c();
             doctor.Id = response.getHeader('externalId' + counter);
             doctor.Doctor_External_Id__c = response.getHeader('addedId' + counter);
@@ -162,7 +158,6 @@ public with sharing class HD_DoctorHandler {
         updateRequest.setBody(JSON.serialize(idDoctors));
         Http updateHttp = new Http();
         HttpResponse updateResponse = updateHttp.send(updateRequest);
-
         if (response.getStatusCode() == 200) {
             return true;
         } else return false;
