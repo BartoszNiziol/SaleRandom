@@ -74,6 +74,8 @@ public with sharing class HD_HospitalHandler {
             counter++;
         }
 
+
+
         String selfToken = UserInfo.getSessionId();
         String selfAuth = 'Bearer ' + selfToken;
         HttpRequest updateRequest = new HttpRequest();
