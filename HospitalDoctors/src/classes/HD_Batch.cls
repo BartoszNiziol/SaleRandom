@@ -27,8 +27,6 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
             }
         }
 
-//        List<Doctor__c> doctorsToBatch = [SELECT ID,is_Synchronized__c FROM Doctor__c WHERE Id IN :recordIdToLoggerMap.keySet() AND is_Synchronized__c = false];
-
         List<String> idToRemove = new List<String>();
         for (String mapKey : recordIdToLoggerMap.keySet()) {
             if (recordIdToLoggerMap.get(mapKey).IsSynchronized__c) {
@@ -46,15 +44,23 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
 
         return preparedLoggers;
     }
+
     public void execute(Database.BatchableContext bc, List<Logger__c> records) {
-        System.debug('records');
-        System.debug(records);
+        Set<String> objectIds = new Set<String>();
+        for (Logger__c log:records){
+            objectIds.add(log.Created_Record_Id__c);
+        }
+
+//        List<Doctor__c> doctorsToBatch = [SELECT ID,is_Synchronized__c FROM Doctor__c WHERE Id IN  AND is_Synchronized__c = false];
         Boolean done = false;
         for (Logger__c log : records) {
             if (log.Batch_Counter__c < 3) {
                 if (log.Object_type__c == 'Doctor__c') {
+                    List<Doctor__c> doctorsToBatch = [SELECT ID,is_Synchronized__c FROM Doctor__c WHERE Id IN :objectIds AND is_Synchronized__c = false];
+
+
+
                     if (log.Method_Type__c == 'Upsert') {
-                        System.debug('Here');
                         done = HD_DoctorHandler.upsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
                     } else {
                         done = HD_DoctorHandler.deleteDoctorFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
