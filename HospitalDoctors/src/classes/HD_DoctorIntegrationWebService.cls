@@ -79,37 +79,69 @@ global class HD_DoctorIntegrationWebService {
     }
     @HttpPut
     global static void updateDoctorExternalId() {
-        System.debug('update fire fire');
+        System.debug('moje update sam start');
 
         try {
+            System.debug('try');
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString());
+            Map<String, String> headers = RestContext.request.headers;
             List<Doctor__c> doctorsWithID = new List<Doctor__c>();
-            for (Object obj : responseJSON) {
-                Map<String, Object> params = (Map<string, Object>) obj;
-                String doctorExternalId = (String) params.get('Doctor_External_Id__c');
-                String doctorId = (String) params.get('Id');
-                Doctor__c doctor = new Doctor__c();
-                doctor.Id = doctorId;
-                doctor.Doctor_External_Id__c = doctorExternalId;
 
-                Map<String,String> headers= RestContext.request.headers;
+            if (headers.get('actionType') == 'upsert') {
+                for (Object obj : responseJSON) {
+                    Map<String, Object> params = (Map<string, Object>) obj;
+                    String doctorExternalId = (String) params.get('Doctor_External_Id__c');
+                    String doctorId = (String) params.get('Id');
+                    Doctor__c doctor = new Doctor__c();
+                    doctor.Id = doctorId;
+                    doctor.Doctor_External_Id__c = doctorExternalId;
+
+                    if (headers.get('isSync') == 't') {
+                        doctor.is_Synchronized__c = true;
+                        doctor.Batch_Counter__c = 0;
+                    } else {
+                        doctor.Batch_Counter__c++;
+                        doctor.is_Synchronized__c = false;
+                    }
+                    doctorsWithID.add(doctor);
+                    try {
+                        HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                        upsert doctorsWithID;
+                    } finally {
+                        HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                    }
+                }
+            } else {
+
+                System.debug('update els na delete');
                 if (headers.get('isSync') == 't') {
-                    doctor.is_Synchronized__c = true;
-                }else {
-                    doctor.is_Synchronized__c = false;
+
+                } else {
+                    try {
+                        Doctor__c doctorToUndlete = new Doctor__c();
+                        doctorToUndlete.Id = headers.get('undeID');
+                        HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                        undelete doctorToUndlete;
+                        doctorToUndlete.is_Synchronized__c = false;
+                        update doctorToUndlete;
+                        delete doctorToUndlete;
+                    } finally {
+                        HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                    }
+                    System.debug('ud');
+
+
                 }
 
-                doctorsWithID.add(doctor);
-            }
-        try {
-            HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-            upsert doctorsWithID;
-        } finally {
-            HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
-        }
-    }catch (Exception e){
 
+            }
+
+
+        } catch (Exception e) {
+            System.debug('e');
+            System.debug(e);
         }
+
     }
 }

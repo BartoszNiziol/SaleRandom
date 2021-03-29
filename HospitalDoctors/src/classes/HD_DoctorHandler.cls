@@ -103,7 +103,7 @@ public with sharing class HD_DoctorHandler {
         return doctor;
     }
 
-    public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.SObjectType soType,Decimal batchCounter,Boolean selectedForBatch) {
+    public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean selectedForBatch) {
 
         HttpResponse response;
         String authorization;
@@ -120,13 +120,13 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setMethod('POST');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
-//        upsertRequest.setHeader('Authorization', 'aaa');
+        upsertRequest.setHeader('Authorization', 'aaa');
         upsertRequest.setBody(upsertBody);
 
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter,selectedForBatch,null);
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter, selectedForBatch, null);
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
-        if (response.getStatusCode() != 200){
+        if (response.getStatusCode() != 200) {
             selectedForBatch = true;
         }
         List<Doctor__c> idDoctors = new List<Doctor__c>();
@@ -139,13 +139,12 @@ public with sharing class HD_DoctorHandler {
             idDoctors.add(doctor);
             counter++;
         }
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null,selectedForBatch,response.getHeader('addedId' + 0));
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null, selectedForBatch, response.getHeader('addedId' + 0));
 
         String isSync = 'f';
         if (response.getStatusCode() == 200) {
-             isSync = 't';
+            isSync = 't';
         }
-
         String selfToken = UserInfo.getSessionId();
         String selfAuth = 'Bearer ' + selfToken;
         HttpRequest updateRequest = new HttpRequest();
@@ -154,6 +153,7 @@ public with sharing class HD_DoctorHandler {
         updateRequest.setHeader('Content-Type', 'application/json');
         updateRequest.setHeader('Authorization', selfAuth);
         updateRequest.setHeader('isSync', isSync);
+        updateRequest.setHeader('actionType', 'upsert');
         updateRequest.setEndpoint(HD_Utils.retrieveCredentials('SelfDoctorEndpoint'));
         updateRequest.setBody(JSON.serialize(idDoctors));
         Http updateHttp = new Http();
@@ -163,7 +163,7 @@ public with sharing class HD_DoctorHandler {
         } else return false;
     }
 
-    public static Boolean deleteDoctorFromExternalDB(String upsertBody, Schema.SObjectType soType,Decimal batchCounter,Boolean isInBatch) {
+    public static Boolean deleteDoctorFromExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean isInBatch) {
         HttpResponse response;
         String authorization;
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
@@ -178,17 +178,61 @@ public with sharing class HD_DoctorHandler {
         upsertRequest.setMethod('DELETE');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
-//        upsertRequest.setHeader('Authorization', 'aaa');
+        upsertRequest.setHeader('Authorization', 'aaa');
         upsertRequest.setBody(upsertBody);
-        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, null, null, batchCounter,isInBatch,receiveExternalId(upsertBody));
+        String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, null, null, batchCounter, isInBatch, receiveExternalId(upsertBody));
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
-        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), batchCounter,isInBatch,receiveExternalId(upsertBody));
+
+        List<Doctor__c> idDoctors = new List<Doctor__c>();
+        Integer counter = 0;
+
+        while (response.getHeaderKeys().contains('addedId' + counter)) {
+            Doctor__c doctor = new Doctor__c();
+            doctor.Id = response.getHeader('externalId' + counter);
+            doctor.Doctor_External_Id__c = response.getHeader('addedId' + counter);
+            idDoctors.add(doctor);
+            counter++;
+        }
+
+        HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), batchCounter, isInBatch, receiveExternalId(upsertBody));
+
+        String isSync = 'f';
+        if (response.getStatusCode() == 200) {
+            isSync = 't';
+        }
+
+        System.debug('isSync');
+        System.debug(isSync);
+        System.debug('idDoctors');
+        System.debug(idDoctors);
+        String toDeleteDoctorId = receiveId(upsertBody);
+
+
+        String selfToken = UserInfo.getSessionId();
+        String selfAuth = 'Bearer ' + selfToken;
+        HttpRequest updateRequest = new HttpRequest();
+        updateRequest.setEndpoint(endpointString);
+        updateRequest.setMethod('PUT');
+        updateRequest.setHeader('Content-Type', 'application/json');
+        updateRequest.setHeader('Authorization', selfAuth);
+        updateRequest.setHeader('isSync', isSync);
+        updateRequest.setHeader('actionType', 'delete');
+        updateRequest.setHeader('undeID',toDeleteDoctorId);
+        updateRequest.setEndpoint(HD_Utils.retrieveCredentials('SelfDoctorEndpoint'));
+        updateRequest.setBody(JSON.serialize(idDoctors));
+        Http updateHttp = new Http();
+        HttpResponse updateResponse = updateHttp.send(updateRequest);
+
+        System.debug('updateResponse');
+        System.debug(updateResponse);
+
         if (response.getStatusCode() == 200) {
             return true;
         } else return false;
     }
-    private static String receiveExternalId(String requestBody){
+
+    private static String receiveExternalId(String requestBody) {
         List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                 requestBody
         );
@@ -197,6 +241,18 @@ public with sharing class HD_DoctorHandler {
             Map<String, Object> params = (Map<string, Object>) obj;
             doctorExternalId = (String) params.get('Doctor_External_Id__c');
         }
-       return doctorExternalId;
+        return doctorExternalId;
+    }
+
+    private static String receiveId(String requestBody) {
+        List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
+                requestBody
+        );
+        String doctorId;
+        for (Object obj : responseJSON) {
+            Map<String, Object> params = (Map<string, Object>) obj;
+            doctorId = (String) params.get('Id');
+        }
+        return doctorId;
     }
 }

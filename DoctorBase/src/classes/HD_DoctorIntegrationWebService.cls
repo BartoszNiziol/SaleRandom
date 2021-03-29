@@ -73,6 +73,12 @@ global class HD_DoctorIntegrationWebService {
             } finally {
                 DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
+            Integer counter = 0;
+            for (Doctor__c doc : doctorsToDelete) {
+                RestContext.response.addHeader('addedId' + counter, doc.Id);
+                RestContext.response.addHeader('externalId' + counter, doc.Doctor_External_Id__c);
+                counter ++ ;
+            }
         } catch (Exception e) {
             System.debug(e);
         }
