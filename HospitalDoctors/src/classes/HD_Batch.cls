@@ -48,7 +48,7 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
     public void execute(Database.BatchableContext bc, List<Logger__c> records) {
         Boolean done = false;
         for (Logger__c log : records) {
-            if (log.Batch_Counter__c < 3) {
+            if (log.Batch_Counter__c <= 3) {
                 if (log.Object_type__c == 'Doctor__c') {
                     if (log.Method_Type__c == 'Upsert') {
                         done = HD_DoctorHandler.upsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);

@@ -38,8 +38,6 @@ global class HD_DoctorIntegrationWebService {
             } finally {
                 DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
-            System.debug('doctorsToUpsert');
-            System.debug(doctorsToUpsert);
             Integer counter = 0;
             for (Doctor__c doc : doctorsToUpsert) {
                 RestContext.response.addHeader('addedId' + counter, doc.Id);

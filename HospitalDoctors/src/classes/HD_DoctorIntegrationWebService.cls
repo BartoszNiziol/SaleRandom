@@ -86,8 +86,6 @@ global class HD_DoctorIntegrationWebService {
                     RestContext.request.requestBody.toString());
             List<Doctor__c> doctorsWithID = new List<Doctor__c>();
             for (Object obj : responseJSON) {
-                System.debug('loop :obj');
-                System.debug(obj);
                 Map<String, Object> params = (Map<string, Object>) obj;
                 String doctorExternalId = (String) params.get('Doctor_External_Id__c');
                 String doctorId = (String) params.get('Id');
@@ -96,7 +94,6 @@ global class HD_DoctorIntegrationWebService {
                 doctor.Doctor_External_Id__c = doctorExternalId;
 
                 Map<String,String> headers= RestContext.request.headers;
-
                 if (headers.get('isSync') == 't') {
                     doctor.is_Synchronized__c = true;
                 }else {
@@ -107,15 +104,12 @@ global class HD_DoctorIntegrationWebService {
             }
         try {
             HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-            System.debug('Trigger off');
             upsert doctorsWithID;
-            System.debug(doctorsWithID);
         } finally {
             HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
         }
     }catch (Exception e){
-            System.debug('Exc');
-            System.debug(e);
+
         }
     }
 }

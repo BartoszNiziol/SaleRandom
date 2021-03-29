@@ -82,17 +82,23 @@ global class HD_HospitalIntegrationWebService {
                 Hospital__c hospital = new Hospital__c();
                 hospital.Id = hospitalId;
                 hospital.Hospital_External_Id__c = hospitalExternalId;
+
+                Map<String,String> headers= RestContext.request.headers;
+                if (headers.get('isSync') == 't') {
+                    hospital.is_Synchronized__c = true;
+                }else {
+                    hospital.is_Synchronized__c = false;
+                }
                 hospitalsWithID.add(hospital);
             }
             try {
                 HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
-                System.debug('Trigger off');
                 upsert hospitalsWithID;
             } finally {
                 HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
             }
         }catch (Exception e){
-            System.debug('Exc');
+
             System.debug(e);
         }
     }

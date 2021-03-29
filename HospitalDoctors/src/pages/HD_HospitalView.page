@@ -222,22 +222,7 @@
                         </div>
                         <apex:messages />
                     </apex:outputPanel>
-                    <apex:pageBlockSection  rendered="true">
-                    <apex:pageBlockTable value="{!logs}" var="log">
-                        <apex:column headerValue="Record Id">
-                            <apex:outputField value="{!log.Created_Record_Id__c}"> </apex:outputField>
-                        </apex:column>
-                        <apex:column>
-                            <apex:outputField value="{!log.Status__c}"> </apex:outputField>
-                        </apex:column>
-                        <apex:column>
-                            <apex:outputField value="{!log.Method_Type__c}"> </apex:outputField>
-                        </apex:column>
-                        <apex:column>
-                            <apex:outputField value="{!log.Create_Date__c}"> </apex:outputField>
-                        </apex:column>
-                    </apex:pageBlockTable>
-                    </apex:pageBlockSection>
+
                 </apex:form>
             </apex:pageBlock>
         </apex:actionRegion>
@@ -245,6 +230,22 @@
     <apex:relatedList list="histories">
         <apex:facet name="header">{!$Label.History_Hospital_Label}</apex:facet>
     </apex:relatedList>
+    <apex:pageBlock >
+    <apex:pageBlockSection  rendered="true" columns="1" >
+        <apex:facet name="header">Integration History</apex:facet>
+        <apex:pageBlockTable value="{!logs}" var="log">
+            <apex:column  headerValue="Status">
+                <apex:outputField value="{!log.Status__c}"> </apex:outputField>
+            </apex:column>
+            <apex:column  headerValue="Action">
+                <apex:outputField value="{!log.Method_Type__c}"> </apex:outputField>
+            </apex:column>
+            <apex:column  headerValue="Create Date">
+                <apex:outputField value="{!log.Create_Date__c}"> </apex:outputField>
+            </apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlockSection>
+    </apex:pageBlock>
 
     <script type="text/javascript">
      let $ = jQuery.noConflict();
@@ -270,40 +271,40 @@ function hideMultiHireDialog(){
     });
 }
 
-//     document.getElementById("bigHead").innerHTML ="{!Hospital__c.Name}"
-//     let openCageApiKey = '2e8af67ee7bf4a00bbdfce25dfcdefe7';
-//     let address = "{!Hospital__c.Street__c},{!Hospital__c.City__c},{!Hospital__c.Country__c}";
-//     let mymap = L.map('mapid').setView([0,0], 13);
-//     let api_url = 'https://api.opencagedata.com/geocode/v1/json'
-//     let request_url = api_url
-//    + '?'
-//    + 'key=' + openCageApiKey
-//    + '&q=' + address
-//    + '&pretty=1'
-//    + '&no_annotations=1';
-//
-//    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-//      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-//      maxZoom: 18,
-//      id: 'mapbox/streets-v11',
-//      tileSize: 512,
-//      zoomOffset: -1,
-//      accessToken: 'pk.eyJ1IjoiYmFydG9zem5pemlvbHMiLCJhIjoiY2tsNWNndXdkMG11NDJvcDY2cG9xM2NhcSJ9.jEwnPxwOb9ERM90aVRVDEg'
-//    }).addTo(mymap);
-//
-//      let request = new XMLHttpRequest();
-//      request.open('GET', request_url, true);
-//      request.send();
-//      request.onload = function() {
-//
-//      let data = JSON.parse(request.responseText);
-//      let geometry = data.results[0].geometry;
-//      lat = geometry.lat;
-//      lng = geometry.lng;
-//      L.marker([lat,lng]).addTo(mymap);
-//      mymap.setView([lat, lng]);
-//
-//  };
+    document.getElementById("bigHead").innerHTML ="{!Hospital__c.Name}"
+    let openCageApiKey = '2e8af67ee7bf4a00bbdfce25dfcdefe7';
+    let address = "{!Hospital__c.Street__c},{!Hospital__c.City__c},{!Hospital__c.Country__c}";
+     let mymap = L.map('mapid').setView([0,0], 13);
+     let api_url = 'https://api.opencagedata.com/geocode/v1/json'
+     let request_url = api_url
+    + '?'
+    + 'key=' + openCageApiKey
+    + '&q=' + address
+    + '&pretty=1'
+    + '&no_annotations=1';
+
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'pk.eyJ1IjoiYmFydG9zem5pemlvbHMiLCJhIjoiY2tsNWNndXdkMG11NDJvcDY2cG9xM2NhcSJ9.jEwnPxwOb9ERM90aVRVDEg'
+    }).addTo(mymap);
+
+      let request = new XMLHttpRequest();
+      request.open('GET', request_url, true);
+      request.send();
+      request.onload = function() {
+
+      let data = JSON.parse(request.responseText);
+      let geometry = data.results[0].geometry;
+      lat = geometry.lat;
+      lng = geometry.lng;
+      L.marker([lat,lng]).addTo(mymap);
+      mymap.setView([lat, lng]);
+
+  };
 
 
 
