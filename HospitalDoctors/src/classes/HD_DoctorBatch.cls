@@ -15,7 +15,7 @@ public with sharing class HD_DoctorBatch implements Database.Batchable<Doctor__c
         authorization = 'Bearer ' + accesToken;
         preparedDoctors = [
                 SELECT Id,Country__c,IsDeleted,Name,City__c,is_Synchronized__c,Street__c,Email__c,License_Number__c
-                        ,Birthday_Date__c,Batch_Counter__c,First_Name__c
+                        ,Birthday_Date__c,Batch_Counter__c,First_Name__c,Doctor_External_Id__c
                 FROM Doctor__c
                 WHERE is_Synchronized__c = false AND Batch_Counter__c < 3
                 ALL ROWS
@@ -23,7 +23,6 @@ public with sharing class HD_DoctorBatch implements Database.Batchable<Doctor__c
         System.debug('preparedDoctors in starrt');
         System.debug(preparedDoctors);
         return preparedDoctors;
-
     }
 
     public void execute(Database.BatchableContext bc, List<Doctor__c> records) {
@@ -36,9 +35,9 @@ public with sharing class HD_DoctorBatch implements Database.Batchable<Doctor__c
             doctors.add(doc);
             String body = JSON.serialize(doctors);
             if (doc.isDeleted == false) {
-                HD_DoctorHandler.upsertDoctorToExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, false);
+                HD_DoctorHandler.upsertDoctorToExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true);
             } else {
-                HD_DoctorHandler.deleteDoctorFromExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, false);
+                HD_DoctorHandler.deleteDoctorFromExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true);
             }
 
             //  logInfos.add(new HD_BatchLogWrapper(log.Created_Record_Id__c, log.Object_type__c, log.Status__c, log.Endpoint__c, log.Response_Status_Code__c, log.Create_Date__c));

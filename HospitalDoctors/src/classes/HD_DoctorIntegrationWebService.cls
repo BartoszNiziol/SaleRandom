@@ -11,10 +11,8 @@ global class HD_DoctorIntegrationWebService {
                     RestContext.request.requestBody.toString()
             );
             List<Doctor__c> doctorsToUpsert = new List<Doctor__c>();
-
             for (Object obj : responseJSON) {
                 Map<String, Object> params = (Map<string, Object>) obj;
-
                 Doctor__c doctor = new Doctor__c();
                 doctor.Name = (String) params.get('Name');
                 doctor.First_Name__c = (String) params.get('First_Name__c');
@@ -39,14 +37,12 @@ global class HD_DoctorIntegrationWebService {
             } finally {
                 HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
-
             Integer counter = 0;
             for (Doctor__c doc : doctorsToUpsert) {
                 RestContext.response.addHeader('addedId' + counter, doc.Id);
                 RestContext.response.addHeader('externalId' + counter, doc.Doctor_External_Id__c);
                 counter++ ;
             }
-
         } catch (Exception e) {
             System.debug('upsertDoctorService');
             System.debug(e);
@@ -80,49 +76,76 @@ global class HD_DoctorIntegrationWebService {
     @HttpPut
     global static void updateDoctorExternalId() {
         System.debug('moje update sam start');
-
         try {
             System.debug('try');
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString());
             Map<String, String> headers = RestContext.request.headers;
             List<Doctor__c> doctorsWithID = new List<Doctor__c>();
+            System.debug(headers.get('undeID'));
 
             if (headers.get('actionType') == 'upsert') {
-                for (Object obj : responseJSON) {
-                    Map<String, Object> params = (Map<string, Object>) obj;
-                    String doctorExternalId = (String) params.get('Doctor_External_Id__c');
-                    String doctorId = (String) params.get('Id');
-                    Doctor__c doctor = new Doctor__c();
-                    doctor.Id = doctorId;
-                    doctor.Doctor_External_Id__c = doctorExternalId;
-
-                    if (headers.get('isSync') == 't') {
+                if (headers.get('isSync') == 't') {
+                    System.debug('t');
+                    for (Object obj : responseJSON) {
+                        Map<String, Object> params = (Map<string, Object>) obj;
+                        String doctorExternalId = (String) params.get('Doctor_External_Id__c');
+                        String doctorId = (String) params.get('Id');
+                        Doctor__c doctor = new Doctor__c();
+                        doctor.Id = doctorId;
+                        doctor.Doctor_External_Id__c = doctorExternalId;
                         doctor.is_Synchronized__c = true;
                         doctor.Batch_Counter__c = 0;
-                    } else {
-                        doctor.Batch_Counter__c++;
-                        doctor.is_Synchronized__c = false;
+                        doctorsWithID.add(doctor);
                     }
-                    doctorsWithID.add(doctor);
                     try {
                         HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                         upsert doctorsWithID;
                     } finally {
                         HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
                     }
+                }else {
+                    try{
+                        System.debug('f');
+                        Doctor__c failToUpdateDoctor = new Doctor__c();
+                        failToUpdateDoctor.Id = headers.get('failedUpdateID');
+                        System.debug(failToUpdateDoctor.Id);
+                        HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                        failToUpdateDoctor.is_Synchronized__c = false;
+                        if(Boolean.valueOF(headers.get('isBatch'))){
+                            System.debug(Boolean.valueOF(headers.get('isBatch')));
+                            failToUpdateDoctor.Batch_Counter__c = Decimal.valueOf(headers.get('counter')) + 1;
+                        }
+                        update failToUpdateDoctor;
+                    }finally {
+                        HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                    }
                 }
             } else {
-
                 System.debug('update els na delete');
                 if (headers.get('isSync') == 't') {
-
+                    try {
+                        Doctor__c doctorToUndlete = new Doctor__c();
+                        doctorToUndlete.Id = headers.get('undeID');
+                        HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                        undelete doctorToUndlete;
+                        doctorToUndlete.Batch_Counter__c = 0;
+                        doctorToUndlete.is_Synchronized__c = true;
+                        update doctorToUndlete;
+                        delete doctorToUndlete;
+                    } finally {
+                        HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                    }
                 } else {
                     try {
                         Doctor__c doctorToUndlete = new Doctor__c();
                         doctorToUndlete.Id = headers.get('undeID');
                         HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                         undelete doctorToUndlete;
+                        if(Boolean.valueOF(headers.get('isBatch'))){
+                            System.debug(Boolean.valueOF(headers.get('isBatch')));
+                            doctorToUndlete.Batch_Counter__c = Decimal.valueOf(headers.get('counter')) + 1;
+                        }
                         doctorToUndlete.is_Synchronized__c = false;
                         update doctorToUndlete;
                         delete doctorToUndlete;
@@ -130,18 +153,11 @@ global class HD_DoctorIntegrationWebService {
                         HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
                     }
                     System.debug('ud');
-
-
                 }
-
-
             }
-
-
         } catch (Exception e) {
             System.debug('e');
             System.debug(e);
         }
-
     }
 }
