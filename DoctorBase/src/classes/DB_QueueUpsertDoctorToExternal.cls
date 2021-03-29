@@ -10,6 +10,6 @@ public with sharing class DB_QueueUpsertDoctorToExternal implements Queueable , 
         this.upsertBody = upsertBody;
     }
     public void execute (QueueableContext context){
-        DB_DoctorHandler.upsertDoctorToExternalDB(upsertBody,soType);
+        DB_DoctorHandler.upsertDoctorToExternalDB(upsertBody,soType,0,false);
     }
 }

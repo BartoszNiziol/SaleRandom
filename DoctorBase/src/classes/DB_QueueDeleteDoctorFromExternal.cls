@@ -10,6 +10,6 @@ public with sharing class DB_QueueDeleteDoctorFromExternal implements Queueable 
         this.upsertBody = upsertBody;
     }
     public void execute (QueueableContext context){
-        DB_DoctorHandler.deleteDoctorFromExternalDB(upsertBody,soType);
+        DB_DoctorHandler.deleteDoctorFromExternalDB(upsertBody,soType,0,false);
     }
 }

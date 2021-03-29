@@ -14,7 +14,6 @@ public with sharing class HD_LoggerHandler {
             String id = retrieveAddedId(requestBody);
             logger.Created_Record_Id__c = id;
         }
-
         if (logID != null) {
             logger.Id = logID;
         }
@@ -73,9 +72,7 @@ public with sharing class HD_LoggerHandler {
         upsertRequest.setBody(logRequestBody);
         Http upsertHttp = new Http();
         HttpResponse logResponse = upsertHttp.send(upsertRequest);
-
         return (String) logResponse.getHeader('addedId');
-
     }
 
     private static String parseLogInfoToJson(String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
@@ -121,7 +118,6 @@ public with sharing class HD_LoggerHandler {
     }
 
     private static String retrieveAddedId(String requestBody) {
-
         List< Object> bodyList = (List < Object>) JSON.deserializeUntyped(
                 requestBody
         );

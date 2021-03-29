@@ -12,7 +12,8 @@ global class DB_LoggerWebService {
 
         String addedId = DB_LoggerHandler.createLog((String) respMap.get('soType'), (String) respMap.get('endpoint'),
                 (String) respMap.get('request'), (String) respMap.get('response'), (String) respMap.get('actionType'),
-                (String) respMap.get('logID'), (Decimal) respMap.get('statusCode'), (String) respMap.get('status'), (Decimal) respMap.get('batchCounter'));
+                (String) respMap.get('logID'), (Decimal) respMap.get('statusCode'), (String) respMap.get('status'),
+                (Decimal) respMap.get('batchCounter'),(Boolean) respMap.get('isInBatch'),(String) respMap.get('externalId'));
         RestContext.response.addHeader('addedId', addedId);
 
     }

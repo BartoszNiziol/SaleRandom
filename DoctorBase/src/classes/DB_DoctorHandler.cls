@@ -37,14 +37,15 @@ public with sharing class DB_DoctorHandler {
     }
 
 
-    public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.sObjectType soType) {
-
+    public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.sObjectType soType,Decimal batchCounter,Boolean selectedForBatch) {
+        HttpResponse response;
+        String authorization;
         HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
         Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
                 logHttpResponse.getBody()
         );
         String accesToken = (String) params.get('access_token');
-        String authorization = 'Bearer ' + accesToken;
+        authorization = 'Bearer ' + accesToken;
         String endpointString = DB_Utils.retrieveCredentials('HDDoctorIntegrationEndpoint');
 
         HttpRequest upsertRequest = new HttpRequest();
@@ -54,13 +55,15 @@ public with sharing class DB_DoctorHandler {
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
 
-        String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, null);
+        String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter,selectedForBatch,null);
 
         Http upsertHttp = new Http();
-        HttpResponse response = upsertHttp.send(upsertRequest);
-
+        response = upsertHttp.send(upsertRequest);
+        if (response.getStatusCode() != 200){
+            selectedForBatch = true;
+        }
         List<Doctor__c> idDoctors = new List<Doctor__c>();
-        DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null);
+
         Integer counter = 0;
         while (response.getHeaderKeys().contains('addedId' + counter)) {
             Doctor__c doctor = new Doctor__c();
@@ -69,28 +72,32 @@ public with sharing class DB_DoctorHandler {
             idDoctors.add(doctor);
             counter++;
         }
-        try {
-            HttpRequest updateRequest = new HttpRequest();
-            updateRequest.setEndpoint(endpointString);
-            updateRequest.setMethod('PUT');
-            updateRequest.setHeader('Content-Type', 'application/json');
-            updateRequest.setHeader('Authorization', authorization);
-           String updateBody = JSON.serialize(idDoctors);
-            upsertRequest.setBody(updateRequest)
+        DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Upsert', logId, response.getStatusCode(), response.getStatus(), null,selectedForBatch,response.getHeader('addedId' + 0));
 
-
-            DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-            upsert idDoctors;
-        } finally {
-            DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+        String isSync = 'f';
+        if (response.getStatusCode() == 200) {
+            isSync = 't';
         }
-        if(response.getStatusCode() == 200){
+
+        String selfToken = UserInfo.getSessionId();
+        String selfAuth = 'Bearer ' + selfToken;
+        HttpRequest updateRequest = new HttpRequest();
+        updateRequest.setEndpoint(endpointString);
+        updateRequest.setMethod('PUT');
+        updateRequest.setHeader('Content-Type', 'application/json');
+        updateRequest.setHeader('Authorization', selfAuth);
+        updateRequest.setHeader('isSync', isSync);
+        updateRequest.setEndpoint(DB_Utils.retrieveCredentials('SelfDoctorEndpoint'));
+        updateRequest.setBody(JSON.serialize(idDoctors));
+        Http updateHttp = new Http();
+        HttpResponse updateResponse = updateHttp.send(updateRequest);
+        if (response.getStatusCode() == 200) {
             return true;
-        }else return false;
+        } else return false;
 
     }
 
-    public static Boolean deleteDoctorFromExternalDB(String upsertBody, Schema.sObjectType soType) {
+    public static Boolean deleteDoctorFromExternalDB(String upsertBody, Schema.sObjectType soType,Decimal batchCounter,Boolean isInBatch) {
         HttpResponse response;
         String authorization;
         HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
@@ -106,13 +113,24 @@ public with sharing class DB_DoctorHandler {
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
         upsertRequest.setBody(upsertBody);
-        String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, null, null, null);
+        String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, null, null, batchCounter,isInBatch,receiveExternalId(upsertBody));
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
-        DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), null);
+        DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), batchCounter,isInBatch,receiveExternalId(upsertBody));
         if(response.getStatusCode() == 200){
             return true;
         }else return false;
 
+    }
+    private static String receiveExternalId(String requestBody){
+        List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
+                requestBody
+        );
+        String doctorExternalId;
+        for (Object obj : responseJSON) {
+            Map<String, Object> params = (Map<string, Object>) obj;
+            doctorExternalId = (String) params.get('Doctor_External_Id__c');
+        }
+        return doctorExternalId;
     }
 }

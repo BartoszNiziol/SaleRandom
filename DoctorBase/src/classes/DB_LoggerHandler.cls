@@ -3,17 +3,14 @@
  */
 
 public with sharing class DB_LoggerHandler {
-    public static String createLog (String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
-            String logID, Decimal statusCode, String status, Decimal batchCounter) {
-
-        String id = retrieveAddedId(requestBody);
+    public static String createLog(String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
+            String logID, Decimal statusCode, String status, Decimal batchCounter, Boolean isInBatch, String externalId) {
 
 
         Logger__c logger = new Logger__c();
-        logger.Created_Record_Id__c = id;
-
-        if (logger.Batch_Counter__c != null) {
-            logger.Batch_Counter__c = batchCounter + 1;
+        if(requestBody != null) {
+            String id = retrieveAddedId(requestBody);
+            logger.Created_Record_Id__c = id;
         }
         if (logID != null) {
             logger.Id = logID;
@@ -41,18 +38,27 @@ public with sharing class DB_LoggerHandler {
         } else {
             logger.Object_type__c = null;
         }
-        if(logger.Response_Status_Code__c == 200){
+        if (logger.Response_Status_Code__c == 200) {
             logger.IsSynchronized__c = true;
         }
+        if (logger.Response_Status_Code__c != 200) {
+            logger.isSelectedForBatch__c = true;
+        }
+        if (externalId != null) {
+            logger.Created_Record_External_ID__c = externalId;
+        }
 
+        if (batchCounter != null) {
+            logger.Batch_Counter__c = batchCounter + 1;
+        }
         upsert logger;
         return logger.Id;
     }
 
     public static String sendLogRequest(String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
-            String logID, Decimal statusCode, String status, Decimal batchCounter) {
+            String logID, Decimal statusCode, String status, Decimal batchCounter, Boolean isInBatch, String externalId) {
 
-        String logRequestBody = parseLogInfoToJson(sObjectType, endpoint, requestBody, responseBody, actionType, logId, statusCode, status, batchCounter);
+        String logRequestBody = parseLogInfoToJson(sObjectType, endpoint, requestBody, responseBody, actionType, logId, statusCode, status, batchCounter, isInBatch, externalId);
         String accesToken = UserInfo.getSessionId();
         String authorization = 'Bearer ' + accesToken;
         String endpointString = DB_Utils.retrieveCredentials('LoggerSelfEndpoint');
@@ -64,24 +70,29 @@ public with sharing class DB_LoggerHandler {
         upsertRequest.setBody(logRequestBody);
         Http upsertHttp = new Http();
         HttpResponse logResponse = upsertHttp.send(upsertRequest);
-
         return (String) logResponse.getHeader('addedId');
-
     }
 
     private static String parseLogInfoToJson(String sObjectType, String endpoint, String requestBody, String responseBody, String actionType,
-            String logID, Decimal statusCode, String status, Decimal batchCounter) {
-
+            String logID, Decimal statusCode, String status, Decimal batchCounter, Boolean isInBatch, String externalId) {
 
         JSONGenerator generator = JSON.createGenerator(false);
         generator.writeStartObject();
-        generator.writeStringField('endpoint', endpoint);
-        generator.writeStringField('soType', sObjectType);
-        generator.writeStringField('request', requestBody);
+        if (endpoint != null) {
+            generator.writeStringField('endpoint', endpoint);
+        }
+        if (sObjectType != null) {
+            generator.writeStringField('soType', sObjectType);
+        }
+        if (responseBody != null) {
+            generator.writeStringField('request', requestBody);
+        }
         if (responseBody != null) {
             generator.writeStringField('response', responseBody);
         }
-        generator.writeStringField('actionType', actionType);
+        if (actionType != null) {
+            generator.writeStringField('actionType', actionType);
+        }
         if (logID != null) {
             generator.writeStringField('logID', logID);
         }
@@ -93,6 +104,12 @@ public with sharing class DB_LoggerHandler {
         }
         if (batchCounter != null) {
             generator.writeNumberField('batchCounter', batchCounter);
+        }
+        if (isInBatch != null) {
+            generator.writeBooleanField('isInBatch', isInBatch);
+        }
+        if (externalId != null) {
+            generator.writeStringField('externalId', externalId);
         }
         generator.writeEndObject();
         return generator.getAsString();
@@ -106,5 +123,4 @@ public with sharing class DB_LoggerHandler {
         params = (Map<string, Object>) bodyList.get(0);
         return (String) params.get('Id');
     }
-
 }

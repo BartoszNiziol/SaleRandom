@@ -60,7 +60,7 @@ public with sharing class HD_DoctorViewController {
         availableContracts = [SELECT Doctor__c,Start_Date__c,End_Date__c,Hospital__r.Name FROM Contract__c WHERE Doctor__c = :currentDoctor.Id];
     }
 
-    public void searchHospital() {
+    public stat void searchHospital() {
         foundHospitals = hospitalSearchHelper.queryHospitals(inputFormHospital.Name, inputFormHospital.Email__c, inputFormHospital.Country__c);
     }
 

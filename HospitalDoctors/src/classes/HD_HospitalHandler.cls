@@ -55,7 +55,7 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setMethod('POST');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
-//        upsertRequest.setHeader('Authorization', 'aaaaaaaaaa');
+        upsertRequest.setHeader('Authorization', 'aaaaaaaaaa');
         upsertRequest.setBody(upsertBody);
 
         String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter, isInBatch,null);
@@ -114,7 +114,7 @@ public with sharing class HD_HospitalHandler {
         upsertRequest.setMethod('DELETE');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
-//        upsertRequest.setHeader('Authorization', 'aaaaaa');
+        upsertRequest.setHeader('Authorization', 'aaaaaa');
         upsertRequest.setBody(upsertBody);
         String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter, isInBatch,receiveExternalId(upsertBody));
         Http upsertHttp = new Http();
@@ -126,7 +126,6 @@ public with sharing class HD_HospitalHandler {
     }
 
     private static String receiveExternalId(String requestBody){
-
         List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                 requestBody
         );

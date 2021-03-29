@@ -10,7 +10,7 @@ public with sharing class DB_QueueUpsertHospitalToExternal  implements Queueable
         this.upsertBody = upsertBody;
     }
     public void execute (QueueableContext context){
-        DB_HospitalHandler.upsertHospitalToExternalDB(upsertBody,soType);
+        DB_HospitalHandler.upsertHospitalToExternalDB(upsertBody,soType,0,false);
     }
 
 }

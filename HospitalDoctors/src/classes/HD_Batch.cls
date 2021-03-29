@@ -3,7 +3,7 @@
  */
 
 public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Database.Stateful, Database.AllowsCallouts {
-
+    List <HD_BatchLogWrapper> logInfos = new List<HD_BatchLogWrapper>();
     String authorization;
     public Iterable<Logger__c> start(Database.BatchableContext bc) {
         HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
@@ -18,7 +18,6 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
                 FROM Logger__c
                 ORDER BY Create_Date__c DESC
         ];
-
         Map<String, Logger__c> recordIdToLoggerMap = new Map<String, Logger__c>();
 
         for (Logger__c log : logs) {
@@ -38,51 +37,56 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
         }
 
         List<Logger__c> preparedLoggers = new List<Logger__c>();
-        for (String mapKey : recordIdToLoggerMap.keySet() ){
+        for (String mapKey : recordIdToLoggerMap.keySet()) {
             preparedLoggers.add(recordIdToLoggerMap.get(mapKey));
         }
-
         return preparedLoggers;
     }
 
     public void execute(Database.BatchableContext bc, List<Logger__c> records) {
-        Boolean done = false;
+
         for (Logger__c log : records) {
             if (log.Batch_Counter__c <= 3) {
                 if (log.Object_type__c == 'Doctor__c') {
                     if (log.Method_Type__c == 'Upsert') {
-                        done = HD_DoctorHandler.upsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
+                        HD_DoctorHandler.upsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
                     } else {
-                        done = HD_DoctorHandler.deleteDoctorFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
+                        HD_DoctorHandler.deleteDoctorFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
                     }
                 } else {
                     if (log.Method_Type__c == 'Upsert') {
-                        done = HD_HospitalHandler.upsertHospitalToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
+                        HD_HospitalHandler.upsertHospitalToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
                     } else {
-                        done = HD_HospitalHandler.deleteHospitalFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
+                        HD_HospitalHandler.deleteHospitalFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
                     }
                 }
             }
+            logInfos.add(new HD_BatchLogWrapper(log.Created_Record_Id__c,log.Object_type__c,log.Status__c,log.Endpoint__c,log.Response_Status_Code__c,log.Create_Date__c));
         }
     }
 
     public void finish(Database.BatchableContext bc) {
-        AsyncApexJob a = [
-                SELECT Id, Status, NumberOfErrors, JobItemsProcessed,
-                        TotalJobItems, CreatedBy.Email
-                FROM AsyncApexJob
-                WHERE Id = :bc.getJobId()
-        ];
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        String[] toAddresses = new String[]{
-                'bartosz.niziol@britenet.com.pl'
-        };
-        mail.setToAddresses(toAddresses);
-        mail.setSubject('Apex Sharing Recalculation ' + a.Status);
-        mail.setPlainTextBody('The batch Apex job processed ' + a.TotalJobItems +
-                ' batches with ' + a.NumberOfErrors + ' failures.' + 'HospitalDoctor');
-        Messaging.sendEmail(new Messaging.SingleEmailMessage[]{
-                mail
-        });
+//        AsyncApexJob a = [
+//                SELECT Id, Status, NumberOfErrors, JobItemsProcessed,
+//                        TotalJobItems, CreatedBy.Email
+//                FROM AsyncApexJob
+//                WHERE Id = :bc.getJobId()
+//        ];
+//        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+//        String[] toAddresses = new String[]{
+//                'bartosz.niziol@britenet.com.pl'
+//        };
+//        mail.setToAddresses(toAddresses);
+//        mail.setSubject('Apex Sharing Recalculation ' + a.Status);
+//        String body = 'The batch Apex job processed ' + a.TotalJobItems +
+//                ' batches with ' + a.NumberOfErrors + ' failures.' + 'HospitalDoctor \n';
+//        for (HD_BatchLogWrapper wrap: logInfos){
+//            body+= 'For Record: '+ wrap.objectType+ ' '+ wrap.recordId + ' Status:  '+wrap.status +' '+wrap.statusCode +' For: '+ wrap.endpoint+' Log created at: ' + wrap.logCreationDate+'\n';
+//        }
+//
+//        mail.setPlainTextBody(body);
+//        Messaging.sendEmail(new Messaging.SingleEmailMessage[]{
+//                mail
+//        });
     }
 }
