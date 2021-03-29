@@ -232,16 +232,22 @@
     </apex:relatedList>
     <apex:pageBlock >
     <apex:pageBlockSection  rendered="true" columns="1" >
-        <apex:facet name="header">Integration History</apex:facet>
+        <apex:facet name="header">{!$Label.Integration_History_Label}</apex:facet>
         <apex:pageBlockTable value="{!logs}" var="log">
-            <apex:column  headerValue="Status">
+            <apex:column  headerValue="{!$Label.Status_Label}">
                 <apex:outputField value="{!log.Status__c}"> </apex:outputField>
             </apex:column>
-            <apex:column  headerValue="Action">
+            <apex:column  headerValue="{!$Label.Status_Code_Label}">
+                <apex:outputField value="{!log.Response_Status_Code__c}"> </apex:outputField>
+            </apex:column>
+            <apex:column  headerValue="{!$Label.Action_Label}">
                 <apex:outputField value="{!log.Method_Type__c}"> </apex:outputField>
             </apex:column>
-            <apex:column  headerValue="Create Date">
+            <apex:column  headerValue="{!$Label.Log_Create_Date_Label}">
                 <apex:outputField value="{!log.Create_Date__c}"> </apex:outputField>
+            </apex:column>
+            <apex:column  headerValue="For">
+                <apex:outputField value="{!log.Endpoint__c}"> </apex:outputField>
             </apex:column>
         </apex:pageBlockTable>
     </apex:pageBlockSection>

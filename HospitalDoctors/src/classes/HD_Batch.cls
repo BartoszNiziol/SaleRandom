@@ -25,7 +25,6 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
                 recordIdToLoggerMap.put(log.Created_Record_Id__c, log);
             }
         }
-
         List<String> idToRemove = new List<String>();
         for (String mapKey : recordIdToLoggerMap.keySet()) {
             if (recordIdToLoggerMap.get(mapKey).IsSynchronized__c) {
@@ -35,7 +34,6 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
         for (String id : idToRemove) {
             recordIdToLoggerMap.remove(id);
         }
-
         List<Logger__c> preparedLoggers = new List<Logger__c>();
         for (String mapKey : recordIdToLoggerMap.keySet()) {
             preparedLoggers.add(recordIdToLoggerMap.get(mapKey));
@@ -61,32 +59,36 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
                     }
                 }
             }
-            logInfos.add(new HD_BatchLogWrapper(log.Created_Record_Id__c,log.Object_type__c,log.Status__c,log.Endpoint__c,log.Response_Status_Code__c,log.Create_Date__c));
+            logInfos.add(new HD_BatchLogWrapper(log.Created_Record_Id__c, log.Object_type__c, log.Status__c, log.Endpoint__c, log.Response_Status_Code__c, log.Create_Date__c));
         }
     }
 
     public void finish(Database.BatchableContext bc) {
-//        AsyncApexJob a = [
-//                SELECT Id, Status, NumberOfErrors, JobItemsProcessed,
-//                        TotalJobItems, CreatedBy.Email
-//                FROM AsyncApexJob
-//                WHERE Id = :bc.getJobId()
-//        ];
+        System.debug('at finish');
+        AsyncApexJob a = [
+                SELECT Id, Status, NumberOfErrors, JobItemsProcessed,
+                        TotalJobItems, CreatedBy.Email
+                FROM AsyncApexJob
+                WHERE Id = :bc.getJobId()
+        ];
 //        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 //        String[] toAddresses = new String[]{
 //                'bartosz.niziol@britenet.com.pl'
 //        };
 //        mail.setToAddresses(toAddresses);
 //        mail.setSubject('Apex Sharing Recalculation ' + a.Status);
-//        String body = 'The batch Apex job processed ' + a.TotalJobItems +
-//                ' batches with ' + a.NumberOfErrors + ' failures.' + 'HospitalDoctor \n';
-//        for (HD_BatchLogWrapper wrap: logInfos){
-//            body+= 'For Record: '+ wrap.objectType+ ' '+ wrap.recordId + ' Status:  '+wrap.status +' '+wrap.statusCode +' For: '+ wrap.endpoint+' Log created at: ' + wrap.logCreationDate+'\n';
-//        }
+
+        String body = 'The batch Apex job processed ' + a.TotalJobItems +
+                ' batches with ' + a.NumberOfErrors + ' failures.' + 'HospitalDoctor \n';
+        for (HD_BatchLogWrapper wrap : logInfos) {
+            body += 'For Record: ' + wrap.objectType + ' ' + wrap.recordId + ' Status:  ' + wrap.status + ' ' + wrap.statusCode + ' For: ' + wrap.endpoint + ' Log created at: ' + wrap.logCreationDate + '\n';
+        }
 //
 //        mail.setPlainTextBody(body);
 //        Messaging.sendEmail(new Messaging.SingleEmailMessage[]{
 //                mail
 //        });
+
+        System.debug(body);
     }
 }

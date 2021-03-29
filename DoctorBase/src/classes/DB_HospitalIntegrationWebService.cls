@@ -11,11 +11,9 @@ global class DB_HospitalIntegrationWebService {
                     RestContext.request.requestBody.toString()
             );
             List<Hospital__c> hospitalsToUpsert = new List<Hospital__c>();
-
             for (Object obj : responseJSON) {
                 Map<String, Object> params = new Map<String, Object>();
                 params = (Map<string, Object>) obj;
-
                 Hospital__c hospital = new Hospital__c();
                 hospital.Name = (String) params.get('Name');
                 hospital.Email__c = (String) params.get('Email__c');
@@ -26,6 +24,7 @@ global class DB_HospitalIntegrationWebService {
                 hospital.Phone_Number__c = (String) params.get('Phone_Number__c');
                 hospital.Hospital_External_Id__c = (String) params.get('Id');
                 hospital.Id = (String) params.get('Hospital_External_Id__c');
+                hospital.is_Synchronized__c = true;
                 hospitalsToUpsert.add(hospital);
             }
             try {
@@ -40,8 +39,6 @@ global class DB_HospitalIntegrationWebService {
                 RestContext.response.addHeader('externalId'+counter, hosp.Hospital_External_Id__c);
                 counter++;
             }
-
-
         } catch (Exception e) {
             System.debug(e);
         }

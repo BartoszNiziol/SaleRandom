@@ -43,7 +43,7 @@ public with sharing class HD_HospitalViewController {
     public void prepareLogs(){
 
         logs = new List<Logger__c>();
-        logs = [SELECT Created_Record_Id__c, Method_Type__c,Status__c,Create_Date__c FROM Logger__c WHERE Created_Record_Id__c =: currentHospital.Id ORDER BY Create_Date__c DESC ];
+        logs = [SELECT Created_Record_Id__c, Method_Type__c,Status__c,Create_Date__c,Response_Status_Code__c,Endpoint__c FROM Logger__c WHERE Created_Record_Id__c =: currentHospital.Id ORDER BY Create_Date__c DESC ];
 
     }
 

@@ -35,7 +35,7 @@ public with sharing class HD_QueueBatch implements Queueable , Database.AllowsCa
                         upsertRequest.setBody(log.Request_Body__c);
                         Http upsertHttp = new Http();
                         HttpResponse response = upsertHttp.send(upsertRequest);
-                        HD_LoggerHandler.sendLogRequest(log.Object_type__c,log.Endpoint__c,log.Request_Body__c,response,'POST',null,log.Batch_Counter__c);
+                       // HD_LoggerHandler.sendLogRequest(log.Object_type__c,log.Endpoint__c,log.Request_Body__c,response,'POST',null,log.Batch_Counter__c);
                         //  ID jobID = System.enqueueJob(new QueueUpsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType()));
                     } else {
                         //         ID jobID = System.enqueueJob(new HD_QueueDeleteDoctorFormExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType()));

@@ -30,6 +30,7 @@ global class HD_DoctorIntegrationWebService {
                 doctor.Phone_Number__c = (String) params.get('Phone_Number__c');
                 doctor.Doctor_External_Id__c = (String) params.get('Id');
                 doctor.Id = (String) params.get('Doctor_External_Id__c');
+                doctor.is_Synchronized__c = true;
                 doctorsToUpsert.add(doctor);
             }
             try {
