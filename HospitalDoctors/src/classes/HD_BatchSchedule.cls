@@ -12,7 +12,7 @@ global class HD_BatchSchedule implements Schedulable{
     }
 
     global void execute (SchedulableContext SC){
-        HD_Batch batch = new HD_Batch();
+        HD_DoctorBatch batch = new HD_DoctorBatch();
         database.executeBatch(batch);
     }
 
