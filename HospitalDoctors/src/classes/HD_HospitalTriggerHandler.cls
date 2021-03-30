@@ -19,10 +19,10 @@ public with sharing class HD_HospitalTriggerHandler implements HD_TriggerInterfa
     public void bulkAfter(List<sObject> newObjects, List<sObject> oldObjects,Schema.SObjectType soType) {
         if (trigger.isInsert) {
             String postBody = JSON.serialize(newObjects);
-            ID jobID = System.enqueueJob(new HD_QueueUpsertHospitalToExternalDB(postBody,soType));
+            ID jobID = System.enqueueJob(new HD_QueueUpsertHospitalToExternalDB(postBody,soType,false));
         } else if (trigger.isUpdate) {
             String postBody = JSON.serialize(newObjects);
-            ID jobID = System.enqueueJob(new HD_QueueUpsertHospitalToExternalDB(postBody,soType));
+            ID jobID = System.enqueueJob(new HD_QueueUpsertHospitalToExternalDB(postBody,soType,true));
         } else if (trigger.isDelete) {
             String postBody = JSON.serialize(oldObjects);
             ID jobID  = System.enqueueJob(new HD_QueueDeleteHospitalFromExternalDB(postBody,soType));

@@ -6,6 +6,8 @@ global class HD_DoctorIntegrationWebService {
 
     @HttpPost
     global static void upsertDoctor() {
+        System.debug('ups');
+        Boolean isDoctorDeleted;
         try {
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
@@ -30,14 +32,32 @@ global class HD_DoctorIntegrationWebService {
                 doctor.Doctor_External_Id__c = (String) params.get('Id');
                 doctor.Id = (String) params.get('Doctor_External_Id__c');
                 doctor.is_Synchronized__c = true;
+
+
+                isDoctorDeleted = isDoctorDeleted(doctor.Id);
                 doctorsToUpsert.add(doctor);
+                System.debug('isDoctorDeleted in loop');
+                System.debug(isDoctorDeleted);
+
             }
-            try {
-                HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-                upsert doctorsToUpsert;
-            } finally {
-                HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            if(isDoctorDeleted){
+                undelete doctorsToUpsert;
+                try {
+                    HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                    update doctorsToUpsert;
+                } finally {
+                    HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                }
+
+            }else {
+                try {
+                    HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                    upsert doctorsToUpsert;
+                } finally {
+                    HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                }
             }
+
             Integer counter = 0;
             for (Doctor__c doc : doctorsToUpsert) {
                 RestContext.response.addHeader('addedId' + counter, doc.Id);
@@ -74,16 +94,14 @@ global class HD_DoctorIntegrationWebService {
             System.debug(e);
         }
     }
+
     @HttpPut
     global static void updateDoctorExternalId() {
-        System.debug('moje update sam start');
         try {
-            System.debug('try');
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString());
             Map<String, String> headers = RestContext.request.headers;
             List<Doctor__c> doctorsWithID = new List<Doctor__c>();
-            System.debug(headers.get('undeID'));
 
             if (headers.get('actionType') == 'upsert') {
                 if (headers.get('isSync') == 't') {
@@ -105,20 +123,21 @@ global class HD_DoctorIntegrationWebService {
                     } finally {
                         HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
                     }
-                }else {
-                    try{
-                        System.debug('f');
+                } else {
+                    try {
                         Doctor__c failToUpdateDoctor = new Doctor__c();
                         failToUpdateDoctor.Id = headers.get('failedUpdateID');
                         System.debug(failToUpdateDoctor.Id);
                         HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                         failToUpdateDoctor.is_Synchronized__c = false;
-                        if(Boolean.valueOF(headers.get('isBatch'))){
-                            System.debug(Boolean.valueOF(headers.get('isBatch')));
+                        if (Boolean.valueOF(headers.get('isBatch'))) {
                             failToUpdateDoctor.Batch_Counter__c = Decimal.valueOf(headers.get('counter')) + 1;
                         }
+                        if (Boolean.valueOf(headers.get('isEdited'))) {
+                            failToUpdateDoctor.Batch_Counter__c = 0;
+                        }
                         update failToUpdateDoctor;
-                    }finally {
+                    } finally {
                         HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
                     }
                 }
@@ -143,7 +162,7 @@ global class HD_DoctorIntegrationWebService {
                         doctorToUndlete.Id = headers.get('undeID');
                         HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                         undelete doctorToUndlete;
-                        if(Boolean.valueOF(headers.get('isBatch'))){
+                        if (Boolean.valueOF(headers.get('isBatch'))) {
                             System.debug(Boolean.valueOF(headers.get('isBatch')));
                             doctorToUndlete.Batch_Counter__c = Decimal.valueOf(headers.get('counter')) + 1;
                         }
@@ -160,5 +179,41 @@ global class HD_DoctorIntegrationWebService {
             System.debug('e');
             System.debug(e);
         }
+    }
+    @HttpPatch
+    global static void checkSynchronization() {
+
+        List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
+                RestContext.request.requestBody.toString());
+        Map<String, String> headers = RestContext.request.headers;
+        List<Doctor__c> doctorsWithID = new List<Doctor__c>();
+
+        for (Object obj : responseJSON) {
+            Map<String, Object> params = (Map<string, Object>) obj;
+            String doctorId = (String) params.get('Doctor_External_Id__c');
+            String doctorExternalId = (String) params.get('Id');
+            Doctor__c doctor = new Doctor__c();
+            doctor.Id = doctorId;
+            doctor.Doctor_External_Id__c = doctorExternalId;
+            doctor.is_Synchronized__c = false;
+            doctor.Batch_Counter__c = 0;
+            doctorsWithID.add(doctor);
+
+            try {
+                HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                Database.update(doctorsWithID,false) ;
+            } finally {
+                HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            }
+        }
+
+    }
+    private static Boolean isDoctorDeleted(String id) {
+        List <Doctor__c> doctor = [SELECT Id,IsDeleted FROM Doctor__c WHERE Id = :id ALL ROWS];
+        if (doctor.size() == 0) {
+            return false;
+        }
+        return doctor.get(0).IsDeleted;
+
     }
 }

@@ -22,10 +22,10 @@ public with sharing class HD_DoctorTriggerHandler implements HD_TriggerInterface
 
         if (trigger.isInsert) {
             String postBody = JSON.serialize(newObjects);
-            ID jobID = System.enqueueJob(new QueueUpsertDoctorToExternalDB(postBody,soType));
+            ID jobID = System.enqueueJob(new QueueUpsertDoctorToExternalDB(postBody,soType,false));
         } else if (trigger.isUpdate) {
             String postBody = JSON.serialize(newObjects);
-            ID jobID = System.enqueueJob(new QueueUpsertDoctorToExternalDB(postBody,soType));
+            ID jobID = System.enqueueJob(new QueueUpsertDoctorToExternalDB(postBody,soType,true));
         } else if (trigger.isDelete) {
             String postBody = JSON.serialize(oldObjects);
             ID jobID  = System.enqueueJob(new HD_QueueDeleteDoctorFormExternalDB(postBody,soType));

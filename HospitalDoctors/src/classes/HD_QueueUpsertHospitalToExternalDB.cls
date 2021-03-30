@@ -5,13 +5,15 @@
 public with sharing class HD_QueueUpsertHospitalToExternalDB implements Queueable , Database.AllowsCallouts{
     String upsertBody {get; set;}
     Schema.sObjectType soType{get;set;}
-    public  HD_QueueUpsertHospitalToExternalDB (String upsertBody, Schema.sObjectType soType){
+    Boolean isEdited {get; set;}
+    public  HD_QueueUpsertHospitalToExternalDB (String upsertBody, Schema.sObjectType soType,Boolean isEdited){
         this.soType = soType;
         this.upsertBody = upsertBody;
+        this.isEdited = isEdited;
     }
 
     public void execute (QueueableContext context){
-        HD_HospitalHandler.upsertHospitalToExternalDB(upsertBody,soType,0,false);
+        HD_HospitalHandler.upsertHospitalToExternalDB(upsertBody,soType,0,false,isEdited);
     }
 
 }

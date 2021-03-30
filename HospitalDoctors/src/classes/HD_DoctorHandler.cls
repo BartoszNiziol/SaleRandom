@@ -103,7 +103,7 @@ public with sharing class HD_DoctorHandler {
         return doctor;
     }
 
-    public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean selectedForBatch) {
+    public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean selectedForBatch,Boolean isEdited) {
 
         HttpResponse response;
         String authorization;
@@ -144,7 +144,7 @@ public with sharing class HD_DoctorHandler {
             isSync = 't';
         }
         String batchDoctorCount = receiveBatchCounter(upsertBody);
-
+        String isEditedS = String.valueOf(isEdited);
         String failedUpdateID = receiveId(upsertBody);
         String selfToken = UserInfo.getSessionId();
         String selfAuth = 'Bearer ' + selfToken;
@@ -156,6 +156,7 @@ public with sharing class HD_DoctorHandler {
         updateRequest.setHeader('isSync', isSync);
         updateRequest.setHeader('isBatch',String.valueOf(selectedForBatch));
         updateRequest.setHeader('counter',batchDoctorCount);
+        updateRequest.setHeader('isEdited',isEditedS);
         updateRequest.setHeader('actionType', 'upsert');
         updateRequest.setHeader('failedUpdateID',failedUpdateID);
         updateRequest.setEndpoint(HD_Utils.retrieveCredentials('SelfDoctorEndpoint'));
@@ -177,6 +178,7 @@ public with sharing class HD_DoctorHandler {
         String accesToken = (String) params.get('access_token');
         authorization = 'Bearer ' + accesToken;
         String endpointString = HD_Utils.retrieveCredentials('DBDoctorIntegrationEndpoint');
+
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
         upsertRequest.setMethod('DELETE');
@@ -226,8 +228,6 @@ public with sharing class HD_DoctorHandler {
         Http updateHttp = new Http();
         HttpResponse updateResponse = updateHttp.send(updateRequest);
 
-        System.debug('updateResponse');
-        System.debug(updateResponse);
 
         if (response.getStatusCode() == 200) {
             return true;

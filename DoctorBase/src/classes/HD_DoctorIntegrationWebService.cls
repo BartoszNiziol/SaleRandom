@@ -6,6 +6,9 @@ global class HD_DoctorIntegrationWebService {
 
     @HttpPost
     global static void upsertDoctor() {
+        System.debug('ups');
+
+        Boolean isDoctorDeleted;
         try {
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
@@ -31,19 +34,36 @@ global class HD_DoctorIntegrationWebService {
                 doctor.Doctor_External_Id__c = (String) params.get('Id');
                 doctor.Id = (String) params.get('Doctor_External_Id__c');
                 doctor.is_Synchronized__c = true;
+
+                isDoctorDeleted = isDoctorDeleted(doctor.Id);
                 doctorsToUpsert.add(doctor);
+                System.debug('isDoctorDeleted in loop');
+                System.debug(isDoctorDeleted);
+
             }
-            try {
-                DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-                upsert doctorsToUpsert;
-            } finally {
-                DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+            if(isDoctorDeleted){
+                undelete doctorsToUpsert;
+                try {
+                    DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                update doctorsToUpsert;
+                } finally {
+                    DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                }
+
+            }else {
+                try {
+                    DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                    upsert doctorsToUpsert;
+                } finally {
+                    DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                }
             }
+
             Integer counter = 0;
             for (Doctor__c doc : doctorsToUpsert) {
                 RestContext.response.addHeader('addedId' + counter, doc.Id);
                 RestContext.response.addHeader('externalId' + counter, doc.Doctor_External_Id__c);
-                counter ++ ;
+                counter++ ;
             }
         } catch (Exception e) {
             System.debug('upsertDoctorService');
@@ -75,7 +95,7 @@ global class HD_DoctorIntegrationWebService {
             for (Doctor__c doc : doctorsToDelete) {
                 RestContext.response.addHeader('addedId' + counter, doc.Id);
                 RestContext.response.addHeader('externalId' + counter, doc.Doctor_External_Id__c);
-                counter ++ ;
+                counter++ ;
             }
         } catch (Exception e) {
             System.debug(e);
@@ -112,20 +132,20 @@ global class HD_DoctorIntegrationWebService {
                     } finally {
                         DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
                     }
-                }else {
-                    try{
+                } else {
+                    try {
                         System.debug('f');
                         Doctor__c failToUpdateDoctor = new Doctor__c();
                         failToUpdateDoctor.Id = headers.get('failedUpdateID');
                         System.debug(failToUpdateDoctor.Id);
                         DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                         failToUpdateDoctor.is_Synchronized__c = false;
-                        if(Boolean.valueOF(headers.get('isBatch'))){
+                        if (Boolean.valueOF(headers.get('isBatch'))) {
                             System.debug(Boolean.valueOF(headers.get('isBatch')));
                             failToUpdateDoctor.Batch_Counter__c = Decimal.valueOf(headers.get('counter')) + 1;
                         }
                         update failToUpdateDoctor;
-                    }finally {
+                    } finally {
                         DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
                     }
                 }
@@ -150,7 +170,7 @@ global class HD_DoctorIntegrationWebService {
                         doctorToUndlete.Id = headers.get('undeID');
                         DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                         undelete doctorToUndlete;
-                        if(Boolean.valueOF(headers.get('isBatch'))){
+                        if (Boolean.valueOF(headers.get('isBatch'))) {
                             System.debug(Boolean.valueOF(headers.get('isBatch')));
                             doctorToUndlete.Batch_Counter__c = Decimal.valueOf(headers.get('counter')) + 1;
                         }
@@ -168,7 +188,14 @@ global class HD_DoctorIntegrationWebService {
             System.debug(e);
         }
     }
+    private static Boolean isDoctorDeleted(String id) {
+       List <Doctor__c> doctor = [SELECT Id,IsDeleted FROM Doctor__c WHERE Id = :id ALL ROWS];
+        if (doctor.size() == 0) {
+            return false;
+        }
+        return doctor.get(0).IsDeleted;
 
+    }
 
 
 }

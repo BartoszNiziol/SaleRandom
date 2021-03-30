@@ -3,7 +3,7 @@
  */
 
 public with sharing class DB_DoctorBatch implements Database.Batchable<Doctor__c>, Database.Stateful, Database.AllowsCallouts {
-    List <DB_BatchLogWrapper> logInfos = new List<DB_BatchLogWrapper>();
+    List <Doctor__c> logInfos = new List<Doctor__c>();
     String authorization;
     public Iterable<Doctor__c> start(Database.BatchableContext bc) {
         List<Doctor__c> preparedDoctors = new List<Doctor__c>();
@@ -40,12 +40,12 @@ public with sharing class DB_DoctorBatch implements Database.Batchable<Doctor__c
                 DB_DoctorHandler.deleteDoctorFromExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true);
             }
 
-            //  logInfos.add(new HD_BatchLogWrapper(log.Created_Record_Id__c, log.Object_type__c, log.Status__c, log.Endpoint__c, log.Response_Status_Code__c, log.Create_Date__c));
+            logInfos.add(doc);
         }
     }
 
     public void finish(Database.BatchableContext bc) {
-//        System.debug('at finish');
+        System.debug('at finish');
 //        AsyncApexJob a = [
 //                SELECT Id, Status, NumberOfErrors, JobItemsProcessed,
 //                        TotalJobItems, CreatedBy.Email
@@ -61,8 +61,8 @@ public with sharing class DB_DoctorBatch implements Database.Batchable<Doctor__c
 //
 //        String body = 'The batch Apex job processed ' + a.TotalJobItems +
 //                ' batches with ' + a.NumberOfErrors + ' failures.' + 'HospitalDoctor \n';
-//        for (HD_BatchLogWrapper wrap : logInfos) {
-//            body += 'For Record: ' + wrap.objectType + ' ' + wrap.recordId + ' Status:  ' + wrap.status + ' ' + wrap.statusCode + ' For: ' + wrap.endpoint + ' Log created at: ' + wrap.logCreationDate + '\n';
+//        for (Doctor__c doc : logInfos) {
+//            body += 'For record: ' + doc.Id +' '+doc.First_Name__c +' '+ doc.Name+ ' Synchronization : '+ doc.is_Synchronized__c +' Batch try:  '+doc.Batch_Counter__c+'\n';
 //        }
 //
 //        mail.setPlainTextBody(body);

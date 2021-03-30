@@ -53,6 +53,7 @@ public with sharing class DB_DoctorHandler {
         upsertRequest.setMethod('POST');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
+//        upsertRequest.setHeader('Authorization', 'xxxxx');
         upsertRequest.setBody(upsertBody);
 
         String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter,selectedForBatch,null);
@@ -117,6 +118,7 @@ public with sharing class DB_DoctorHandler {
         upsertRequest.setMethod('DELETE');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
+//        upsertRequest.setHeader('Authorization', 'bbbbbb');
         upsertRequest.setBody(upsertBody);
         String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, null, null, batchCounter,isInBatch,receiveExternalId(upsertBody));
         Http upsertHttp = new Http();
@@ -165,6 +167,26 @@ public with sharing class DB_DoctorHandler {
         }else return false;
 
     }
+
+    public static void synchronizationCheckToSecondOrg(String body){
+        HttpResponse response;
+        String authorization;
+        HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                logHttpResponse.getBody()
+        );
+        String accesToken = (String) params.get('access_token');
+        authorization = 'Bearer ' + accesToken;
+        String endpointString = DB_Utils.retrieveCredentials('HDDoctorIntegrationEndpoint');
+        HttpRequest upsertRequest = new HttpRequest();
+        upsertRequest.setEndpoint(endpointString);
+        upsertRequest.setMethod('DELETE');
+        upsertRequest.setHeader('Content-Type', 'application/json');
+        upsertRequest.setHeader('Authorization', authorization);
+
+
+    }
+
     private static String receiveExternalId(String requestBody){
         List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                 requestBody

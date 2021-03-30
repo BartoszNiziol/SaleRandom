@@ -2,6 +2,14 @@
  * Created by BRITENET on 11.03.2021.
  */
 
-public with sharing class AnimalLocatorMock {
+global class AnimalLocatorMock implements HttpCalloutMock{
+
+    global HttpResponse respond (HttpRequest request){
+        HttpResponse response = new HttpResponse();
+        response.setHeader('Content-Type','application/json');
+        response.setBody('{"animal":{"id":1,"name":"chicken","eats":"chicken food","says":"cluck cluck"}}');
+        response.setStatusCode(200);
+        return response;
+    }
 
 }

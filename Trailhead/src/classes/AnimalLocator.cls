@@ -1,6 +1,6 @@
 public class AnimalLocator {
     
-    public String getAnimalNameById (Integer id){
+    public static String getAnimalNameById (Integer id){
 
         Http http = new Http();
         HttpRequest request = new HttpRequest();
