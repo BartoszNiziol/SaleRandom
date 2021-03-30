@@ -104,8 +104,6 @@ public with sharing class HD_DoctorHandler {
     }
 
     public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean selectedForBatch) {
-        System.debug('selectedForBatch');
-        System.debug(selectedForBatch);
 
         HttpResponse response;
         String authorization;
@@ -130,8 +128,8 @@ public with sharing class HD_DoctorHandler {
         response = upsertHttp.send(upsertRequest);
 
         List<Doctor__c> idDoctors = new List<Doctor__c>();
-        Integer counter = 0;
 
+        Integer counter = 0;
         while (response.getHeaderKeys().contains('addedId' + counter)) {
             Doctor__c doctor = new Doctor__c();
             doctor.Id = response.getHeader('externalId' + counter);
@@ -208,10 +206,6 @@ public with sharing class HD_DoctorHandler {
             isSync = 't';
         }
 
-        System.debug('isSync');
-        System.debug(isSync);
-        System.debug('idDoctors');
-        System.debug(idDoctors);
         String toDeleteDoctorId = receiveId(upsertBody);
         String batchDoctorCount = receiveBatchCounter(upsertBody);
 

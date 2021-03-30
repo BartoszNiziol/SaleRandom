@@ -1,2 +1,2 @@
-HD_Batch myBatchObject = new HD_Batch();
+HD_DoctorBatch myBatchObject = new HD_DoctorBatch();
 Id batchId = Database.executeBatch(myBatchObject);

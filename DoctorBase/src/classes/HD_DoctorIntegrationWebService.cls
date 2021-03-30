@@ -63,9 +63,7 @@ global class HD_DoctorIntegrationWebService {
                 Doctor__c doctor = new Doctor__c();
                 doctor.Id = doctorExternalId;
                 doctorsToDelete.add(doctor);
-                if((String) params.get('Doctor_External_Id__c') == null){
-                    throw new IntegrationException('External Id expected');
-                }
+
             }
             try {
                 DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
@@ -80,6 +78,93 @@ global class HD_DoctorIntegrationWebService {
                 counter ++ ;
             }
         } catch (Exception e) {
+            System.debug(e);
+        }
+    }
+    @HttpPut
+    global static void updateDoctorExternalId() {
+        System.debug('moje update sam start');
+        try {
+            System.debug('try');
+            List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
+                    RestContext.request.requestBody.toString());
+            Map<String, String> headers = RestContext.request.headers;
+            List<Doctor__c> doctorsWithID = new List<Doctor__c>();
+            System.debug(headers.get('undeID'));
+
+            if (headers.get('actionType') == 'upsert') {
+                if (headers.get('isSync') == 't') {
+                    System.debug('t');
+                    for (Object obj : responseJSON) {
+                        Map<String, Object> params = (Map<string, Object>) obj;
+                        String doctorExternalId = (String) params.get('Doctor_External_Id__c');
+                        String doctorId = (String) params.get('Id');
+                        Doctor__c doctor = new Doctor__c();
+                        doctor.Id = doctorId;
+                        doctor.Doctor_External_Id__c = doctorExternalId;
+                        doctor.is_Synchronized__c = true;
+                        doctor.Batch_Counter__c = 0;
+                        doctorsWithID.add(doctor);
+                    }
+                    try {
+                        DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                        upsert doctorsWithID;
+                    } finally {
+                        DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                    }
+                }else {
+                    try{
+                        System.debug('f');
+                        Doctor__c failToUpdateDoctor = new Doctor__c();
+                        failToUpdateDoctor.Id = headers.get('failedUpdateID');
+                        System.debug(failToUpdateDoctor.Id);
+                        DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                        failToUpdateDoctor.is_Synchronized__c = false;
+                        if(Boolean.valueOF(headers.get('isBatch'))){
+                            System.debug(Boolean.valueOF(headers.get('isBatch')));
+                            failToUpdateDoctor.Batch_Counter__c = Decimal.valueOf(headers.get('counter')) + 1;
+                        }
+                        update failToUpdateDoctor;
+                    }finally {
+                        DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                    }
+                }
+            } else {
+                System.debug('update els na delete');
+                if (headers.get('isSync') == 't') {
+                    try {
+                        Doctor__c doctorToUndlete = new Doctor__c();
+                        doctorToUndlete.Id = headers.get('undeID');
+                        DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                        undelete doctorToUndlete;
+                        doctorToUndlete.Batch_Counter__c = 0;
+                        doctorToUndlete.is_Synchronized__c = true;
+                        update doctorToUndlete;
+                        delete doctorToUndlete;
+                    } finally {
+                        DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                    }
+                } else {
+                    try {
+                        Doctor__c doctorToUndlete = new Doctor__c();
+                        doctorToUndlete.Id = headers.get('undeID');
+                        DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                        undelete doctorToUndlete;
+                        if(Boolean.valueOF(headers.get('isBatch'))){
+                            System.debug(Boolean.valueOF(headers.get('isBatch')));
+                            doctorToUndlete.Batch_Counter__c = Decimal.valueOf(headers.get('counter')) + 1;
+                        }
+                        doctorToUndlete.is_Synchronized__c = false;
+                        update doctorToUndlete;
+                        delete doctorToUndlete;
+                    } finally {
+                        DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                    }
+                    System.debug('ud');
+                }
+            }
+        } catch (Exception e) {
+            System.debug('e');
             System.debug(e);
         }
     }

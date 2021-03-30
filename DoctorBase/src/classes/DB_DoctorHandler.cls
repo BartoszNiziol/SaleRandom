@@ -59,9 +59,7 @@ public with sharing class DB_DoctorHandler {
 
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
-        if (response.getStatusCode() != 200){
-            selectedForBatch = true;
-        }
+
         List<Doctor__c> idDoctors = new List<Doctor__c>();
 
         Integer counter = 0;
@@ -78,6 +76,9 @@ public with sharing class DB_DoctorHandler {
         if (response.getStatusCode() == 200) {
             isSync = 't';
         }
+        String batchDoctorCount = receiveBatchCounter(upsertBody);
+
+        String failedUpdateID = receiveId(upsertBody);
 
         String selfToken = UserInfo.getSessionId();
         String selfAuth = 'Bearer ' + selfToken;
@@ -87,6 +88,10 @@ public with sharing class DB_DoctorHandler {
         updateRequest.setHeader('Content-Type', 'application/json');
         updateRequest.setHeader('Authorization', selfAuth);
         updateRequest.setHeader('isSync', isSync);
+        updateRequest.setHeader('isBatch',String.valueOf(selectedForBatch));
+        updateRequest.setHeader('counter',batchDoctorCount);
+        updateRequest.setHeader('actionType', 'upsert');
+        updateRequest.setHeader('failedUpdateID',failedUpdateID);
         updateRequest.setEndpoint(DB_Utils.retrieveCredentials('SelfDoctorEndpoint'));
         updateRequest.setBody(JSON.serialize(idDoctors));
         Http updateHttp = new Http();
@@ -116,7 +121,45 @@ public with sharing class DB_DoctorHandler {
         String logId = DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Delete', null, null, null, batchCounter,isInBatch,receiveExternalId(upsertBody));
         Http upsertHttp = new Http();
         response = upsertHttp.send(upsertRequest);
+
+        List<Doctor__c> idDoctors = new List<Doctor__c>();
+        Integer counter = 0;
+
+        while (response.getHeaderKeys().contains('addedId' + counter)) {
+            Doctor__c doctor = new Doctor__c();
+            doctor.Id = response.getHeader('externalId' + counter);
+            doctor.Doctor_External_Id__c = response.getHeader('addedId' + counter);
+            idDoctors.add(doctor);
+            counter++;
+        }
+
         DB_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, response.getBody(), 'Delete', logId, response.getStatusCode(), response.getStatus(), batchCounter,isInBatch,receiveExternalId(upsertBody));
+
+        String isSync = 'f';
+        if (response.getStatusCode() == 200) {
+            isSync = 't';
+        }
+
+        String toDeleteDoctorId = receiveId(upsertBody);
+        String batchDoctorCount = receiveBatchCounter(upsertBody);
+
+        String selfToken = UserInfo.getSessionId();
+        String selfAuth = 'Bearer ' + selfToken;
+        HttpRequest updateRequest = new HttpRequest();
+        updateRequest.setEndpoint(endpointString);
+        updateRequest.setMethod('PUT');
+        updateRequest.setHeader('Content-Type', 'application/json');
+        updateRequest.setHeader('Authorization', selfAuth);
+        updateRequest.setHeader('isSync', isSync);
+        updateRequest.setHeader('isBatch',String.valueOf(isInBatch));
+        updateRequest.setHeader('counter',batchDoctorCount);
+        updateRequest.setHeader('actionType', 'delete');
+        updateRequest.setHeader('undeID',toDeleteDoctorId);
+        updateRequest.setEndpoint(DB_Utils.retrieveCredentials('SelfDoctorEndpoint'));
+        updateRequest.setBody(JSON.serialize(idDoctors));
+        Http updateHttp = new Http();
+        HttpResponse updateResponse = updateHttp.send(updateRequest);
+
         if(response.getStatusCode() == 200){
             return true;
         }else return false;
@@ -132,5 +175,29 @@ public with sharing class DB_DoctorHandler {
             doctorExternalId = (String) params.get('Doctor_External_Id__c');
         }
         return doctorExternalId;
+    }
+    private static String receiveId(String requestBody) {
+        List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
+                requestBody
+        );
+        String doctorId;
+        for (Object obj : responseJSON) {
+            Map<String, Object> params = (Map<string, Object>) obj;
+            doctorId = (String) params.get('Id');
+        }
+        return doctorId;
+    }
+
+    private static String receiveBatchCounter(String requestBody){
+        List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
+                requestBody
+        );
+        String batchCounter;
+        for (Object obj : responseJSON) {
+            Map<String, Object> params = (Map<string, Object>) obj;
+            Integer count =(Integer) params.get('Batch_Counter__c');
+            batchCounter = String.valueOf(count);
+        }
+        return batchCounter;
     }
 }
