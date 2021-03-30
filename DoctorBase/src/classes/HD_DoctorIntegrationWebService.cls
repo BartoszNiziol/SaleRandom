@@ -34,7 +34,6 @@ global class HD_DoctorIntegrationWebService {
                 doctor.Doctor_External_Id__c = (String) params.get('Id');
                 doctor.Id = (String) params.get('Doctor_External_Id__c');
                 doctor.is_Synchronized__c = true;
-
                 isDoctorDeleted = isDoctorDeleted(doctor.Id);
                 doctorsToUpsert.add(doctor);
                 System.debug('isDoctorDeleted in loop');
@@ -83,7 +82,6 @@ global class HD_DoctorIntegrationWebService {
                 Doctor__c doctor = new Doctor__c();
                 doctor.Id = doctorExternalId;
                 doctorsToDelete.add(doctor);
-
             }
             try {
                 DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
