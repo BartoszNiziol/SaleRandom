@@ -71,18 +71,52 @@ global class HD_DoctorIntegrationWebService {
     }
     @HttpDelete
     global static void deleteDoctor() {
+        Boolean isDoctorDeleted;
         try {
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
             );
             List<Doctor__c> doctorsToDelete = new List<Doctor__c>();
             for (Object obj : responseJSON) {
-                Map<String, Object> params = (Map<string, Object>) obj;
-                String doctorExternalId = (String) params.get('Doctor_External_Id__c');
                 Doctor__c doctor = new Doctor__c();
+                Map<String, Object> params = (Map<string, Object>) obj;
+                doctor.Name = (String) params.get('Name');
+                doctor.First_Name__c = (String) params.get('First_Name__c');
+                doctor.Email__c = (String) params.get('Email__c');
+                doctor.Country__c = (String) params.get('Country__c');
+                doctor.City__c = (String) params.get ('City__c');
+                if ((Integer) params.get('License_Number__c') != null) {
+                    doctor.License_Number__c = Decimal.valueOf((Integer) params.get('License_Number__c'));
+                }
+                if ((String) params.get('Birthday_Date__c') != null) {
+                    doctor.Birthday_Date__c = Date.valueOf((String) params.get('Birthday_Date__c'));
+                }
+                doctor.Street__c = (String) params.get('Street__c');
+                doctor.Phone_Number__c = (String) params.get('Phone_Number__c');
+                String doctorExternalId = (String) params.get('Doctor_External_Id__c');
                 doctor.Id = doctorExternalId;
+                isDoctorDeleted = isDoctorDeleted(doctor.Id);
                 doctorsToDelete.add(doctor);
             }
+            if(isDoctorDeleted){
+
+                undelete doctorsToDelete;
+                try {
+                    DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                    update doctorsToDelete;
+                } finally {
+                    DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                }
+                try {
+                    DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
+                    delete doctorsToDelete;
+                } finally {
+                    DB_Utils.turnOnTrigger(Doctor__c.getSObjectType());
+                }
+
+            }
+
+
             try {
                 DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                 delete doctorsToDelete;
