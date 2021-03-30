@@ -180,9 +180,12 @@ public with sharing class DB_DoctorHandler {
         String endpointString = DB_Utils.retrieveCredentials('HDDoctorIntegrationEndpoint');
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
-        upsertRequest.setMethod('DELETE');
+        upsertRequest.setMethod('PATCH');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
+        upsertRequest.setBody(body);
+        Http updateHttp = new Http();
+        HttpResponse updateResponse = updateHttp.send(upsertRequest);
 
 
     }

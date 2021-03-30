@@ -33,14 +33,13 @@ global class HD_DoctorIntegrationWebService {
                 doctor.Id = (String) params.get('Doctor_External_Id__c');
                 doctor.is_Synchronized__c = true;
 
-
                 isDoctorDeleted = isDoctorDeleted(doctor.Id);
                 doctorsToUpsert.add(doctor);
                 System.debug('isDoctorDeleted in loop');
                 System.debug(isDoctorDeleted);
 
             }
-            if(isDoctorDeleted){
+            if (isDoctorDeleted) {
                 undelete doctorsToUpsert;
                 try {
                     HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
@@ -49,7 +48,7 @@ global class HD_DoctorIntegrationWebService {
                     HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
                 }
 
-            }else {
+            } else {
                 try {
                     HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                     upsert doctorsToUpsert;
@@ -183,8 +182,13 @@ global class HD_DoctorIntegrationWebService {
     @HttpPatch
     global static void checkSynchronization() {
 
+        System.debug(' RestContext.request.requestBody.toString()');
+        System.debug( RestContext.request.requestBody.toString());
+
         List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                 RestContext.request.requestBody.toString());
+
+        System.debug(responseJSON);
         Map<String, String> headers = RestContext.request.headers;
         List<Doctor__c> doctorsWithID = new List<Doctor__c>();
 
@@ -198,15 +202,13 @@ global class HD_DoctorIntegrationWebService {
             doctor.is_Synchronized__c = false;
             doctor.Batch_Counter__c = 0;
             doctorsWithID.add(doctor);
-
             try {
                 HD_Utils.turnOffTrigger(Doctor__c.getSObjectType());
-                Database.update(doctorsWithID,false) ;
+                Database.update(doctorsWithID, false) ;
             } finally {
                 HD_Utils.turnOnTrigger(Doctor__c.getSObjectType());
             }
         }
-
     }
     private static Boolean isDoctorDeleted(String id) {
         List <Doctor__c> doctor = [SELECT Id,IsDeleted FROM Doctor__c WHERE Id = :id ALL ROWS];
@@ -214,6 +216,5 @@ global class HD_DoctorIntegrationWebService {
             return false;
         }
         return doctor.get(0).IsDeleted;
-
     }
 }
