@@ -6,7 +6,14 @@ public with sharing class HD_DoctorBatch implements Database.Batchable<Doctor__c
     List <Doctor__c> logInfos = new List<Doctor__c>();
     String authorization;
     Boolean success;
+
     public Iterable<Doctor__c> start(Database.BatchableContext bc) {
+        HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                logHttpResponse.getBody()
+        );
+        String accesToken = (String) params.get('access_token');
+        authorization = 'Bearer ' + accesToken;
         List<Doctor__c> preparedDoctors = new List<Doctor__c>();
         preparedDoctors = [
                 SELECT Id,Country__c,IsDeleted,Name,City__c,is_Synchronized__c,Street__c,Email__c,License_Number__c
@@ -15,32 +22,24 @@ public with sharing class HD_DoctorBatch implements Database.Batchable<Doctor__c
                 WHERE is_Synchronized__c = false AND Batch_Counter__c < 3
                 ALL ROWS
         ];
-        System.debug('preparedDoctors in starrt');
-        System.debug(preparedDoctors);
         return preparedDoctors;
     }
-
     public void execute(Database.BatchableContext bc, List<Doctor__c> records) {
-
-        System.debug(records);
-        System.debug('records');
 
         for (Doctor__c doc : records) {
             List<Doctor__c> doctors = new List<Doctor__c>();
             doctors.add(doc);
             String body = JSON.serialize(doctors);
             if (doc.isDeleted == false) {
-              success =  HD_DoctorHandler.upsertDoctorToExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true,false);
+                success = HD_DoctorHandler.upsertDoctorToExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true, false,authorization);
             } else {
-                success =  HD_DoctorHandler.deleteDoctorFromExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true);
+                success = HD_DoctorHandler.deleteDoctorFromExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true,authorization);
             }
-
-             logInfos.add(doc);
+            logInfos.add(doc);
         }
     }
 
     public void finish(Database.BatchableContext bc) {
-        System.debug('at finish');
         AsyncApexJob a = [
                 SELECT Id, Status, NumberOfErrors, JobItemsProcessed,
                         TotalJobItems, CreatedBy.Email
@@ -57,9 +56,8 @@ public with sharing class HD_DoctorBatch implements Database.Batchable<Doctor__c
         String body = 'The batch Apex job processed ' + a.TotalJobItems +
                 ' batches with ' + a.NumberOfErrors + ' failures.' + 'HospitalDoctor \n';
         for (Doctor__c doc : logInfos) {
-            body += 'For record: ' + doc.Id +' '+doc.First_Name__c +' '+ doc.Name+ ' Synchronization : '+ success+ '\n';
+            body += 'For record: ' + doc.Id + ' ' + doc.First_Name__c + ' ' + doc.Name + ' Synchronization : ' + success + '\n';
         }
-
         mail.setPlainTextBody(body);
         Messaging.sendEmail(new Messaging.SingleEmailMessage[]{
                 mail
@@ -67,5 +65,4 @@ public with sharing class HD_DoctorBatch implements Database.Batchable<Doctor__c
 
         System.debug(body);
     }
-
 }

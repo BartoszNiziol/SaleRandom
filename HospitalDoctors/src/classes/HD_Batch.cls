@@ -47,15 +47,15 @@ public with sharing class HD_Batch implements Database.Batchable<Logger__c>, Dat
             if (log.Batch_Counter__c <= 3) {
                 if (log.Object_type__c == 'Doctor__c') {
                     if (log.Method_Type__c == 'Upsert') {
-                        HD_DoctorHandler.upsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
+                  //      HD_DoctorHandler.upsertDoctorToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
                     } else {
-                        HD_DoctorHandler.deleteDoctorFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
+                 //       HD_DoctorHandler.deleteDoctorFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
                     }
                 } else {
                     if (log.Method_Type__c == 'Upsert') {
-                        HD_HospitalHandler.upsertHospitalToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
+                    //    HD_HospitalHandler.upsertHospitalToExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
                     } else {
-                        HD_HospitalHandler.deleteHospitalFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
+                  //      HD_HospitalHandler.deleteHospitalFromExternalDB(log.Request_Body__c, ((SObject) Type.forName(log.Object_type__c).newInstance()).getSObjectType(), log.Batch_Counter__c, false);
                     }
                 }
             }

@@ -14,5 +14,4 @@ global class DB_DoctorBatchSchedule implements Schedulable{
         DB_DoctorBatch batch = new DB_DoctorBatch();
         database.executeBatch(batch);
     }
-
 }

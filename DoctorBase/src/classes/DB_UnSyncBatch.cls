@@ -4,15 +4,15 @@
 
 public with sharing class DB_UnSyncBatch implements Database.Batchable<Doctor__c>, Database.Stateful, Database.AllowsCallouts {
     List <DB_BatchLogWrapper> logInfos = new List<DB_BatchLogWrapper>();
-//    String authorization;
+    String authorization;
     public Iterable<Doctor__c> start(Database.BatchableContext bc) {
         List<Doctor__c> preparedDoctors = new List<Doctor__c>();
-//        HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
-//        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
-//                logHttpResponse.getBody()
-//        );
-//        String accesToken = (String) params.get('access_token');
-//        authorization = 'Bearer ' + accesToken;
+        HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                logHttpResponse.getBody()
+        );
+        String accesToken = (String) params.get('access_token');
+        authorization = 'Bearer ' + accesToken;
         preparedDoctors = [
                 SELECT Id,Doctor_External_Id__c
                 FROM Doctor__c

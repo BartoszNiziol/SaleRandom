@@ -37,15 +37,15 @@ public with sharing class DB_DoctorHandler {
     }
 
 
-    public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.sObjectType soType,Decimal batchCounter,Boolean selectedForBatch) {
+    public static Boolean upsertDoctorToExternalDB(String upsertBody, Schema.sObjectType soType,Decimal batchCounter,Boolean selectedForBatch,String authorization) {
         HttpResponse response;
-        String authorization;
-        HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
-        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
-                logHttpResponse.getBody()
-        );
-        String accesToken = (String) params.get('access_token');
-        authorization = 'Bearer ' + accesToken;
+//        String authorization;
+//        HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
+//        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+//                logHttpResponse.getBody()
+//        );
+//        String accesToken = (String) params.get('access_token');
+//        authorization = 'Bearer ' + accesToken;
         String endpointString = DB_Utils.retrieveCredentials('HDDoctorIntegrationEndpoint');
 
         HttpRequest upsertRequest = new HttpRequest();
@@ -103,15 +103,15 @@ public with sharing class DB_DoctorHandler {
 
     }
 
-    public static Boolean deleteDoctorFromExternalDB(String upsertBody, Schema.sObjectType soType,Decimal batchCounter,Boolean isInBatch) {
+    public static Boolean deleteDoctorFromExternalDB(String upsertBody, Schema.sObjectType soType,Decimal batchCounter,Boolean isInBatch,String authorization) {
         HttpResponse response;
-        String authorization;
-        HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
-        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
-                logHttpResponse.getBody()
-        );
-        String accesToken = (String) params.get('access_token');
-        authorization = 'Bearer ' + accesToken;
+//        String authorization;
+//        HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
+//        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+//                logHttpResponse.getBody()
+//        );
+//        String accesToken = (String) params.get('access_token');
+//        authorization = 'Bearer ' + accesToken;
         String endpointString = DB_Utils.retrieveCredentials('HDDoctorIntegrationEndpoint');
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);

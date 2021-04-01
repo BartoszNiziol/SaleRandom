@@ -5,7 +5,16 @@
 public with sharing class DB_DoctorBatch implements Database.Batchable<Doctor__c>, Database.Stateful, Database.AllowsCallouts {
     List <Doctor__c> logInfos = new List<Doctor__c>();
     Boolean success;
+    String authorization;
+
     public Iterable<Doctor__c> start(Database.BatchableContext bc) {
+                HttpResponse logHttpResponse = DB_IntegrationLoiginHandler.loginCallout();
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                logHttpResponse.getBody()
+        );
+        String accesToken = (String) params.get('access_token');
+        authorization = 'Bearer ' + accesToken;
+
         List<Doctor__c> preparedDoctors = new List<Doctor__c>();
         preparedDoctors = [
                 SELECT Id,Country__c,IsDeleted,Name,City__c,is_Synchronized__c,Street__c,Email__c,License_Number__c
@@ -14,8 +23,7 @@ public with sharing class DB_DoctorBatch implements Database.Batchable<Doctor__c
                 WHERE is_Synchronized__c = false AND Batch_Counter__c < 3
                 ALL ROWS
         ];
-        System.debug('preparedDoctors in starrt');
-        System.debug(preparedDoctors);
+
         return preparedDoctors;
     }
     public void execute(Database.BatchableContext bc, List<Doctor__c> records) {
@@ -25,9 +33,9 @@ public with sharing class DB_DoctorBatch implements Database.Batchable<Doctor__c
             doctors.add(doc);
             String body = JSON.serialize(doctors);
             if (doc.isDeleted == false) {
-                success = DB_DoctorHandler.upsertDoctorToExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true);
+                success = DB_DoctorHandler.upsertDoctorToExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true,authorization);
             } else {
-                success = DB_DoctorHandler.deleteDoctorFromExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true);
+                success = DB_DoctorHandler.deleteDoctorFromExternalDB(body, Doctor__c.getSObjectType(), doc.Batch_Counter__c, true,authorization);
             }
 
             logInfos.add(doc);

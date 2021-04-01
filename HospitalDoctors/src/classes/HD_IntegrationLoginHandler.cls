@@ -11,6 +11,7 @@ public with sharing class HD_IntegrationLoginHandler implements Database.AllowsC
         loginRequest.setMethod('POST');
         String username = HD_Utils.retrieveCredentials('DBLogin');
         String password = HD_Utils.retrieveCredentials('DBPassword');
+//        password = 'ugabuga';
         String grantType = 'password';
         String clientId = HD_Utils.retrieveCredentials('clientID');
         String clientSecret = HD_Utils.retrieveCredentials('clientSecret');
@@ -20,9 +21,7 @@ public with sharing class HD_IntegrationLoginHandler implements Database.AllowsC
         );
         Http http = new Http();
         HttpResponse response = http.send(loginRequest);
-
         return response;
     }
-
 
 }
