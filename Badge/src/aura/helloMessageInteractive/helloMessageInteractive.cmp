@@ -1,0 +1,12 @@
+<!--
+ - Created by BRITENET on 01.04.2021.
+ -->
+
+<aura:component description="helloMessageInteractive">
+    <aura:attribute name="message" type="String"/>
+    <p>Message of a day : {!v.message}</p>
+    <div>
+        <lightning:button label="You look nice today" onclick="{!c.handleClick}"/>
+        <lightning:button label="Good day sir" onclick="{!c.handleClick}"/>
+    </div>
+</aura:component>

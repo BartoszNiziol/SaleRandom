@@ -10,7 +10,7 @@ public with sharing class DB_IntegrationLoiginHandler {
         loginRequest.setMethod('POST');
         String username = DB_Utils.retrieveCredentials('HDLogin');
         String password = DB_Utils.retrieveCredentials('HDPassword');
-//         password = 'ugabuga';
+         password = 'ugabuga';
         String grantType = 'password';
         String clientId = DB_Utils.retrieveCredentials('clientID');
         String clientSecret = DB_Utils.retrieveCredentials('clientSecret');
@@ -21,6 +21,4 @@ public with sharing class DB_IntegrationLoiginHandler {
         Http http = new Http();
         return http.send(loginRequest);
     }
-
-
 }

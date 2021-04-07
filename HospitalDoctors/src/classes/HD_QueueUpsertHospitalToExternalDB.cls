@@ -6,6 +6,7 @@ public with sharing class HD_QueueUpsertHospitalToExternalDB implements Queueabl
     String upsertBody {get; set;}
     Schema.sObjectType soType{get;set;}
     Boolean isEdited {get; set;}
+    String authorization{get;set;}
     public  HD_QueueUpsertHospitalToExternalDB (String upsertBody, Schema.sObjectType soType,Boolean isEdited){
         this.soType = soType;
         this.upsertBody = upsertBody;
@@ -13,7 +14,13 @@ public with sharing class HD_QueueUpsertHospitalToExternalDB implements Queueabl
     }
 
     public void execute (QueueableContext context){
-        HD_HospitalHandler.upsertHospitalToExternalDB(upsertBody,soType,0,false,isEdited);
+        HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
+                logHttpResponse.getBody()
+        );
+        String accesToken = (String) params.get('access_token');
+        authorization = 'Bearer ' + accesToken;
+        HD_HospitalHandler.upsertHospitalToExternalDB(upsertBody,soType,0,false,isEdited,authorization);
     }
 
 }

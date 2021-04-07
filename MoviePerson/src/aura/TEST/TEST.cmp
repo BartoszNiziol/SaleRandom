@@ -1,0 +1,7 @@
+<!--
+ - Created by BRITENET on 06.04.2021.
+ -->
+
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global"  description="TEST">
+    TEST
+</aura:component>

@@ -1,0 +1,55 @@
+<!--
+ - Created by BRITENET on 07.04.2021.
+ -->
+
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="Btn" controller="BtnController">
+    <aura:attribute name="listedWrappedItems" type="object"/>
+    <aura:attribute name="searchString" type="String"/>
+    <aura:attribute name="currentPage" type="Integer" default="1"/>
+    <aura:attribute name="totalPages" type="Integer"/>
+    <aura:attribute name="totalResults" type="Integer"/>
+    <aura:attribute name="selectedOption" type="Integer"/>
+    <lightning:button  name="pull" onclick="{!c.requestZero}" class="slds-m-top_medium" variant="brand"> Lajt </lightning:button>
+    <lightning:select name="moviePerson" label="Select" required="true" value="{!v.selectedOption}">
+        <option value= "1">Person</option>
+        <option value= "2" >Movie</option>
+    </lightning:select>
+    <lightning:input aura:id="searchform" label="Search"
+                     name="searchform"
+                     value="{!v.searchString}"
+                     required="false"/>
+    <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+        <thead>
+        <tr class="slds-text-title--caps">
+            <th scope="col">
+                <div class="slds-truncate" title="Title">Title</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate" title="overview">overview</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate" title="releaseYear">releaseYear</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+    <aura:iteration items="{!v.listedWrappedItems.movies }" var="movie">
+        <tr>
+            <th scope="row">
+                <div class="slds-truncate" title="{!movie.title}">{!movie.title}</div>
+            </th>
+            <th scope="row">
+                <div class="slds-truncate" title="{!movie.overview}">{!movie.overview}</div>
+            </th>
+            <th scope="row">
+                <div class="slds-truncate" title="{!movie.releaseYear}">{!movie.releaseYear}</div>
+            </th>
+        </tr>
+    </aura:iteration>
+        </tbody>
+    </table>
+    <lightning:button  name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium" variant="brand"> Previous </lightning:button>
+    {!v.currentPage}
+    <lightning:button  name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium" variant="brand"> Next </lightning:button>
+
+</aura:component>

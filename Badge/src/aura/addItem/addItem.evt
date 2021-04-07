@@ -1,0 +1,6 @@
+<!--
+ - Created by BRITENET on 02.04.2021.
+ -->
+
+<aura:event type="APPLICATION" description="addItem">
+</aura:event>

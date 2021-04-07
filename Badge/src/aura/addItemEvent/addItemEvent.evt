@@ -1,0 +1,8 @@
+<!--
+ - Created by BRITENET on 02.04.2021.
+ -->
+
+
+<aura:event type="COMPONENT" description="Event template">
+    <aura:attribute name="item" type="Camping_Item__c"/>
+</aura:event>

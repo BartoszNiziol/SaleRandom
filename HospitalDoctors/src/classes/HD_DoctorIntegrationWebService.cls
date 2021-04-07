@@ -218,13 +218,9 @@ global class HD_DoctorIntegrationWebService {
     @HttpPatch
     global static void checkSynchronization() {
 
-        System.debug(' RestContext.request.requestBody.toString()');
-        System.debug(RestContext.request.requestBody.toString());
-
         List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                 RestContext.request.requestBody.toString());
 
-        System.debug(responseJSON);
         Map<String, String> headers = RestContext.request.headers;
         List<Doctor__c> doctorsWithID = new List<Doctor__c>();
 

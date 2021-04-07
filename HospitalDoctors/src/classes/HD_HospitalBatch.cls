@@ -25,15 +25,14 @@ public with sharing class HD_HospitalBatch  implements Database.Batchable<Hospit
 
     public void execute(Database.BatchableContext bc, List<Hospital__c> records) {
 
-
         for (Hospital__c hosp : records) {
             List<Hospital__c> hospitals = new List<Hospital__c>();
             hospitals.add(hosp);
             String body = JSON.serialize(hospitals);
             if (hosp.isDeleted == false) {
-                HD_HospitalHandler.upsertHospitalToExternalDB(body, Doctor__c.getSObjectType(), hosp.Batch_Counter__c, true,false);
+                HD_HospitalHandler.upsertHospitalToExternalDB(body, Doctor__c.getSObjectType(), hosp.Batch_Counter__c, true,false,authorization);
             } else {
-                HD_HospitalHandler.deleteHospitalFromExternalDB(body, Doctor__c.getSObjectType(), hosp.Batch_Counter__c, true);
+                HD_HospitalHandler.deleteHospitalFromExternalDB(body, Doctor__c.getSObjectType(), hosp.Batch_Counter__c, true,authorization);
             }
             logInfos.add(hosp);
         }

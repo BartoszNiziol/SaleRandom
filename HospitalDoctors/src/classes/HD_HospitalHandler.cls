@@ -37,25 +37,15 @@ public with sharing class HD_HospitalHandler {
         return hospital;
     }
 
-    public static Boolean upsertHospitalToExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean isInBatch,Boolean isEdited) {
+    public static Boolean upsertHospitalToExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean isInBatch,Boolean isEdited,String authorization) {
 
         HttpResponse response;
-        String authorization;
-
-        HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
-        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
-                logHttpResponse.getBody()
-        );
-        String accesToken = (String) params.get('access_token');
-        authorization = 'Bearer ' + accesToken;
         String endpointString = HD_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
-
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
         upsertRequest.setMethod('POST');
         upsertRequest.setHeader('Content-Type', 'application/json');
         upsertRequest.setHeader('Authorization', authorization);
-        upsertRequest.setHeader('Authorization', 'block');
         upsertRequest.setBody(upsertBody);
 
         String logId = HD_LoggerHandler.sendLogRequest(soType.getDescribe().name, endpointString, upsertBody, null, 'Upsert', null, null, null, batchCounter, isInBatch,null);
@@ -106,18 +96,10 @@ public with sharing class HD_HospitalHandler {
         } else return false;
     }
 
-    public static Boolean deleteHospitalFromExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean isInBatch) {
+    public static Boolean deleteHospitalFromExternalDB(String upsertBody, Schema.SObjectType soType, Decimal batchCounter, Boolean isInBatch,String authorization) {
         HttpResponse response;
-        String authorization;
 
-        HttpResponse logHttpResponse = HD_IntegrationLoginHandler.loginCallout();
-        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(
-                logHttpResponse.getBody()
-        );
-        String accesToken = (String) params.get('access_token');
-        authorization = 'Bearer ' + accesToken;
         String endpointString = HD_Utils.retrieveCredentials('DBHospitalIntegrationEndpoint');
-
         HttpRequest upsertRequest = new HttpRequest();
         upsertRequest.setEndpoint(endpointString);
         upsertRequest.setMethod('DELETE');

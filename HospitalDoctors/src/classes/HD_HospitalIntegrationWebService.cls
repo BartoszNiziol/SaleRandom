@@ -6,6 +6,7 @@ global class HD_HospitalIntegrationWebService {
 
     @HttpPost
     global static void upsertHospital() {
+        Boolean isHospitalDeleted;
         try {
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
@@ -26,13 +27,24 @@ global class HD_HospitalIntegrationWebService {
                 hospital.Hospital_External_Id__c = (String) params.get('Id');
                 hospital.Id = (String) params.get('Hospital_External_Id__c');
                 hospital.is_Synchronized__c = true;
+                isHospitalDeleted = isHospitalDeleted(hospital.Id);
                 hospitalsToUpsert.add(hospital);
             }
-            try {
-                HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
-                upsert hospitalsToUpsert;
-            } finally {
-                HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+            if(isHospitalDeleted){
+                undelete  hospitalsToUpsert;
+                try {
+                    HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+                    update hospitalsToUpsert;
+                } finally {
+                    HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+                }
+            } else {
+                try {
+                    HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+                    upsert hospitalsToUpsert;
+                } finally {
+                    HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+                }
             }
             Integer counter = 0;
             for (Hospital__c hosp : hospitalsToUpsert) {
@@ -47,6 +59,7 @@ global class HD_HospitalIntegrationWebService {
 
     @HttpDelete
     global static void deleteHospital() {
+        Boolean isHospitalDeleted;
         try {
             List <Object> responseJSON = (List <Object>) JSON.deserializeUntyped(
                     RestContext.request.requestBody.toString()
@@ -54,17 +67,45 @@ global class HD_HospitalIntegrationWebService {
             List<Hospital__c> hospitalsToDelete = new List<Hospital__c>();
             for (Object obj : responseJSON) {
                 Map<String, Object> params = (Map<string, Object>) obj;
-
-                String hospitalExternalId = (String) params.get('Hospital_External_Id__c');
                 Hospital__c hospital = new Hospital__c();
-                hospital.Id = hospitalExternalId;
+                hospital.Name = (String) params.get('Name');
+                hospital.Email__c = (String) params.get('Email__c');
+                hospital.Country__c = (String) params.get('Country__c');
+                hospital.City__c = (String) params.get('City__c');
+                hospital.Web_Page__c = (String) params.get('Web_Page__c');
+                hospital.Street__c = (String) params.get('Street__c');
+                hospital.Phone_Number__c = (String) params.get('Phone_Number__c');
+                hospital.Hospital_External_Id__c = (String) params.get('Id');
+                hospital.Id = (String) params.get('Hospital_External_Id__c');
+                isHospitalDeleted(hospital.Id);
                 hospitalsToDelete.add(hospital);
+            }
+            if(isHospitalDeleted){
+                undelete hospitalsToDelete;
+                try {
+                    HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+                    update hospitalsToDelete;
+                } finally {
+                    HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+                }
+                try {
+                    HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
+                    delete hospitalsToDelete;
+                } finally {
+                    HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+                }
             }
             try {
                 HD_Utils.turnOffTrigger(Hospital__c.getSObjectType());
                 delete hospitalsToDelete;
             } finally {
                 HD_Utils.turnOnTrigger(Hospital__c.getSObjectType());
+            }
+            Integer counter = 0;
+            for (Hospital__c hosp : hospitalsToDelete) {
+                RestContext.response.addHeader('addedId' + counter, hosp.Id);
+                RestContext.response.addHeader('externalId' + counter, hosp.Hospital_External_Id__c);
+                counter++ ;
             }
         } catch (Exception e) {
             System.debug(errorResponse(e));
@@ -158,6 +199,13 @@ global class HD_HospitalIntegrationWebService {
         wrapper.isSuccess = false;
         wrapper.message = e.getMessage();
         return wrapper;
+    }
+    private static Boolean isHospitalDeleted(String id) {
+        List <Hospital__c> hospitals = [SELECT Id,IsDeleted FROM Hospital__c WHERE Id = :id ALL ROWS];
+        if (hospitals.size() == 0) {
+            return false;
+        }
+        return hospitals.get(0).IsDeleted;
     }
 
 }
