@@ -1,7 +1,6 @@
 /**
  * Created by BRITENET on 07.04.2021.
  */
-
 ({
     request: function (component,event,helper){
          console.log('MAIN');

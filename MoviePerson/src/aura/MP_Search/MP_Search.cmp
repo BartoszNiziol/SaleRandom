@@ -2,7 +2,7 @@
  - Created by BRITENET on 07.04.2021.
  -->
 
-<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="Btn" controller="BtnController">
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="Search" controller="MP_SearchController">
     <aura:attribute name="listedWrappedItems" type="object"/>
     <aura:attribute name="searchString" type="String"/>
     <aura:attribute name="currentPage" type="Integer" default="1"/>
@@ -33,23 +33,23 @@
         </tr>
         </thead>
         <tbody>
-    <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
-        <tr>
-            <th scope="row">
-                <div class="slds-truncate" title="{!item.title}">{!item.title}</div>
-            </th>
-            <th scope="row">
-                <div class="slds-truncate" title="{!item.overview}">{!item.overview}</div>
-            </th>
-            <th scope="row">
-                <div class="slds-truncate" title="{!item.releaseYear}">{!item.releaseYear}</div>
-            </th>
-        </tr>
-    </aura:iteration>
+        <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
+            <tr>
+                <th scope="row">
+                    <div class="slds-truncate" title="{!item.title}">{!item.title}</div>
+                </th>
+                <th scope="row">
+                    <div class="slds-truncate" title="{!item.overview}">{!item.overview}</div>
+                </th>
+                <th scope="row">
+                    <div class="slds-truncate" title="{!item.releaseYear}">{!item.releaseYear}</div>
+                </th>
+            </tr>
+        </aura:iteration>
         </tbody>
     </table>
     <lightning:button  name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium" variant="brand"> Previous </lightning:button>
-    {!v.currentPage}
+        {!v.currentPage}
     <lightning:button  name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium" variant="brand"> Next </lightning:button>
 
 </aura:component>

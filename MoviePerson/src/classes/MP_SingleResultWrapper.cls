@@ -5,6 +5,8 @@
 public with sharing class MP_SingleResultWrapper {
 
     @AuraEnabled
+    public String type{get;set;}
+    @AuraEnabled
     public Boolean isAdult{get;set;}
     @AuraEnabled
     public String apiId{get;set;}
@@ -18,8 +20,12 @@ public with sharing class MP_SingleResultWrapper {
     public String title{get;set;}
     @AuraEnabled
     public Decimal rating{get;set;}
+    @AuraEnabled
+    public Integer gender{get;set;}
+    @AuraEnabled
+    public String department{get;set;}
 
-    public MP_SingleResultWrapper(Boolean isAdult, String apiId, String overview, String backdropPath, String releaseYear, String title, Decimal rating){
+    public MP_SingleResultWrapper(Boolean isAdult, String apiId, String overview, String backdropPath, String releaseYear, String title, Decimal rating,String type,Integer gender,String department){
         this.isAdult = isAdult;
         this.apiId = apiId;
         this.overview = overview;
@@ -27,6 +33,9 @@ public with sharing class MP_SingleResultWrapper {
         this.releaseYear = releaseYear;
         this.title = title;
         this.rating = rating;
+        this.type =type;
+        this.gender = gender;
+        this.department = department;
     }
 
 }

@@ -2,8 +2,7 @@
  * Created by BRITENET on 07.04.2021.
  */
 
-public with sharing class BtnController {
-
+public with sharing class MP_SearchController {
     @auraenabled
     public static MP_WholeResultWrapper findMovies(String search,Integer currentPage){
 
@@ -36,26 +35,26 @@ public with sharing class BtnController {
             String apiId = String.valueOf(params.get('id'));
             String title = (String) params.get('title');
             if(params.get('overview') != null){
-                 overviev = (String) params.get('overview');
+                overviev = (String) params.get('overview');
             }else{
-                 overviev = '';
+                overviev = '';
             }
             if(params.get ('backdrop_path') != null){
-                 backdropPath =(String) params.get ('backdrop_path');
+                backdropPath =(String) params.get ('backdrop_path');
             }else {
-                 backdropPath = '';
+                backdropPath = '';
             }
             if(params.get('vote_average')!= null){
-                 rating = (Decimal) params.get('vote_average');
+                rating = (Decimal) params.get('vote_average');
             }else {
-                 rating = 0;
+                rating = 0;
             }
             if(params.get('release_date') != null){
-                 String relaseDate = (String) params.get('release_date');
-                 releaseYear  = relaseDate.split('-').get(0);
+                String relaseDate = (String) params.get('release_date');
+                releaseYear  = relaseDate.split('-').get(0);
             }
             else {
-                 releaseYear = '';
+                releaseYear = '';
             }
             MP_SingleResultWrapper wrapper = new MP_SingleResultWrapper(isAdult,apiId,overviev,backdropPath,releaseYear,title,rating,'movie',null,null);
             wrappers.add(wrapper);
@@ -105,12 +104,12 @@ public with sharing class BtnController {
                 backdropPath = '';
             }
             if(params.get('gender') != null){
-               gender  = (Integer) params.get('gender');
+                gender  = (Integer) params.get('gender');
             }else{
                 gender = 1;
             }
             if (params.get('known_for_department') != null){
-                 department =(String) params.get('known_for_department');
+                department =(String) params.get('known_for_department');
             }else{
                 department = '';
             }
