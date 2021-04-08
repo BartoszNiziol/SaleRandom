@@ -1,0 +1,8 @@
+<!--
+ - Created by BRITENET on 08.04.2021.
+ -->
+
+<aura:event type="APPLICATION" description="MP_SearchEvent">
+    <aura:attribute type="String" name="searchString"/>
+    <aura:attribute type="Integer" name="selectedOption"/>
+</aura:event>

@@ -2,5 +2,51 @@
  - Created by BRITENET on 08.04.2021.
  -->
 
-<aura:component description="MP_ResultList">
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="ResultList" controller="MP_SearchController">
+    <aura:attribute name="listedWrappedItems" type="object"/>
+    <aura:attribute name="searchString" type="String"/>
+    <aura:attribute name="currentPage" type="Integer" default="1"/>
+    <aura:attribute name="totalPages" type="Integer"/>
+    <aura:attribute name="totalResults" type="Integer"/>
+    <aura:attribute name="selectedOption" type="Integer"/>
+    <aura:handler  event="c:MP_SearchEvent" action="{!c.requestZero}"/>
+    <aura:handler name="blank" event="c:BlankEvent" action="{!c.blank}"/>
+    <aura:registerEvent name="searchPersonEvent" type="c:MP_SelectPersonEvent"/>
+
+    <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+        <thead>
+        <tr class="slds-text-title--caps">
+            <th scope="col">
+                <div class="slds-truncate" title="Title">Title</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate" title="overview">overview</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate" title="releaseYear">releaseYear</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
+            <tr >
+                <th scope="row" >
+                    <button type="button" onclick="{!c.sendSelected}" id="{!item.apiId}" >Select</button>
+                </th>
+                <th scope="row" >
+                    <div class="slds-truncate" title="{!item.title}"  >{!item.title}</div>
+                </th>
+                <th scope="row">
+                    <div class="slds-truncate" title="{!item.overview}">{!item.overview}</div>
+                </th>
+                <th scope="row">
+                    <div class="slds-truncate" title="{!item.releaseYear}">{!item.releaseYear}</div>
+                </th>
+            </tr>
+        </aura:iteration>
+        </tbody>
+    </table>
+    <lightning:button  name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium" variant="brand"> Previous </lightning:button>
+        {!v.currentPage}
+    <lightning:button  name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium" variant="brand"> Next </lightning:button>
 </aura:component>
