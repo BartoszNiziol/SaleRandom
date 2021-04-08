@@ -1,0 +1,18 @@
+<!--
+ - Created by BRITENET on 08.04.2021.
+ -->
+
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="MP_DescriptionPart" controller="MP_PersonProfileController" >
+    <aura:attribute type="String" name="externalId"/>
+    <aura:attribute type="object" name="profileWrapper"/>
+    <aura:handler name="init" value="{!this}" action="{!c.loadDescription}"/>
+    <img style="max-width:200px; object-fit: cover; height: 100%;" src="{!'https://image.tmdb.org/t/p/w200' + v.profileWrapper.profilePath}" />
+    {!v.profileWrapper.name}
+    {!v.profileWrapper.bio}
+    {!v.profileWrapper.birthdayDate}
+    {!v.profileWrapper.depertment}
+
+
+
+
+</aura:component>

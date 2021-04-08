@@ -1,0 +1,10 @@
+<!--
+ - Created by BRITENET on 08.04.2021.
+ -->
+
+<aura:component description="MP_RelationList">
+    <aura:attribute type="String" name="externalId"/>
+    <aura:attribute type="object" name="relationList"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+</aura:component>

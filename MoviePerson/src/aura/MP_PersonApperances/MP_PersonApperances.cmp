@@ -1,0 +1,40 @@
+<!--
+ - Created by BRITENET on 08.04.2021.
+ -->
+
+<aura:component description="MP_PersonApperances" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" controller="MP_PersonApperancesController">
+    <aura:attribute type="String" name="externalId"/>
+    <aura:attribute type="object[]" name="appearancesWrapper"/>
+    <aura:handler name="init" value="{!this}" action="{!c.loadApperances}"/>
+    <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+        <thead>
+        <tr class="slds-text-title--caps">
+            <th scope="col">
+                <div class="slds-truncate" title="Title">Title</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate" title="overview">overview</div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate" title="releaseYear">releaseYear</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <aura:iteration items="{!v.appearancesWrapper }" var="item">
+            <tr>
+                <th scope="row">
+                    <div class="slds-truncate" title="{!item.title}">{!item.title}</div>
+                </th>
+                <th scope="row">
+                    <div class="slds-truncate" title="{!item.rating}">{!item.rating}</div>
+                </th>
+                <th scope="row">
+                    <div class="slds-truncate" title="{!item.releaseDate}">{!item.releaseDate}</div>
+                </th>
+            </tr>
+        </aura:iteration>
+        </tbody>
+    </table>
+
+</aura:component>
