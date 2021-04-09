@@ -1,0 +1,41 @@
+<!--
+ - Created by BRITENET on 09.04.2021.
+ -->
+
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" controller="MP_MovieCrewController">
+    <aura:attribute type="String" name="externalId"/>
+    <aura:attribute type="object[]" name="crewWrapper"/>
+    <aura:handler event="c:MP_SelectMovieEvent" action="{!c.loadCrew}"/>
+    <aura:attribute default="false" type="Boolean" name="componentEnabled"/>
+    <aura:handler event="c:MP_SearchEvent" action="{!c.hideComponent}"/>
+    <aura:if isTrue="{!v.componentEnabled}" >
+        <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col">
+                    <div class="slds-truncate" title="Name">Title</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="overview">overview</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="releaseYear">releaseYear</div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <aura:iteration items="{!v.crewWrapper }" var="item">
+                <tr>
+                    <th scope="row">
+                        <div class="slds-truncate" title="{!item.name}">{!item.name}</div>
+                    </th>
+                    <th scope="row">
+                        <div class="slds-truncate" title="{!item.rating}">{!item.rating}</div>
+                    </th>
+
+                </tr>
+            </aura:iteration>
+            </tbody>
+        </table>
+    </aura:if>
+</aura:component>

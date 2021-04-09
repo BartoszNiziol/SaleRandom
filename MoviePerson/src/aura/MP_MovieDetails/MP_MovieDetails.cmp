@@ -1,0 +1,19 @@
+<!--
+ - Created by BRITENET on 09.04.2021.
+ -->
+
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="MP_MovieDetails" controller="MP_MovieDetailsController">
+    <aura:attribute type="String" name="externalId"/>
+    <aura:attribute type="object" name="movieDetailsWrapper"/>
+    <aura:attribute type="Boolean" name="componentEnabled" default="false"/>
+
+    <aura:handler event="c:MP_SelectMovieEvent" action="{!c.loadDescription}" />
+    <aura:handler event="c:MP_SearchEvent" action="{!c.hideComponent}"/>
+    <aura:if isTrue="{!v.componentEnabled}" >
+        <img style="max-width:200px; object-fit: cover; height: 100%;" src="{!'https://image.tmdb.org/t/p/w200' + v.movieDetailsWrapper.backdropPath}" />
+            {!v.movieDetailsWrapper.title}
+            {!v.movieDetailsWrapper.depertment}
+    </aura:if>
+
+
+</aura:component>

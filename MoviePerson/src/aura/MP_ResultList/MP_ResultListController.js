@@ -23,6 +23,7 @@
             if(state  == "SUCCESS"){
                  console.log(response.getReturnValue());
                  component.set('v.listedWrappedItems', response.getReturnValue());
+                 component.set('v.componentEnabled',true);
             }
         });
         $A.enqueueAction(action);
@@ -60,13 +61,17 @@
     },
 
    sendSelected: function (component,event,helper){
-    let createEvent = $A.get("e.c:MP_SelectPersonEvent");
+            let createEvent;
+        let selectedOption = component.get('v.selectedOption');
+        if(selectedOption == 1){
+                    createEvent = $A.get("e.c:MP_SelectPersonEvent");
+               }else{
+                  createEvent = $A.get("e.c:MP_SelectMovieEvent");
+               }
             let selectedRowId = event.target.id;
-            alert(event.target.id);
-            let selectedOption = component.get('v.selectedOption');
             createEvent.setParam('selectedId',selectedRowId);
-            createEvent.setParam('selectedOption',selectedOption);
-           createEvent.fire();
+            createEvent.fire();
+              component.set('v.componentEnabled',false);
     }
 
 });

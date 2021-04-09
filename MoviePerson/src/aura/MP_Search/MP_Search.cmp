@@ -9,9 +9,8 @@
     <aura:attribute name="totalPages" type="Integer"/>
     <aura:attribute name="totalResults" type="Integer"/>
     <aura:attribute name="selectedOption" type="Integer"/>
-    <aura:attribute name="showActorDesc" type="Boolean" default="false"/>
-    <aura:attribute name="showMovieDesc" type="Boolean" default="false"/>
-    <aura:attribute name="showResultList" type="Boolean" default="false"/>
+
+
     <aura:registerEvent name="searchEvent" type="c:MP_SearchEvent" />
 
     <lightning:button  name="pull" onclick="{!c.initSearch}" class="slds-m-top_medium" variant="brand"> Search </lightning:button>
@@ -25,14 +24,12 @@
                      value="{!v.searchString}"
                      required="false"/>
 
-    <aura:if isTrue="{!v.showResultList}" >
-        <c:MP_ResultList/>
-    </aura:if>
 
-    <aura:if isTrue="{!v.showActorDesc}" >
-        <c:MP_ShowProfile/>
-    </aura:if>
-
+    <c:MP_ResultList/>
+    <c:MP_DescriptionPart />
+    <c:MP_PersonApperances />
+    <c:MP_MovieDetails />
+    <c:MP_CrewList />
 
 
 

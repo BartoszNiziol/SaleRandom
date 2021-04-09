@@ -5,13 +5,19 @@
 <aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="descriptionPart" controller="MP_PersonProfileController" >
     <aura:attribute type="String" name="externalId"/>
     <aura:attribute type="object" name="profileWrapper"/>
-    <aura:handler name="init" value="{!this}" action="{!c.loadDescription}"/>
+    <aura:attribute type="Boolean" name="componentEnabled" default="false"/>
+
+    <aura:handler event="c:MP_SelectPersonEvent" action="{!c.loadDescription}" />
+    <aura:handler event="c:MP_SearchEvent" action="{!c.hideComponent}"/>
+
+    <aura:registerEvent name="turnPersonProfileFlagEvent" type="c:MP_TurnPersonProfileFlagEvent"/>
+    <aura:if isTrue="{!v.componentEnabled}" >
     <img style="max-width:200px; object-fit: cover; height: 100%;" src="{!'https://image.tmdb.org/t/p/w200' + v.profileWrapper.profilePath}" />
     {!v.profileWrapper.name}
     {!v.profileWrapper.bio}
     {!v.profileWrapper.birthdayDate}
     {!v.profileWrapper.depertment}
-
+    </aura:if>
 
 
 

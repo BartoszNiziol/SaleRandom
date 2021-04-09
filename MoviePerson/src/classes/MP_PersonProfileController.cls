@@ -23,7 +23,7 @@ public with sharing class MP_PersonProfileController {
 
         Map<String,Object> responseMap  = (Map<String,Object>) JSON.deserializeUntyped(response.getBody());
 
-        Boolean isAdult = (Boolean) responseMap.get('adutl');
+        Boolean isAdult = (Boolean) responseMap.get('adult');
         String bio = (String) responseMap.get('biography');
         String birthday = (String) responseMap.get('birthday');
         String deathday = (String) responseMap.get('deathday');

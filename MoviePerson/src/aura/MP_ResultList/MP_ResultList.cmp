@@ -9,10 +9,14 @@
     <aura:attribute name="totalPages" type="Integer"/>
     <aura:attribute name="totalResults" type="Integer"/>
     <aura:attribute name="selectedOption" type="Integer"/>
-    <aura:handler  event="c:MP_SearchEvent" action="{!c.requestZero}"/>
-    <aura:handler name="blank" event="c:BlankEvent" action="{!c.blank}"/>
-    <aura:registerEvent name="searchPersonEvent" type="c:MP_SelectPersonEvent"/>
+    <aura:attribute name="componentEnabled" type="Boolean" default="true"/>
+    <aura:handler event="c:MP_SearchEvent" action="{!c.requestZero}"/>
 
+
+    <aura:registerEvent name="MP_SelectPersonEvent" type="c:MP_SelectPersonEvent"/>
+    <aura:registerEvent name="MP_SelectMovieEvent" type="c:MP_SelectMovieEvent"/>
+
+    <aura:if isTrue="{!v.componentEnabled}" >
     <table class="slds-table slds-table--bordered slds-table--cell-buffer">
         <thead>
         <tr class="slds-text-title--caps">
@@ -49,4 +53,5 @@
     <lightning:button  name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium" variant="brand"> Previous </lightning:button>
         {!v.currentPage}
     <lightning:button  name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium" variant="brand"> Next </lightning:button>
+    </aura:if>
 </aura:component>

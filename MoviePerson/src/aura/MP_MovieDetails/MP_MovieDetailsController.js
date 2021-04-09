@@ -1,12 +1,12 @@
 /**
- * Created by BRITENET on 08.04.2021.
+ * Created by BRITENET on 09.04.2021.
  */
  ({
  loadDescription: function (component,event,helper){
 
          let externalId = event.getParam("selectedId");
         let action;
-        action = component.get("c.findPersonProfile");
+        action = component.get("c.findMovieDetails");
         action.setParam('externalId',externalId);
 
         action.setCallback(this,function(response){
@@ -14,7 +14,7 @@
             console.log(state);
             if(state  == "SUCCESS"){
                  console.log(response.getReturnValue());
-                 component.set('v.profileWrapper', response.getReturnValue());
+                 component.set('v.movieDetailsWrapper', response.getReturnValue());
                  component.set('v.componentEnabled',true);
             }
         });

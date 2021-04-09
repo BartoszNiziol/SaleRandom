@@ -3,4 +3,5 @@
  -->
 
 <aura:event type="APPLICATION" description="MP_SelectMovieEvent">
+    <aura:attribute type="String" name="selectedId"/>
 </aura:event>

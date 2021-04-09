@@ -6,5 +6,6 @@
     <aura:attribute type="String" name="externalId"/>
     <aura:attribute type="object" name="relationList"/>
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler  event="c:MP_SelectPersonEvent" action="{!c.requestZero}"/>
 
 </aura:component>

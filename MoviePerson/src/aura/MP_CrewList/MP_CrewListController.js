@@ -1,22 +1,20 @@
 /**
- * Created by BRITENET on 08.04.2021.
+ * Created by BRITENET on 09.04.2021.
  */
  ({
- loadApperances: function (component,event,helper){
-      console.log('Appearances');
-         console.log('MAIN');
+ loadCrew: function (component,event,helper){
+        alert("crew");
         let externalId = event.getParam("selectedId");
         let action;
-        action = component.get("c.findPersonAppearances");
+        action = component.get("c.findCrew");
         action.setParam('externalId',externalId);
 
         action.setCallback(this,function(response){
             let state  = response.getState();
             console.log(state);
             if(state  == "SUCCESS"){
-                console.log('Appearances');
                  console.log(response.getReturnValue());
-                 component.set('v.appearancesWrapper', response.getReturnValue());
+                 component.set('v.crewWrapper', response.getReturnValue());
                   component.set('v.componentEnabled',true);
             }
         });

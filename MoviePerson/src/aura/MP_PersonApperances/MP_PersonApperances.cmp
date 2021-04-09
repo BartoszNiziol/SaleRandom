@@ -5,7 +5,11 @@
 <aura:component description="MP_PersonApperances" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" controller="MP_PersonApperancesController">
     <aura:attribute type="String" name="externalId"/>
     <aura:attribute type="object[]" name="appearancesWrapper"/>
-    <aura:handler name="init" value="{!this}" action="{!c.loadApperances}"/>
+    <aura:handler event="c:MP_SelectPersonEvent" action="{!c.loadApperances}"/>
+    <aura:attribute default="false" type="Boolean" name="componentEnabled"/>
+    <aura:handler event="c:MP_SearchEvent" action="{!c.hideComponent}"/>
+
+    <aura:if isTrue="{!v.componentEnabled}" >
     <table class="slds-table slds-table--bordered slds-table--cell-buffer">
         <thead>
         <tr class="slds-text-title--caps">
@@ -36,5 +40,5 @@
         </aura:iteration>
         </tbody>
     </table>
-
+    </aura:if>
 </aura:component>
