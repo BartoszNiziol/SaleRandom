@@ -22,6 +22,14 @@
     },
     hideComponent: function(component,event,helper){
         component.set('v.componentEnabled',false);
-    }
+    },
+    sendSelected: function (component,event,helper){
+                let createEvent;
+                createEvent = $A.get("e.c:MP_SelectPersonEvent");
+                let selectedRowId = event.target.id;
+                createEvent.setParam('selectedId',selectedRowId);
+                createEvent.fire();
+                  component.set('v.componentEnabled',false);
+        }
 
     });

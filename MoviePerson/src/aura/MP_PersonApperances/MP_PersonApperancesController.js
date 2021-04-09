@@ -24,6 +24,16 @@
     },
     hideComponent: function(component,event,helper){
         component.set('v.componentEnabled',false);
-    }
+    },
+    sendSelected: function (component,event,helper){
+
+              let  createEvent = $A.get("e.c:MP_SelectMovieEvent");
+                let selectedRowId = event.target.id;
+                createEvent.setParam('selectedId',selectedRowId);
+                createEvent.fire();
+                  component.set('v.componentEnabled',false);
+                  alert('selected');
+
+        }
 
     });

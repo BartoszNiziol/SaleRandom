@@ -8,6 +8,7 @@
     <aura:handler event="c:MP_SelectPersonEvent" action="{!c.loadApperances}"/>
     <aura:attribute default="false" type="Boolean" name="componentEnabled"/>
     <aura:handler event="c:MP_SearchEvent" action="{!c.hideComponent}"/>
+    <aura:registerEvent name="MP_SelectMovieEvent" type="c:MP_SelectMovieEvent"/>
 
     <aura:if isTrue="{!v.componentEnabled}" >
     <table class="slds-table slds-table--bordered slds-table--cell-buffer">
@@ -27,6 +28,9 @@
         <tbody>
         <aura:iteration items="{!v.appearancesWrapper }" var="item">
             <tr>
+                <th scope="row" >
+                    <button type="button" onclick="{!c.sendSelected}" id="{!item.externalId}" >Select</button>
+                </th>
                 <th scope="row">
                     <div class="slds-truncate" title="{!item.title}">{!item.title}</div>
                 </th>

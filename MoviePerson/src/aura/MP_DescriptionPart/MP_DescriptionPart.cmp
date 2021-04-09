@@ -9,6 +9,7 @@
 
     <aura:handler event="c:MP_SelectPersonEvent" action="{!c.loadDescription}" />
     <aura:handler event="c:MP_SearchEvent" action="{!c.hideComponent}"/>
+    <aura:handler event="c:MP_SelectMovieEvent" action="{!c.hideComponent}" />
 
     <aura:registerEvent name="turnPersonProfileFlagEvent" type="c:MP_TurnPersonProfileFlagEvent"/>
     <aura:if isTrue="{!v.componentEnabled}" >
