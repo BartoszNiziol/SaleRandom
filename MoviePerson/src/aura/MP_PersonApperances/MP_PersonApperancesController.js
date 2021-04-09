@@ -28,9 +28,10 @@
     sendSelected: function (component,event,helper){
 
               let  createEvent = $A.get("e.c:MP_SelectMovieEvent");
-                let selectedRowId = event.target.id;
+                let selectedRowId = event.getParam('selectedId');
                 createEvent.setParam('selectedId',selectedRowId);
                 createEvent.fire();
+
                   component.set('v.componentEnabled',false);
 
         }

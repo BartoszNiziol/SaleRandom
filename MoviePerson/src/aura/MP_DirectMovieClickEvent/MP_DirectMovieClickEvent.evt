@@ -1,0 +1,7 @@
+<!--
+ - Created by BRITENET on 09.04.2021.
+ -->
+
+<aura:event type="APPLICATION" description="MP_DirectMovieClickEvent">
+    <aura:attribute type="String" name="selectedId"/>
+</aura:event>

@@ -5,12 +5,12 @@
     fireSelect: function (component,event,helper){
 
 
-                    let  createEvent = $A.get("e.c:MP_DirectMovieClickEvent");
+                    let  createEvent = $A.get("e.c:MP_DirectPersonClickEvent");
                     let selectedRowId = component.get('v.externalId');
 
                     createEvent.setParam('selectedId',selectedRowId);
 
                     createEvent.fire();
-                alert('selectedRowId');
+
             }
 })

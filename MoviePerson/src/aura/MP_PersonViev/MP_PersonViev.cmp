@@ -1,0 +1,24 @@
+<!--
+ - Created by BRITENET on 09.04.2021.
+ -->
+
+<aura:component description="MP_PersonViev">
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="age" type="String"/>
+    <aura:attribute name="profilePath" type="String"/>
+    <aura:attribute name="externalId" type="String"/>
+    <aura:registerEvent name="MP_DirectPersonClickEvent" type="c:MP_DirectPersonClickEvent"/>
+
+
+    <div onclick="{!c.fireSelect}" class="flex-container" >
+        <div class="box" style="width:100px">
+            <img style="max-width:100px; object-fit: cover;max-height: 150px;"
+                 src="{!'https://image.tmdb.org/t/p/w500/'+v.profilePath}"/>
+        </div>
+        <div class="box">
+            <div class="Title">{!v.name}</div>
+            <div class="Year">{!v.age}</div>
+
+        </div>
+    </div>
+</aura:component>

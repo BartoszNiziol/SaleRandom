@@ -8,10 +8,10 @@
     <aura:attribute name="rating" type="String"/>
     <aura:attribute name="posterPath" type="String"/>
     <aura:attribute name="externalId" type="String"/>
+    <aura:registerEvent name="MP_DirectMovieClickEvent" type="c:MP_DirectMovieClickEvent"/>
 
 
-
-        <div class="flex-container" >
+        <div onclick="{!c.fireSelect}" class="flex-container" >
             <div class="box" style="width:100px">
             <img style="max-width:100px; object-fit: cover;max-height: 150px;"
                  src="{!'https://image.tmdb.org/t/p/w500/'+v.posterPath}"/>

@@ -15,6 +15,10 @@ public with sharing class MP_ProfileWrapper {
         this.birthPlace = birthPlace;
         this.profilePath = profilePath;
 
+        if(birthDate != null) {
+            this.age = String.valueOf(Date.today().year() - Integer.valueOf(birthDate.split('-').get(0)));
+        }
+
     }
 
     @auraenabled
@@ -35,5 +39,7 @@ public with sharing class MP_ProfileWrapper {
     public String birthPlace {get;set;}
     @auraenabled
     public String profilePath {get;set;}
+    @auraenabled
+    public String age {get;set;}
 
 }
