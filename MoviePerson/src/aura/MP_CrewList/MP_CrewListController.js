@@ -3,12 +3,10 @@
  */
  ({
  loadCrew: function (component,event,helper){
-        alert("crew");
         let externalId = event.getParam("selectedId");
         let action;
         action = component.get("c.findCrew");
         action.setParam('externalId',externalId);
-
         action.setCallback(this,function(response){
             let state  = response.getState();
             console.log(state);

@@ -13,6 +13,7 @@ public with sharing class MP_MovieDescriptionWrapper {
         this.productionCountries = productionCountries;
         this.genres = genres;
         this.rating = rating;
+        this.year = releaseDate.split('-').get(0);
     }
 
     @auraenabled
@@ -31,6 +32,8 @@ public with sharing class MP_MovieDescriptionWrapper {
     public String genres { get; set; }
     @auraenabled
     public Decimal rating { get; set; }
+    @auraenabled
+    public String year { get; set; }
 
 
 }

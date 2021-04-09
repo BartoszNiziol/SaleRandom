@@ -11,38 +11,41 @@
     <aura:registerEvent name="MP_SelectMovieEvent" type="c:MP_SelectMovieEvent"/>
 
     <aura:if isTrue="{!v.componentEnabled}" >
-    <table class="slds-table slds-table--bordered slds-table--cell-buffer">
-        <thead>
-        <tr class="slds-text-title--caps">
-            <th scope="col">
-                <div class="slds-truncate" title="Title">Title</div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate" title="overview">overview</div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate" title="releaseYear">releaseYear</div>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
+<!--    <table class="slds-table slds-table&#45;&#45;bordered slds-table&#45;&#45;cell-buffer">-->
+<!--        <thead>-->
+<!--        <tr class="slds-text-title&#45;&#45;caps">-->
+<!--            <th scope="col">-->
+<!--                <div class="slds-truncate" title="Title">Title</div>-->
+<!--            </th>-->
+<!--            <th scope="col">-->
+<!--                <div class="slds-truncate" title="overview">overview</div>-->
+<!--            </th>-->
+<!--            <th scope="col">-->
+<!--                <div class="slds-truncate" title="releaseYear">releaseYear</div>-->
+<!--            </th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
         <aura:iteration items="{!v.appearancesWrapper }" var="item">
-            <tr>
-                <th scope="row" >
-                    <button type="button" onclick="{!c.sendSelected}" id="{!item.externalId}" >Select</button>
-                </th>
-                <th scope="row">
-                    <div class="slds-truncate" title="{!item.title}">{!item.title}</div>
-                </th>
-                <th scope="row">
-                    <div class="slds-truncate" title="{!item.rating}">{!item.rating}</div>
-                </th>
-                <th scope="row">
-                    <div class="slds-truncate" title="{!item.releaseDate}">{!item.releaseDate}</div>
-                </th>
-            </tr>
+
+            <c:MP_MovieViev title="{!item.title}" year="{!item.year}" rating="{!item.rating}" posterPath="{!item.posterPath}" externalId="{!item.externalId}"/>
+
+<!--            <tr>-->
+<!--                <th scope="row" >-->
+<!--                    <button type="button" onclick="{!c.sendSelected}" id="{!item.externalId}" >Select</button>-->
+<!--                </th>-->
+<!--                <th scope="row">-->
+<!--                    <div class="slds-truncate" title="{!item.title}">{!item.title}</div>-->
+<!--                </th>-->
+<!--                <th scope="row">-->
+<!--                    <div class="slds-truncate" title="{!item.rating}">{!item.rating}</div>-->
+<!--                </th>-->
+<!--                <th scope="row">-->
+<!--                    <div class="slds-truncate" title="{!item.releaseDate}">{!item.releaseDate}</div>-->
+<!--                </th>-->
+<!--            </tr>-->
         </aura:iteration>
-        </tbody>
-    </table>
+<!--        </tbody>-->
+<!--    </table>-->
     </aura:if>
 </aura:component>

@@ -32,7 +32,6 @@
                 createEvent.setParam('selectedId',selectedRowId);
                 createEvent.fire();
                   component.set('v.componentEnabled',false);
-                  alert('selected');
 
         }
 

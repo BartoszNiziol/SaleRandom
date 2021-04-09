@@ -1,0 +1,31 @@
+/**
+ * Created by BRITENET on 09.04.2021.
+ */
+.THIS.flex-container {
+display: flex;
+  flex-wrap: nowrap;
+
+
+}
+
+.THIS.flex-container .box  {
+
+    width: 50%;
+    margin: 10px;
+    text-align: left;
+
+}
+.THIS Star{
+    float: left;
+    color: red;
+}
+.THIS.Year{
+
+}
+.THIS.Rating{
+
+}
+
+.THIS.RatingVal{
+
+}
