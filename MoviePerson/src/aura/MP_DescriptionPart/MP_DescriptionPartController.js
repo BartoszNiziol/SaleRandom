@@ -11,9 +11,7 @@
 
         action.setCallback(this,function(response){
             let state  = response.getState();
-            console.log(state);
             if(state  == "SUCCESS"){
-                 console.log(response.getReturnValue());
                  component.set('v.profileWrapper', response.getReturnValue());
                  component.set('v.componentEnabled',true);
             }

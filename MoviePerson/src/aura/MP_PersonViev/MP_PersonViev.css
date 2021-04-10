@@ -3,9 +3,13 @@
  */
 .THIS.flex-container {
 display: flex;
+margin-bottom :5px;
+margin-left:10px;
   flex-wrap: nowrap;
   cursor: pointer;
-
+  border: 1px solid lightblue;
+  border-radius: 5px;
+  border:
 }
 .THIS.flex-container:hover {
 display: flex;

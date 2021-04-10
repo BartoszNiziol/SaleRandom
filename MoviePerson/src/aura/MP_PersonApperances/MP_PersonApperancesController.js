@@ -3,19 +3,13 @@
  */
  ({
  loadApperances: function (component,event,helper){
-      console.log('Appearances');
-         console.log('MAIN');
         let externalId = event.getParam("selectedId");
         let action;
         action = component.get("c.findPersonAppearances");
         action.setParam('externalId',externalId);
-
         action.setCallback(this,function(response){
             let state  = response.getState();
-            console.log(state);
             if(state  == "SUCCESS"){
-                console.log('Appearances');
-                 console.log(response.getReturnValue());
                  component.set('v.appearancesWrapper', response.getReturnValue());
                   component.set('v.componentEnabled',true);
             }

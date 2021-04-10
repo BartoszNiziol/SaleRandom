@@ -4,7 +4,6 @@
 ({
     fireSelect: function (component,event,helper){
 
-
                      let inSearch = component.get('v.inSearch');
                      let  createEvent;
                      if(inSearch){
@@ -13,7 +12,6 @@
                           createEvent = $A.get("e.c:MP_DirectPersonClickEvent");
                      }
                     let selectedRowId = component.get('v.externalId');
-                    alert(selectedRowId);
                     createEvent.setParam('selectedId',selectedRowId);
                     createEvent.fire();
 
