@@ -5,12 +5,15 @@
     fireSelect: function (component,event,helper){
 
 
-                    let  createEvent = $A.get("e.c:MP_DirectMovieClickEvent");
-                    let selectedRowId = component.get('v.externalId');
-
-                    createEvent.setParam('selectedId',selectedRowId);
-
-                    createEvent.fire();
-                alert('selectedRowId');
+                    let inSearch = component.get('v.inSearch');
+                                         let  createEvent;
+                                         if(inSearch){
+                                              createEvent = $A.get("e.c:MP_DirectMovieClickEventInSearch");
+                                         }else{
+                                              createEvent = $A.get("e.c:MP_DirectMovieClickEvent");
+                                         }
+                                        let selectedRowId = component.get('v.externalId');
+                                        createEvent.setParam('selectedId',selectedRowId);
+                                        createEvent.fire();
             }
 })

@@ -92,13 +92,14 @@ public with sharing class MP_SearchController {
             String backdropPath;
             Integer gender;
             String department;
+            String releaseYear;
             Boolean isAdult = (Boolean) params.get('adult');
             String apiId = String.valueOf(params.get('id'));
             String name = (String) params.get('name');
 
 
 
-            if(params.get ('backdrop_path') != null){
+            if(params.get ('profile_path') != null){
                 backdropPath =(String) params.get ('profile_path');
             }else {
                 backdropPath = '';
@@ -113,8 +114,15 @@ public with sharing class MP_SearchController {
             }else{
                 department = '';
             }
+            if(params.get('release_date') != null){
+                String relaseDate = (String) params.get('release_date');
+                releaseYear  = relaseDate.split('-').get(0);
+            }
+            else {
+                releaseYear = '';
+            }
 
-            MP_SingleResultWrapper wrapper = new MP_SingleResultWrapper(isAdult,apiId,null,backdropPath,null,name,null,'person',gender,department);
+            MP_SingleResultWrapper wrapper = new MP_SingleResultWrapper(isAdult,apiId,null,backdropPath,releaseYear,name,null,'person',gender,department);
             wrappers.add(wrapper);
 
         }

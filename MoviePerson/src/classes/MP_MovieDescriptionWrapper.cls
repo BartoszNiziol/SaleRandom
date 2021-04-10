@@ -13,7 +13,9 @@ public with sharing class MP_MovieDescriptionWrapper {
         this.productionCountries = productionCountries;
         this.genres = genres;
         this.rating = rating;
-        this.year = releaseDate.split('-').get(0);
+        if(releaseDate != null&& releaseDate != '') {
+            this.year = releaseDate.split('-').get(0);
+        }
     }
 
     @auraenabled

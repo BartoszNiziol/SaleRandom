@@ -17,42 +17,40 @@
     <aura:registerEvent name="MP_SelectPersonEvent" type="c:MP_SelectPersonEvent"/>
     <aura:registerEvent name="MP_SelectMovieEvent" type="c:MP_SelectMovieEvent"/>
 
-    <aura:if isTrue="{!v.componentEnabled}" >
-    <table class="slds-table slds-table--bordered slds-table--cell-buffer">
-        <thead>
-        <tr class="slds-text-title--caps">
-            <th scope="col">
-                <div class="slds-truncate" title="Title">Title</div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate" title="overview">overview</div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate" title="releaseYear">releaseYear</div>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
-            <tr >
-                <th scope="row" >
-                    <button type="button" onclick="{!c.sendSelected}" id="{!item.apiId}" >Select</button>
-                </th>
-                <th scope="row" >
-                    <div class="slds-truncate" title="{!item.title}"  >{!item.title}</div>
-                </th>
-                <th scope="row">
-                    <div class="slds-truncate" title="{!item.overview}">{!item.overview}</div>
-                </th>
-                <th scope="row">
-                    <div class="slds-truncate" title="{!item.releaseYear}">{!item.releaseYear}</div>
-                </th>
-            </tr>
-        </aura:iteration>
-        </tbody>
-    </table>
-    <lightning:button  name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium" variant="brand"> Previous </lightning:button>
-        {!v.currentPage}
-    <lightning:button  name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium" variant="brand"> Next </lightning:button>
+    <aura:handler event="c:MP_DirectMovieClickEventInSearch" action="{!c.sendSelected}"/>
+    <aura:handler event="c:MP_DirectPersonClickEventInSearch" action="{!c.sendSelected}"/>
+
+
+    <aura:if isTrue="{!v.componentEnabled}">
+        <aura:if isTrue="{!equals(v.selectedOption , '1')}">
+
+            <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
+                <c:MP_PersonViev externalId="{!item.apiId}" profilePath="{!item.backdropPath}" age="{!item.age}" name="{!item.title}" inSearch="true"/>
+            </aura:iteration>
+            <lightning:button name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium"
+                              variant="brand"> Previous
+            </lightning:button>
+                {!v.currentPage}
+            <lightning:button name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium" variant="brand">
+                Next
+            </lightning:button>
+
+        </aura:if>
+
+        <aura:if isTrue="{!equals(v.selectedOption , '2')}">
+
+            <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
+    <c:MP_MovieViev externalId="{!item.apiId}" inSearch="true" title="{!item.title}" rating="{!item.rating}" year="{!item.releaseYear}" posterPath="{!item.backdropPath}"/>
+            </aura:iteration>
+            <lightning:button name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium"
+                              variant="brand"> Previous
+            </lightning:button>
+                {!v.currentPage}
+            <lightning:button name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium"
+                              variant="brand"> Next
+            </lightning:button>
+
+        </aura:if>
+
     </aura:if>
 </aura:component>

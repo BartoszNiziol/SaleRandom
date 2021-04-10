@@ -24,6 +24,8 @@ public with sharing class MP_SingleResultWrapper {
     public Integer gender{get;set;}
     @AuraEnabled
     public String department{get;set;}
+    @auraenabled
+    public String age {get;set;}
 
     public MP_SingleResultWrapper(Boolean isAdult, String apiId, String overview, String backdropPath, String releaseYear, String title, Decimal rating,String type,Integer gender,String department){
         this.isAdult = isAdult;
@@ -36,6 +38,10 @@ public with sharing class MP_SingleResultWrapper {
         this.type =type;
         this.gender = gender;
         this.department = department;
+        System.debug(releaseYear);
+        if(releaseYear != null&& releaseYear != '') {
+            this.age = String.valueOf(Date.today().year() - Integer.valueOf(releaseYear));
+        }
     }
 
 }

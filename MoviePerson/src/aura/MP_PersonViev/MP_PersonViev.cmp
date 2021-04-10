@@ -7,7 +7,9 @@
     <aura:attribute name="age" type="String"/>
     <aura:attribute name="profilePath" type="String"/>
     <aura:attribute name="externalId" type="String"/>
+    <aura:attribute name="inSearch" type="Boolean" default="false"/>
     <aura:registerEvent name="MP_DirectPersonClickEvent" type="c:MP_DirectPersonClickEvent"/>
+    <aura:registerEvent name="MP_DirectPersonClickEventInSearch" type="c:MP_DirectPersonClickEventInSearch"/>
 
 
     <div onclick="{!c.fireSelect}" class="flex-container" >

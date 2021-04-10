@@ -61,6 +61,8 @@
     },
 
    sendSelected: function (component,event,helper){
+
+
             let createEvent;
         let selectedOption = component.get('v.selectedOption');
         if(selectedOption == 1){
@@ -68,7 +70,9 @@
                }else{
                   createEvent = $A.get("e.c:MP_SelectMovieEvent");
                }
-            let selectedRowId = event.target.id;
+            let selectedRowId = event.getParam('selectedId');
+
+            alert(selectedRowId);
             createEvent.setParam('selectedId',selectedRowId);
             createEvent.fire();
               component.set('v.componentEnabled',false);

@@ -8,7 +8,9 @@
     <aura:attribute name="rating" type="String"/>
     <aura:attribute name="posterPath" type="String"/>
     <aura:attribute name="externalId" type="String"/>
+    <aura:attribute name="inSearch" type="Boolean" default="false"/>
     <aura:registerEvent name="MP_DirectMovieClickEvent" type="c:MP_DirectMovieClickEvent"/>
+    <aura:registerEvent name="MP_DirectMovieClickEventInSearch" type="c:MP_DirectMovieClickEventInSearch"/>
 
 
         <div onclick="{!c.fireSelect}" class="flex-container" >
