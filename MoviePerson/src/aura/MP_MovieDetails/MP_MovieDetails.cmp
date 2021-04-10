@@ -6,14 +6,27 @@
     <aura:attribute type="String" name="externalId"/>
     <aura:attribute type="object" name="movieDetailsWrapper"/>
     <aura:attribute type="Boolean" name="componentEnabled" default="false"/>
-
+    <aura:handler event="c:MP_DirectPersonClickEvent" action="{!c.hideComponent}"/>
     <aura:handler event="c:MP_SelectMovieEvent" action="{!c.loadDescription}" />
     <aura:handler event="c:MP_SearchEvent" action="{!c.hideComponent}"/>
     <aura:if isTrue="{!v.componentEnabled}" >
         <lightning:card  variant="narrow">
-        <img style="max-width:200px; object-fit: cover; height: 100%;" src="{!'https://image.tmdb.org/t/p/w200' + v.movieDetailsWrapper.backdropPath}" />
-            {!v.movieDetailsWrapper.title}
+            <div style="font-size:60px; font-weight:border; margin-bottom:60 px; margin-left:40px; color:#1798c1">
+                    {!v.movieDetailsWrapper.title} ({!v.movieDetailsWrapper.releaseYear})
+            </div>
+            <div style="margin:20px;"></div>
+            <lightning:layout >
+        <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;" src="{!'https://image.tmdb.org/t/p/w200' + v.movieDetailsWrapper.backdropPath}"  />
+           <lightning:layoutItem >
+
+           </lightning:layoutItem>
+                <div style="margin-left:70px; margin-right:400px; margin-top:40px; font-size:16px">
+            {!v.movieDetailsWrapper.overview}
+                </div>
             {!v.movieDetailsWrapper.depertment}
+            </lightning:layout>
+
+            <div style="margin-top:30px"/>
         </lightning:card>
     </aura:if>
 

@@ -23,7 +23,9 @@ public with sharing class MP_MovieResultWrapper {
         this.apiId = apiId;
         this.overview = overview;
         this.backdropPath = backdropPath;
-        this.releaseYear = releaseYear;
+        if (releaseYear != null && releaseYear != '') {
+            this.releaseYear = releaseYear.split('-').get(0);
+        }else this.releaseYear ='';
         this.title = title;
         this.rating = rating;
     }
