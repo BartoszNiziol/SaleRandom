@@ -14,7 +14,7 @@
     <aura:if isTrue="{!v.componentEnabled}" >
         <lightning:card title="Crew" variant="narrow">
             <aura:iteration items="{!v.crewWrapper }" var="item">
-              <c:MP_PersonViev profilePath="{!item.profilePath}" name="{!item.name}" externalId="{!item.externalId}" age="{!item.age}"/>
+              <c:MP_PersonViev profilePath="{!item.profilePath}" name="{!item.name}" externalId="{!item.externalId}" age="{!item.age}" role="{!item.role}"/>
             </aura:iteration>
         </lightning:card>
 

@@ -8,6 +8,7 @@
     <aura:attribute name="profilePath" type="String"/>
     <aura:attribute name="externalId" type="String"/>
     <aura:attribute name="inSearch" type="Boolean" default="false"/>
+    <aura:attribute name="role" type="String"/>
     <aura:registerEvent name="MP_DirectPersonClickEvent" type="c:MP_DirectPersonClickEvent"/>
     <aura:registerEvent name="MP_DirectPersonClickEventInSearch" type="c:MP_DirectPersonClickEventInSearch"/>
 
@@ -20,6 +21,7 @@
         <div class="box">
             <div class="Title" style="font-size:20px; font-weight:bold;">{!v.name}</div>
             <div class="Year">{!v.age}</div>
+            <div class="Role">{!v.role}</div>
 
         </div>
     </div>

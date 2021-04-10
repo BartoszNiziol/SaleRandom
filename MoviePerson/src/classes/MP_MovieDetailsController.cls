@@ -25,7 +25,7 @@ public with sharing class MP_MovieDetailsController {
         String release_date = (String) responseMap.get('release_date');
         String Id = String.valueOf( responseMap.get('id'));
         String department = (String) responseMap.get('known_for_department');
-        String backdrop_path = (String) responseMap.get('backdrop_path');
+        String backdrop_path = (String) responseMap.get('poster_path');
         String title = (String) responseMap.get('title');
         Decimal rating = (Decimal) responseMap.get('vote_average');
 

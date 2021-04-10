@@ -40,7 +40,7 @@ public with sharing class MP_SearchController {
                 overviev = '';
             }
             if(params.get ('backdrop_path') != null){
-                backdropPath =(String) params.get ('backdrop_path');
+                backdropPath =(String) params.get ('poster_path');
             }else {
                 backdropPath = '';
             }

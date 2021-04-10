@@ -33,8 +33,9 @@ public with sharing class MP_MovieCrewController {
             String name = (String) params.get('name');
             String known_for_department = (String) params.get('known_for_department');
             Decimal rating = (Decimal) params.get('vote_average');
+            String role = (String) params.get('character');
 
-            MP_ProfileWrapper profileWrapper = new MP_ProfileWrapper(Id,isAdult,name,bio,null,null,known_for_department,null,profile_path);
+            MP_ProfileWrapper profileWrapper = new MP_ProfileWrapper(Id,isAdult,name,bio,null,null,known_for_department,null,profile_path,role);
             crew.add(profileWrapper);
 
         }
