@@ -4,6 +4,8 @@
 
 <aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="ResultList" controller="MP_SearchController">
     <aura:attribute name="listedWrappedItems" type="object"/>
+    <aura:attribute name="listedMovies" type="object"/>
+    <aura:attribute name="listedPeoples" type="object"/>
     <aura:attribute name="searchString" type="String"/>
     <aura:attribute name="currentPage" type="Integer" default="1"/>
     <aura:attribute name="totalPages" type="Integer"/>
@@ -11,7 +13,6 @@
     <aura:attribute name="selectedOption" type="Integer"/>
     <aura:attribute name="componentEnabled" type="Boolean" default="true"/>
     <aura:handler event="c:MP_SearchEvent" action="{!c.requestZero}"/>
-
 
     <aura:registerEvent name="MP_SelectPersonEvent" type="c:MP_SelectPersonEvent"/>
     <aura:registerEvent name="MP_SelectMovieEvent" type="c:MP_SelectMovieEvent"/>

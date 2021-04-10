@@ -4,23 +4,6 @@
 
 public with sharing class MP_ProfileWrapper {
 
-    public MP_ProfileWrapper(String externalId,Boolean isAdult, String name,String bio, String birthdayDate, String deathDate, String department, String birthPlace, String profilePath){
-        this.externalId = externalId;
-        this.isAdult = isAdult;
-        this.name = name;
-        this.bio = bio;
-        this.birthDate = birthdayDate;
-        this.deathDate = deathDate;
-        this.department = department;
-        this.birthPlace = birthPlace;
-        this.profilePath = profilePath;
-
-        if(birthDate != null) {
-            this.age = String.valueOf(Date.today().year() - Integer.valueOf(birthDate.split('-').get(0)));
-        }
-
-    }
-
     @auraenabled
     public String externalId {get;set;}
     @auraenabled
@@ -41,5 +24,24 @@ public with sharing class MP_ProfileWrapper {
     public String profilePath {get;set;}
     @auraenabled
     public String age {get;set;}
+
+    public MP_ProfileWrapper(String externalId,Boolean isAdult, String name,String bio, String birthdayDate, String deathDate, String department, String birthPlace, String profilePath){
+        this.externalId = externalId;
+        this.isAdult = isAdult;
+        this.name = name;
+        this.bio = bio;
+        this.birthDate = birthdayDate;
+        this.deathDate = deathDate;
+        this.department = department;
+        this.birthPlace = birthPlace;
+        this.profilePath = profilePath;
+
+        if(birthDate != null) {
+            this.age = String.valueOf(Date.today().year() - Integer.valueOf(birthDate.split('-').get(0)));
+        }
+
+    }
+
+
 
 }
