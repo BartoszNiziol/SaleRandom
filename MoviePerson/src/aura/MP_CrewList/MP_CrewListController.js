@@ -9,7 +9,6 @@
         action.setParam('externalId',externalId);
         action.setCallback(this,function(response){
             let state  = response.getState();
-            alert(state);
             if(state  == "SUCCESS"){
                  console.log(response.getReturnValue());
                  component.set('v.crewWrapper', response.getReturnValue());
@@ -22,7 +21,6 @@
         component.set('v.componentEnabled',false);
     },
     sendSelected: function (component,event,helper){
-            alert('sendSelected');
               let  createEvent = $A.get("e.c:MP_SelectPersonEvent");
                 let selectedRowId =  event.getParam('selectedId');
                 createEvent.setParam('selectedId',selectedRowId);

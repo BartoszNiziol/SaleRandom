@@ -12,17 +12,29 @@
     <aura:registerEvent name="searchEvent" type="c:MP_SearchEvent" />
 
     <lightning:card  >
-        <div >
-            <lightning:button  name="pull" onclick="{!c.initSearch}" class="slds-m-top_medium" variant="brand" > Search </lightning:button>
-            <lightning:select name="moviePerson" label="Select" required="true" value="{!v.selectedOption}">
-                <option value= "1">Person</option>
-                <option value= "2" >Movie</option>
-            </lightning:select>
-            <lightning:input aura:id="searchform" label="Search"
-                             name="searchform"
-                             value="{!v.searchString}"
-                             required="false" messageWhenValueMissing="Please enter text"  type="search"/>
-        </div>
+        <lightning:layout verticalAlign="end">
+            <lightning:layoutItem  padding="around-medium" size="2">
+                <lightning:select name="moviePerson" label="Select" required="true" value="{!v.selectedOption}">
+                    <option value= "1">Person</option>
+                    <option value= "2" >Movie</option>
+                </lightning:select>
+            </lightning:layoutItem>
+            <lightning:layoutItem flexibility="grow" padding="around-medium" size="8">
+                <lightning:input aura:id="searchform" label="Search"
+                                 name="searchform"
+                                 value="{!v.searchString}"
+                                 required="false" messageWhenValueMissing="Please enter text"  type="search"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem  padding="around-medium" size="3">
+                <lightning:button  name="pull" onclick="{!c.initSearch}" class="slds-m-top_medium" variant="brand" > Search </lightning:button>
+
+
+            </lightning:layoutItem>
+
+
+
+        </lightning:layout>
+
 
     </lightning:card>
 

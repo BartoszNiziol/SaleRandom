@@ -7,6 +7,13 @@ display: flex;
 
 
 }
+.THIS.flex-container:hover {
+display: flex;
+  flex-wrap: nowrap;
+  cursor: pointer;
+  background-color:lightblue;
+
+}
 
 .THIS.flex-container .box  {
 
