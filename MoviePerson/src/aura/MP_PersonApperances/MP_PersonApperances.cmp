@@ -12,10 +12,10 @@
     <aura:registerEvent name="MP_SelectMovieEvent" type="c:MP_SelectMovieEvent"/>
 
     <aura:if isTrue="{!v.componentEnabled}" >
-
+        <lightning:card  variant="narrow" title="Person apperances">
         <aura:iteration items="{!v.appearancesWrapper }" var="item">
             <c:MP_MovieViev title="{!item.title}" year="{!item.year}" rating="{!item.rating}" posterPath="{!item.posterPath}" externalId="{!item.externalId}"/>
         </aura:iteration>
-
+        </lightning:card>
     </aura:if>
 </aura:component>

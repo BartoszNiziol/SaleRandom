@@ -12,10 +12,11 @@
     <aura:registerEvent name="MP_SelectPersonEvent" type="c:MP_SelectPersonEvent"/>
 
     <aura:if isTrue="{!v.componentEnabled}" >
-
+        <lightning:card title="Crew" variant="narrow">
             <aura:iteration items="{!v.crewWrapper }" var="item">
               <c:MP_PersonViev profilePath="{!item.profilePath}" name="{!item.name}" externalId="{!item.externalId}" age="{!item.age}"/>
             </aura:iteration>
+        </lightning:card>
 
     </aura:if>
 </aura:component>

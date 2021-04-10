@@ -9,21 +9,22 @@
     <aura:attribute name="totalPages" type="Integer"/>
     <aura:attribute name="totalResults" type="Integer"/>
     <aura:attribute name="selectedOption" type="Integer"/>
-
-
     <aura:registerEvent name="searchEvent" type="c:MP_SearchEvent" />
 
-    <lightning:button  name="pull" onclick="{!c.initSearch}" class="slds-m-top_medium" variant="brand"> Search </lightning:button>
+    <lightning:card  >
+        <div >
+            <lightning:button  name="pull" onclick="{!c.initSearch}" class="slds-m-top_medium" variant="brand" > Search </lightning:button>
+            <lightning:select name="moviePerson" label="Select" required="true" value="{!v.selectedOption}">
+                <option value= "1">Person</option>
+                <option value= "2" >Movie</option>
+            </lightning:select>
+            <lightning:input aura:id="searchform" label="Search"
+                             name="searchform"
+                             value="{!v.searchString}"
+                             required="false" messageWhenValueMissing="Please enter text"  type="search"/>
+        </div>
 
-    <lightning:select name="moviePerson" label="Select" required="true" value="{!v.selectedOption}">
-        <option value= "1">Person</option>
-        <option value= "2" >Movie</option>
-    </lightning:select>
-    <lightning:input aura:id="searchform" label="Search"
-                     name="searchform"
-                     value="{!v.searchString}"
-                     required="false"/>
-
+    </lightning:card>
 
     <c:MP_ResultList/>
     <c:MP_DescriptionPart />

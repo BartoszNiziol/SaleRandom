@@ -13,11 +13,13 @@
 
     <aura:registerEvent name="turnPersonProfileFlagEvent" type="c:MP_TurnPersonProfileFlagEvent"/>
     <aura:if isTrue="{!v.componentEnabled}" >
+        <lightning:card  variant="narrow">
     <img style="max-width:200px; object-fit: cover; height: 100%;" src="{!'https://image.tmdb.org/t/p/w200' + v.profileWrapper.profilePath}" />
     {!v.profileWrapper.name}
     {!v.profileWrapper.bio}
     {!v.profileWrapper.birthdayDate}
     {!v.profileWrapper.depertment}
+        </lightning:card>
     </aura:if>
 
 

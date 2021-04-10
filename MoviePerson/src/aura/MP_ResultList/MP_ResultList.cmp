@@ -22,8 +22,9 @@
 
 
     <aura:if isTrue="{!v.componentEnabled}">
-        <aura:if isTrue="{!equals(v.selectedOption , '1')}">
 
+        <aura:if isTrue="{!equals(v.selectedOption , '1')}">
+            <lightning:card  variant="narrow">
             <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
                 <c:MP_PersonViev externalId="{!item.apiId}" profilePath="{!item.backdropPath}" age="{!item.age}" name="{!item.title}" inSearch="true"/>
             </aura:iteration>
@@ -34,11 +35,11 @@
             <lightning:button name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium" variant="brand">
                 Next
             </lightning:button>
-
+            </lightning:card>
         </aura:if>
 
         <aura:if isTrue="{!equals(v.selectedOption , '2')}">
-
+            <lightning:card  variant="narrow">
             <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
     <c:MP_MovieViev externalId="{!item.apiId}" inSearch="true" title="{!item.title}" rating="{!item.rating}" year="{!item.releaseYear}" posterPath="{!item.backdropPath}"/>
             </aura:iteration>
@@ -49,7 +50,7 @@
             <lightning:button name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium"
                               variant="brand"> Next
             </lightning:button>
-
+            </lightning:card>
         </aura:if>
 
     </aura:if>
