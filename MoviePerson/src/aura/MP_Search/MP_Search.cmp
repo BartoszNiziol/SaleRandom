@@ -26,16 +26,9 @@
                                  required="false" messageWhenValueMissing="Please enter text"  type="search"/>
             </lightning:layoutItem>
             <lightning:layoutItem  padding="around-medium" size="3">
-                <lightning:button  name="pull" onclick="{!c.initSearch}" class="slds-m-top_medium" variant="brand" > Search </lightning:button>
-
-
+                <lightning:button  name="pull" onclick="{!c.initSearch}" class="slds-m-top_medium" variant="brand" disabled="{!v.searchString == null || v.searchString ==''}" > Search </lightning:button>
             </lightning:layoutItem>
-
-
-
         </lightning:layout>
-
-
     </lightning:card>
 
     <c:MP_ResultList/>

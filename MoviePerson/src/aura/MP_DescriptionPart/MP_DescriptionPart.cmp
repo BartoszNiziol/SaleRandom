@@ -13,19 +13,27 @@
 
     <aura:registerEvent name="turnPersonProfileFlagEvent" type="c:MP_TurnPersonProfileFlagEvent"/>
     <aura:if isTrue="{!v.componentEnabled}" >
+
+
         <lightning:card  variant="narrow">
-            <div style="font-size:60px; font-weight:border; margin-bottom:60 px; margin-left:40px; color:#1798c1">
+            <div style="font-size:60px; font-weight:border; margin-bottom:60 px; margin-left:50px; color:#1798c1">
                     {!v.profileWrapper.name}
             </div>
             <div style="margin:20px;"></div>
             <lightning:layout >
+                <aura:if isTrue="{!and(v.profileWrapper.profilePath != null ,  v.profileWrapper.profilePath != '')}">
     <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;" src="{!'https://image.tmdb.org/t/p/w200' + v.profileWrapper.profilePath}" />
+                    <aura:set attribute="else">
+                        <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;" src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"/>
+                    </aura:set>
+                </aura:if>
                 <lightning:layoutItem >
-
                 </lightning:layoutItem>
-                <div style="margin-left:70px; margin-right:400px; margin-top:40px; font-size:16px">
-                {!v.profileWrapper.birthdayDate}
-    {!v.profileWrapper.depertment}
+                <div style="margin-left:70px; margin-right:400px;  font-size:16px; align-self:flex-end; ">
+
+                    <div style="font-size:16px; margin-top:15px;"> Birth Day: {!v.profileWrapper.birthDate} {!v.profileWrapper.deathDate} </div>
+                    <div style="font-size:16px; margin-top:15px;"> Birth place: {!v.profileWrapper.birthPlace}</div>
+                    <div style="font-size:16px; margin-top:15px; margin-bottom:10px;"> Known for: {!v.profileWrapper.department}</div>
 
                 </div>
 

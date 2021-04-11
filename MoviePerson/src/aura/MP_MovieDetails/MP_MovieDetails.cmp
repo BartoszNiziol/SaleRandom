@@ -16,7 +16,15 @@
             </div>
             <div style="margin:20px;"></div>
             <lightning:layout >
-        <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;" src="{!'https://image.tmdb.org/t/p/w200' + v.movieDetailsWrapper.backdropPath}"  />
+                <aura:if isTrue="{!and( v.movieDetailsWrapper.backdropPath != null ,   v.movieDetailsWrapper.backdropPath != '')}">
+                    <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;" src="{!'https://image.tmdb.org/t/p/w200' + v.movieDetailsWrapper.backdropPath}"  />
+                    <aura:set attribute="else">
+                        <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;" src="https://cdn2.iconfinder.com/data/icons/peppyicons/512/clip-512.png"/>
+                    </aura:set>
+                </aura:if>
+
+
+
            <lightning:layoutItem >
 
            </lightning:layoutItem>

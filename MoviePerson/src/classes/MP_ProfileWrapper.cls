@@ -33,11 +33,17 @@ public with sharing class MP_ProfileWrapper {
         this.name = name;
         this.bio = bio;
         this.birthDate = birthdayDate;
-        this.deathDate = deathDate;
+        this.deathDate ='-'+ deathDate;
         this.department = department;
         this.birthPlace = birthPlace;
         this.profilePath = profilePath;
         this.role = role;
+
+
+        System.debug('PW');
+        System.debug(birthdayDate);
+        System.debug(deathDate);
+        System.debug(birthPlace);
 
         if(birthDate != null) {
             this.age = String.valueOf(Date.today().year() - Integer.valueOf(birthDate.split('-').get(0)));

@@ -2,7 +2,9 @@
  - Created by BRITENET on 08.04.2021.
  -->
 
-<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="ResultList" controller="MP_SearchController">
+<aura:component
+        implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction"
+        access="global" description="ResultList" controller="MP_SearchController">
     <aura:attribute name="listedWrappedItems" type="object"/>
     <aura:attribute name="listedMovies" type="object"/>
     <aura:attribute name="listedPeoples" type="object"/>
@@ -24,34 +26,65 @@
     <aura:if isTrue="{!v.componentEnabled}">
 
         <aura:if isTrue="{!equals(v.selectedOption , '1')}">
-            <lightning:card  variant="narrow">
-            <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
-                <c:MP_PersonViev externalId="{!item.apiId}" profilePath="{!item.backdropPath}" age="{!item.age}" name="{!item.title}" inSearch="true"/>
-            </aura:iteration>
-            <lightning:button name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium"
-                              variant="brand"> Previous
-            </lightning:button>
-                {!v.currentPage}
-            <lightning:button name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium" variant="brand">
-                Next
-            </lightning:button>
+            <lightning:card variant="narrow">
+                <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
+                    <c:MP_PersonViev externalId="{!item.apiId}" profilePath="{!item.backdropPath}" age="{!item.age}"
+                                     name="{!item.title}" role="{!item.department}" inSearch="true"/>
+                </aura:iteration>
+
+                <aura:if isTrue="{!v.currentPage == v.totalPages}">
+                    <c:MP_AddPerson/>
+                </aura:if>
+                <aura:if isTrue="{!v.totalPages > 0}">
+                <div class="slds-align_absolute-center" style="height:5rem">
+                    <lightning:button name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium"
+                                      variant="brand"  disabled="{! equals(v.currentPage,1) }"> Previous
+                    </lightning:button>
+                    <div style="vertical-align:center; font-size:26; font-weight:bold; margin-left:10px; margin-right:10px; margin-top: 15px;" >
+                            {!v.currentPage}
+                    </div>
+                    <lightning:button name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium"
+                                      variant="brand"  disabled="{!v.currentPage == v.totalPages}" > Next
+                    </lightning:button>
+                </div>
+                    <aura:set attribute="else">
+                        Results Not Found
+                    </aura:set>
+                </aura:if>
             </lightning:card>
         </aura:if>
 
         <aura:if isTrue="{!equals(v.selectedOption , '2')}">
-            <lightning:card  variant="narrow">
-            <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
-    <c:MP_MovieViev externalId="{!item.apiId}" inSearch="true" title="{!item.title}" rating="{!item.rating}" year="{!item.releaseYear}" posterPath="{!item.backdropPath}"/>
-            </aura:iteration>
-            <lightning:button name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium"
-                              variant="brand"> Previous
-            </lightning:button>
-                {!v.currentPage}
-            <lightning:button name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium"
-                              variant="brand"> Next
-            </lightning:button>
+            <lightning:card variant="narrow">
+                <aura:iteration items="{!v.listedWrappedItems.wrappedSingles }" var="item">
+                    <c:MP_MovieViev externalId="{!item.apiId}" inSearch="true" title="{!item.title}"
+                                    rating="{!item.rating}" year="{!item.releaseYear}"
+                                    posterPath="{!item.backdropPath}"/>
+                </aura:iteration>
+
+                <aura:if isTrue="{!v.currentPage == v.totalPages}">
+
+                    <c:MP_AddMovie/>
+                </aura:if>
+            <aura:if isTrue="{!v.totalPages > 0}">
+                <div class="slds-align_absolute-center" style="height:5rem">
+                    <lightning:button name="previousPage" onclick="{!c.requestMinusOne}" class="slds-m-top_medium"
+                                      variant="brand" disabled="{! equals(v.currentPage,1) }"> Previous
+                    </lightning:button>
+                    <div style="vertical-align:center; font-size:26; font-weight:bold; margin-left:10px; margin-right:10px; margin-top: 15px;" >
+                            {!v.currentPage}
+                    </div>
+                    <lightning:button name="nextPage" onclick="{!c.requestPlusOne}" class="slds-m-top_medium"
+                                      variant="brand" disabled="{!v.currentPage == v.totalPages}"> Next
+                    </lightning:button>
+                </div>
+                <aura:set attribute="else">
+                    Results Not Found
+                </aura:set>
+            </aura:if>
             </lightning:card>
         </aura:if>
+
 
     </aura:if>
 </aura:component>

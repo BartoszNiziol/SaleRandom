@@ -15,15 +15,23 @@
 
         <div onclick="{!c.fireSelect}" class="flex-container" >
             <div class="box" style="width:100px">
-            <img style="max-width:100px; object-fit: cover;max-height: 150px;"
-                 src="{!'https://image.tmdb.org/t/p/w500/'+v.posterPath}"/>
+
+                <aura:if isTrue="{!and( v.posterPath != null ,   v.posterPath != '')}">
+                    <img style="max-width:100px; object-fit: cover;max-height: 150px;"
+                         src="{!'https://image.tmdb.org/t/p/w500/'+v.posterPath}"/>
+                    <aura:set attribute="else">
+                        <img style="max-width:100px; object-fit: cover;max-height: 150px;" src="https://cdn2.iconfinder.com/data/icons/peppyicons/512/clip-512.png"/>
+                    </aura:set>
+                </aura:if>
             </div>
             <div class="box">
-                <div class="Title">{!v.title}</div>
-                <div class="Year">{!v.year}</div>
+                <div class="Title" style="font-size:30px; font-weight:bolder; " >{!v.title}</div>
+                <div class="Year" style="font-size:20px; margin-bottom:10px;" >{!v.year}</div>
                 <div class="Rating">
-                   <div class="Star" style="float:left">STAR</div>
-                   <div class="RatingVal">{!v.rating} </div>
+                   <div class="Star" style="float:left; margin-right:10px;" >
+                     <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Blue_Star.svg" style="width:30px; height 30px;"/>
+                   </div>
+                   <div class="RatingVal" style="font-size:25px; margin-left:10px;" >{!v.rating} </div>
                 </div>
             </div>
         </div>

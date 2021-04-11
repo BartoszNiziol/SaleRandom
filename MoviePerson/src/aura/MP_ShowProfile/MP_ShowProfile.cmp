@@ -1,8 +1,0 @@
-<!--
- - Created by BRITENET on 08.04.2021.
- -->
-
-<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="MP_ShowProfile">
-    <c:MP_DescriptionPart />
-    <c:MP_PersonApperances />
-</aura:component>

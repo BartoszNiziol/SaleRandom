@@ -111,6 +111,7 @@ public with sharing class MP_SearchController {
             }
             if (params.get('known_for_department') != null){
                 department =(String) params.get('known_for_department');
+                System.debug(department);
             }else{
                 department = '';
             }

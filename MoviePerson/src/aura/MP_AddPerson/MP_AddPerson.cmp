@@ -1,0 +1,55 @@
+<!--
+ - Created by BRITENET on 11.04.2021.
+ -->
+
+<aura:component description="MP_AddPerson">
+    <!--use boolean attribute for Store true/false value,
+ make default to "false" so modal box are not display on the load of component.
+ -->
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="fields" type="String[]" default="['Name','BirthdayDate__c','DeathDay__c','Biography__c','KnownForRole__c']"/>
+
+    <!--Use "slds-m-around_xx-large" class to add standard X-Large padding to the component-->
+    <div class="slds-m-around_xx-large">
+
+        <div style="background-color:#1798c1;padding:0.5rem">
+
+
+            <lightning:button  class="slds-button_inverse slds-align_absolute-center"
+                               label="Could not find Your Person? Add One!"
+                               title="Could not find Your Person? Add One!"
+                               onclick="{! c.openModel }" />
+
+        </div>
+        <!--Use aura:if tag to display Model Box, on the bese of conditions. [isOpen boolean attribute] -->
+        <aura:if isTrue="{!v.isOpen}">
+
+            <!--###### MODAL BOX Start######-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add Movie</h2>
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-p-around_medium">
+                            <lightning:recordForm objectApiName="Person__c" fields="{!v.fields}" onsuccess="{!c.likenClose}"/>
+
+                        </div>
+                    </div>
+                    <!--###### MODAL BOX FOOTER Part Start ######-->
+
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+
+        </aura:if>
+    </div>
+</aura:component>

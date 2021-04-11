@@ -20,6 +20,9 @@
             if(state  == "SUCCESS"){
                  component.set('v.listedWrappedItems', response.getReturnValue());
                  component.set('v.componentEnabled',true);
+
+                let totalPages =  component.get('v.listedWrappedItems.totalPages');
+                component.set('v.totalPages',totalPages);
             }
         });
         $A.enqueueAction(action);

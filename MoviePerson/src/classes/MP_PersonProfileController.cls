@@ -37,8 +37,8 @@ public with sharing class MP_PersonProfileController {
 
         MP_ProfileWrapper profileWrapper = new MP_ProfileWrapper(Id,isAdult,name,bio,birthday,deathday,department,birthPlace,profile_path);
 
-        System.debug(responseMap);
 
+        System.debug(profileWrapper);
 
         return profileWrapper;
     }
