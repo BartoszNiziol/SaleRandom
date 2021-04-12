@@ -5,14 +5,37 @@
 <aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" controller="MP_MovieCrewController">
     <aura:attribute type="String" name="externalId"/>
     <aura:attribute type="object[]" name="crewWrapper"/>
+    <aura:attribute type="object" name="wholeWrapper"/>
     <aura:handler event="c:MP_SelectMovieEvent" action="{!c.loadCrew}"/>
     <aura:attribute default="false" type="Boolean" name="componentEnabled"/>
     <aura:handler event="c:MP_SearchEvent" action="{!c.hideComponent}"/>
     <aura:handler  event="c:MP_DirectPersonClickEvent" action="{!c.sendSelected}"/>
     <aura:registerEvent name="MP_SelectPersonEvent" type="c:MP_SelectPersonEvent"/>
 
+
+
     <aura:if isTrue="{!v.componentEnabled}" >
-        <lightning:card title="Crew" variant="narrow">
+
+<!--        <lightning:tabset selectedTabId="two">-->
+<!--            <lightning:tab label="Cast" id="one">-->
+<!--                <lightning:card title="Cast" variant="narrow">-->
+<!--                    <aura:iteration items="{!v.wholeWrapper.cast}" var="item">-->
+<!--                        <c:MP_PersonViev profilePath="{!item.profilePath}" name="{!item.name}" externalId="{!item.externalId}" age="{!item.age}" role="{!item.role}"/>-->
+<!--                    </aura:iteration>-->
+<!--                </lightning:card>-->
+<!--            </lightning:tab>-->
+<!--            <lightning:tab label="Crew" id="two">-->
+<!--                <lightning:card title="Cast" variant="narrow">-->
+<!--                    <aura:iteration items="{!v.wholeWrapper.crews}" var="item">-->
+<!--                        <c:MP_PersonViev profilePath="{!item.profilePath}" name="{!item.name}" externalId="{!item.externalId}" age="{!item.age}" role="{!item.role}"/>-->
+<!--                    </aura:iteration>-->
+<!--                </lightning:card>-->
+<!--            </lightning:tab>-->
+<!--        </lightning:tabset>-->
+
+
+
+        <lightning:card title="Cast" variant="narrow">
             <aura:iteration items="{!v.crewWrapper }" var="item">
               <c:MP_PersonViev profilePath="{!item.profilePath}" name="{!item.name}" externalId="{!item.externalId}" age="{!item.age}" role="{!item.role}"/>
             </aura:iteration>

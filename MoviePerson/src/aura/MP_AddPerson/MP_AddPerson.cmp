@@ -39,8 +39,17 @@
                     <!--###### MODAL BOX BODY Part Start######-->
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                         <div class="slds-p-around_medium">
-                            <lightning:recordForm objectApiName="Person__c" fields="{!v.fields}" o onsuccess="{!c.likenClose}" oncancel ="{! c.closeModel }" density="auto"/>
-
+                            <lightning:recordEditForm aura:id="recordEditForm"
+                                                      objectApiName="Person__c" onsubmit="{!c.likenClose}">
+                                <lightning:messages />
+                                <lightning:inputField required="true" fieldName="Name" />
+                                <lightning:inputField  fieldName="BirthdayDate__c" />
+                                <lightning:inputField  fieldName="DeathDay__c" />
+                                <lightning:inputField  fieldName="Biography__c" />
+                                <lightning:inputField  fieldName="KnownForRole__c" />
+                                <lightning:inputField  fieldName="ProfileImagePath__c"/>
+                                <lightning:button class="slds-m-top_small" type="submit" label="Create new" />
+                            </lightning:recordEditForm>
                         </div>
                     </div>
                     <!--###### MODAL BOX FOOTER Part Start ######-->

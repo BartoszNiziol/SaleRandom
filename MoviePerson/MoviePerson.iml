@@ -87,6 +87,10 @@
                             <option name="name" value="MP_MovieCrewController" />
                             <option name="selected" value="true" />
                           </MetadataEntry>
+                          <MetadataEntry>
+                            <option name="name" value="MP_WholeCrewWrapper" />
+                            <option name="selected" value="true" />
+                          </MetadataEntry>
                         </list>
                       </option>
                       <option name="name" value="ApexClass" />

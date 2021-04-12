@@ -51,9 +51,9 @@ public with sharing class MP_PersonProfileController {
 
             return profileWrapper;
         } else {
-            Person__c person = [SELECT Id,Biography__c,Name,DeathDay__c,BirthdayDate__c,PlaceOfBirth__c,KnownForRole__c FROM Person__c WHERE Id = :externalId];
+            Person__c person = [SELECT Id,Biography__c,Name,DeathDay__c,BirthdayDate__c,PlaceOfBirth__c,KnownForRole__c,ProfileImagePath__c FROM Person__c WHERE Id = :externalId];
 
-            MP_ProfileWrapper wrapper = new MP_ProfileWrapper(person.Id,false,person.Name,person.Biography__c,String.valueOf(person.BirthdayDate__c),String.valueOf(person.DeathDay__c),person.KnownForRole__c,person.PlaceOfBirth__c,null,person.KnownForRole__c);
+            MP_ProfileWrapper wrapper = new MP_ProfileWrapper(person.Id,false,person.Name,person.Biography__c,String.valueOf(person.BirthdayDate__c),String.valueOf(person.DeathDay__c),person.KnownForRole__c,person.PlaceOfBirth__c,person.ProfileImagePath__c,person.KnownForRole__c);
             return wrapper;
 
         }

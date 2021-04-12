@@ -5,7 +5,7 @@
  loadCrew: function (component,event,helper){
         let externalId = event.getParam("selectedId");
         let action;
-        action = component.get("c.findCrew");
+        action = component.get("c.findCast");
         action.setParam('externalId',externalId);
         action.setCallback(this,function(response){
             let state  = response.getState();
@@ -17,6 +17,25 @@
         });
         $A.enqueueAction(action);
     },
+    loadCast: function (component,event,helper){
+            let externalId = event.getParam("selectedId");
+            let action;
+            action = component.get("c.findCrew");
+            action.setParam('externalId',externalId);
+            action.setCallback(this,function(response){
+                let state  = response.getState();
+                console.log(state);
+                if(state  == "SUCCESS"){
+                     console.log(response.getReturnValue());
+                     component.set('v.wholeWrapper', response.getReturnValue());
+                     console.log(response.getReturnValue());
+                      component.set('v.componentEnabled',true);
+                }
+            });
+            $A.enqueueAction(action);
+        },
+
+
     hideComponent: function(component,event,helper){
         component.set('v.componentEnabled',false);
     },
