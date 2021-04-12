@@ -6,7 +6,8 @@ public with sharing class MP_SearchController {
     @auraenabled
     public static MP_WholeResultWrapper findMovies(String search,Integer currentPage){
 
-        search.replace(' ','+');
+      search =  search.replace(' ','+');
+       // search = EncodingUtil.urlEncode(search, 'UTF-8');
         Http http = new Http();
         HttpRequest request = new HttpRequest();
 
@@ -81,7 +82,8 @@ public with sharing class MP_SearchController {
     @auraenabled
     public static  MP_WholeResultWrapper findPeoples(String search,Integer currentPage){
 
-        search.replace(' ','+');
+        search = search.replace(' ','+');
+        System.debug(search);
         Http http = new Http();
         HttpRequest request = new HttpRequest();
 

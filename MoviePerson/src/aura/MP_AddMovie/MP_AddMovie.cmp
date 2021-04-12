@@ -38,7 +38,7 @@
                     </header>
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                         <div class="slds-p-around_medium">
-                            <lightning:recordForm objectApiName="Movie__c" fields="{!v.fields}" onsuccess="{!c.likenClose}"/>
+                            <lightning:recordForm objectApiName="Movie__c" fields="{!v.fields}" onsuccess="{!c.likenClose}" oncancel ="{! c.closeModel }" />
 
                         </div>
                     </div>

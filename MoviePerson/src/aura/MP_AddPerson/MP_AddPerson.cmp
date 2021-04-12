@@ -34,12 +34,12 @@
                                               alternativeText="close"
                                               variant="bare-inverse"
                                               class="slds-modal__close"/>
-                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add Movie</h2>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add Person</h2>
                     </header>
                     <!--###### MODAL BOX BODY Part Start######-->
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                         <div class="slds-p-around_medium">
-                            <lightning:recordForm objectApiName="Person__c" fields="{!v.fields}" onsuccess="{!c.likenClose}"/>
+                            <lightning:recordForm objectApiName="Person__c" fields="{!v.fields}" o onsuccess="{!c.likenClose}" oncancel ="{! c.closeModel }" density="auto"/>
 
                         </div>
                     </div>

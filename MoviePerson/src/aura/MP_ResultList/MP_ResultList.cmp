@@ -48,7 +48,7 @@
                     </lightning:button>
                 </div>
                     <aura:set attribute="else">
-                        Results Not Found
+                        <c:MP_AddPerson/>
                     </aura:set>
                 </aura:if>
             </lightning:card>
@@ -79,7 +79,7 @@
                     </lightning:button>
                 </div>
                 <aura:set attribute="else">
-                    Results Not Found
+                    <c:MP_AddMovie/>
                 </aura:set>
             </aura:if>
             </lightning:card>
