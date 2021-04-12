@@ -59,6 +59,18 @@ public with sharing class MP_SearchController {
             MP_SingleResultWrapper wrapper = new MP_SingleResultWrapper(isAdult,apiId,overviev,backdropPath,releaseYear,title,rating,'movie',null,null);
             wrappers.add(wrapper);
         }
+            System.debug(currentPage);
+            System.debug((Integer) responseMap.get('total_pages'));
+
+        if(currentPage  == (Integer) responseMap.get('total_pages')){
+            System.debug('INIT');
+            List<MP_SingleResultWrapper> moviesFromDB = searchMovieInDb(search);
+            for (MP_SingleResultWrapper movie:moviesFromDB){
+                wrappers.add(movie);
+            }
+        }
+
+
         wholeResultWrapper.wrappedSingles = wrappers;
         wholeResultWrapper.page =(Integer) responseMap.get('page');
         wholeResultWrapper.totalPages = (Integer) responseMap.get('total_pages');
@@ -67,7 +79,7 @@ public with sharing class MP_SearchController {
     }
 
     @auraenabled
-    public static MP_WholeResultWrapper findPeoples(String search,Integer currentPage){
+    public static  MP_WholeResultWrapper findPeoples(String search,Integer currentPage){
 
         search.replace(' ','+');
         Http http = new Http();
@@ -111,7 +123,7 @@ public with sharing class MP_SearchController {
             }
             if (params.get('known_for_department') != null){
                 department =(String) params.get('known_for_department');
-                System.debug(department);
+
             }else{
                 department = '';
             }
@@ -127,12 +139,60 @@ public with sharing class MP_SearchController {
             wrappers.add(wrapper);
 
         }
+
+        if(currentPage ==(Integer) responseMap.get('total_pages')){
+            List<MP_SingleResultWrapper> peoplesFromDb = searchPersonInDb(search);
+            for(MP_SingleResultWrapper person:peoplesFromDb){
+                wrappers.add(person);
+            }
+                    }
+
+
         wholeResultWrapper.wrappedSingles = wrappers;
         wholeResultWrapper.page =(Integer) responseMap.get('page');
         wholeResultWrapper.totalPages = (Integer) responseMap.get('total_pages');
         wholeResultWrapper.totalResults = (Integer) responseMap.get('total_results');
 
         return wholeResultWrapper;
+    }
+
+    private static List<MP_SingleResultWrapper> searchMovieInDb(String searchString) {
+
+        String approved = 'Approved';
+        List<MP_SingleResultWrapper> wrappers = new List<MP_SingleResultWrapper>() ;
+        String likeQuery = '%' + searchString + '%';
+        String stringQuery = 'SELECT Id,ApiId__c,PosterPath__c,RelaseDate__c,Name,Rating__c,Overviev__c FROM Movie__c WHERE Name LIKE \'' + likeQuery+'\''+ 'AND Status__c = \'' + approved + '\'';
+
+        List<Movie__c> insideMovies = Database.query(stringQuery);
+
+
+        for (Movie__c movie : insideMovies) {
+
+            MP_SingleResultWrapper wrapper = new MP_SingleResultWrapper(false, movie.Id, movie.Overviev__c, movie.PosterPath__c, String.valueOf(movie.RelaseDate__c), movie.Name, movie.Rating__c, 'movie', null, null);
+            wrapper.inside = true;
+            wrappers.add(wrapper);
+            System.debug(wrapper);
+        }
+        return wrappers;
+    }
+    private static List<MP_SingleResultWrapper> searchPersonInDb(String searchString) {
+
+        String approved = 'Approve';
+        List<MP_SingleResultWrapper> wrappers = new List<MP_SingleResultWrapper>() ;
+        String likeQuery = '%' + searchString + '%';
+        String stringQuery = 'SELECT Id,ApiId__c,KnownForRole__c,Name,Biography__c FROM Person__c WHERE Name LIKE \'' + likeQuery+'\''+ 'AND Status__c = \'' + approved + '\'';
+
+        List<Person__c> insidePersons = Database.query(stringQuery);
+
+
+        for (Person__c person : insidePersons) {
+
+            MP_SingleResultWrapper wrapper = new MP_SingleResultWrapper(false, person.Id, null,null, null, person.Name,null, 'movie', null, person.KnownForRole__c);
+            wrapper.inside = true;
+            wrappers.add(wrapper);
+            System.debug(wrapper);
+        }
+        return wrappers;
     }
 
 }

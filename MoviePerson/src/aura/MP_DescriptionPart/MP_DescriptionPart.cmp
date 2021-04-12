@@ -31,9 +31,9 @@
                 </lightning:layoutItem>
                 <div style="margin-left:70px; margin-right:400px;  font-size:16px; align-self:flex-end; ">
 
-                    <div style="font-size:16px; margin-top:15px;"> Birth Day: {!v.profileWrapper.birthDate} {!v.profileWrapper.deathDate} </div>
-                    <div style="font-size:16px; margin-top:15px;"> Birth place: {!v.profileWrapper.birthPlace}</div>
-                    <div style="font-size:16px; margin-top:15px; margin-bottom:10px;"> Known for: {!v.profileWrapper.department}</div>
+                    <div style="font-size:25px; margin-top:15px;"> Birth Day: {!v.profileWrapper.birthDate} {!v.profileWrapper.deathDate} </div>
+                    <div style="font-size:25px; margin-top:15px;"> Birth place: {!v.profileWrapper.birthPlace}</div>
+                    <div style="font-size:25px; margin-top:15px; margin-bottom:10px;"> Known for: {!v.profileWrapper.department}</div>
 
                 </div>
 
@@ -41,7 +41,7 @@
             <div style="margin-left:70px; margin-right:300px; margin-top:40px; font-size:16px">
                 {!v.profileWrapper.bio}
             </div>
-                <div style="margin-top:30px"/>
+            <div style="margin-top:30px"></div>
         </lightning:card>
 
     </aura:if>

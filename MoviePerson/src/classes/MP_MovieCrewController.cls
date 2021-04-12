@@ -7,6 +7,10 @@ public with sharing class MP_MovieCrewController {
     @AuraEnabled
     public static List<MP_ProfileWrapper> findCrew (String externalId){
 
+        if(externalId == null){
+            return null;
+        }
+
         Http http = new Http();
         HttpRequest request = new HttpRequest();
         String endpoint = MP_Utils.retrieveCredentials('GetMovieEndpoint');

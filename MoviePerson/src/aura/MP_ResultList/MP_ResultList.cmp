@@ -85,6 +85,5 @@
             </lightning:card>
         </aura:if>
 
-
     </aura:if>
 </aura:component>

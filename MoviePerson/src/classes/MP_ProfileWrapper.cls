@@ -33,7 +33,11 @@ public with sharing class MP_ProfileWrapper {
         this.name = name;
         this.bio = bio;
         this.birthDate = birthdayDate;
-        this.deathDate ='-'+ deathDate;
+        if(deathDate != null) {
+            this.deathDate = '-' + deathDate;
+        }else{
+            this.deathDate = '';
+        }
         this.department = department;
         this.birthPlace = birthPlace;
         this.profilePath = profilePath;

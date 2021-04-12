@@ -17,6 +17,9 @@ public with sharing class MP_MovieResultWrapper {
     public String title{get;set;}
     @AuraEnabled
     public Decimal rating{get;set;}
+    @AuraEnabled
+    public String releaseDate{get;set;}
+
 
     public MP_MovieResultWrapper(Boolean isAdult, String apiId, String overview, String backdropPath, String releaseYear, String title, Decimal rating){
         this.isAdult = isAdult;
@@ -28,5 +31,7 @@ public with sharing class MP_MovieResultWrapper {
         }else this.releaseYear ='';
         this.title = title;
         this.rating = rating;
+        this.releaseDate = releaseYear;
+
     }
 }

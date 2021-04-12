@@ -2,39 +2,54 @@
  - Created by BRITENET on 09.04.2021.
  -->
 
-<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" description="MP_MovieDetails" controller="MP_MovieDetailsController">
+<aura:component
+        implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction"
+        access="global" description="MP_MovieDetails" controller="MP_MovieDetailsController">
     <aura:attribute type="String" name="externalId"/>
     <aura:attribute type="object" name="movieDetailsWrapper"/>
     <aura:attribute type="Boolean" name="componentEnabled" default="false"/>
     <aura:handler event="c:MP_DirectPersonClickEvent" action="{!c.hideComponent}"/>
-    <aura:handler event="c:MP_SelectMovieEvent" action="{!c.loadDescription}" />
+    <aura:handler event="c:MP_SelectMovieEvent" action="{!c.loadDescription}"/>
     <aura:handler event="c:MP_SearchEvent" action="{!c.hideComponent}"/>
-    <aura:if isTrue="{!v.componentEnabled}" >
-        <lightning:card  variant="narrow">
+    <aura:if isTrue="{!v.componentEnabled}">
+        <lightning:card variant="narrow">
             <div style="font-size:60px; font-weight:border; margin-bottom:60 px; margin-left:40px; color:#1798c1">
-                    {!v.movieDetailsWrapper.title} ({!v.movieDetailsWrapper.releaseYear})
+            {!v.movieDetailsWrapper.title} ({!v.movieDetailsWrapper.releaseYear})
             </div>
             <div style="margin:20px;"></div>
-            <lightning:layout >
-                <aura:if isTrue="{!and( v.movieDetailsWrapper.backdropPath != null ,   v.movieDetailsWrapper.backdropPath != '')}">
-                    <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;" src="{!'https://image.tmdb.org/t/p/w200' + v.movieDetailsWrapper.backdropPath}"  />
+            <lightning:layout>
+                <aura:if
+                        isTrue="{!and( v.movieDetailsWrapper.backdropPath != null ,   v.movieDetailsWrapper.backdropPath != '')}">
+                    <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;"
+                         src="{!'https://image.tmdb.org/t/p/w200' + v.movieDetailsWrapper.backdropPath}"/>
                     <aura:set attribute="else">
-                        <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;" src="https://cdn2.iconfinder.com/data/icons/peppyicons/512/clip-512.png"/>
+                        <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;"
+                             src="https://cdn2.iconfinder.com/data/icons/peppyicons/512/clip-512.png"/>
                     </aura:set>
                 </aura:if>
 
+                <lightning:layoutItem>
+                </lightning:layoutItem>
+                <div style="margin-left:70px; margin-right:400px;  font-size:16px; align-self:flex-end; ">
 
+                    <div style="font-size:25px; margin-top:15px;"> Release
+                        date: {!v.movieDetailsWrapper.releaseDate}  </div>
 
-           <lightning:layoutItem >
+                        <div style="font-size:25px; margin-top:15px; margin-bottom:20px; float:left;"> Rating:  </div>
+                        <div class="Star" style="float:left; margin-right:10px; margin-top:15px; margin-bottom:20px; margin-left:7px;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Blue_Star.svg"
+                                 style="width:30px; height 30px;"/>
+                        </div>
+                        <div style="font-size:25px; margin-top:15px; margin-bottom:20px;">{!v.movieDetailsWrapper.rating}</div>
 
-           </lightning:layoutItem>
-                <div style="margin-left:70px; margin-right:400px; margin-top:40px; font-size:16px">
-            {!v.movieDetailsWrapper.overview}
                 </div>
-            {!v.movieDetailsWrapper.depertment}
+
             </lightning:layout>
 
-            <div style="margin-top:30px"/>
+            <div style="margin-left:70px; margin-right:400px; margin-top:40px; font-size:16px">
+                    {!v.movieDetailsWrapper.overview}
+            </div>
+            <div style="margin-top:30px"></div>
         </lightning:card>
     </aura:if>
 
