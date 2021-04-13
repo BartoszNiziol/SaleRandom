@@ -35,12 +35,14 @@
             <div class="box">
                 <div class="Title" style="font-size:30px; font-weight:bolder; " >{!v.title}</div>
                 <div class="Year" style="font-size:20px; margin-bottom:10px;" >{!v.year}</div>
-                <div class="Rating">
+                <aura:if isTrue="{!v.rating != 0}">
+                <div class="Rating" >
                    <div class="Star" style="float:left; margin-right:10px;" >
                      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Blue_Star.svg" style="width:30px; height 30px;"/>
                    </div>
                    <div class="RatingVal" style="font-size:25px; margin-left:10px;" >{!v.rating} </div>
                 </div>
+                </aura:if>
             </div>
         </div>
 
