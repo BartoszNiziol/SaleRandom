@@ -9,6 +9,7 @@
     <aura:attribute name="totalPages" type="Integer"/>
     <aura:attribute name="totalResults" type="Integer"/>
     <aura:attribute name="selectedOption" type="Integer"/>
+    <aura:attribute name="isAdult" type="Boolean"/>
     <aura:registerEvent name="searchEvent" type="c:MP_SearchEvent" />
 
     <lightning:card  >
