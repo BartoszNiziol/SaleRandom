@@ -3,7 +3,8 @@
  -->
 
 <aura:component>
+    <aura:attribute type="String" name="id"/>
 
-    <iframe width="720" height="480" src="https://www.youtube.com/embed/45JRuZOBIKk"></iframe>
+    <iframe width="560" height="320" src="{!'https://www.youtube.com/embed/'+v.id}"></iframe>
 
 </aura:component>

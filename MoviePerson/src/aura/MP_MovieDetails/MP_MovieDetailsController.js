@@ -11,10 +11,11 @@
 
         action.setCallback(this,function(response){
             let state  = response.getState();
+            console.log(state);
             if(state  == "SUCCESS"){
                  component.set('v.movieDetailsWrapper', response.getReturnValue());
                  component.set('v.componentEnabled',true);
-
+                    console.log()
                   let path = component.get("v.movieDetailsWrapper.backdropPath");
 
                                              if (path != null){

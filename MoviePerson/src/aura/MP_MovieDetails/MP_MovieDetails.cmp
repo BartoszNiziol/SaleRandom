@@ -39,8 +39,9 @@
                 </aura:if>
 
                 <lightning:layoutItem>
+
                 </lightning:layoutItem>
-                <div style="margin-left:70px; margin-right:400px;  font-size:16px; align-self:flex-end; ">
+                <div style="margin-left:70px; margin-right:100px;  font-size:16px; align-self:flex-end; ">
 
                     <div style="font-size:25px; margin-top:15px;"> Release
                         date: {!v.movieDetailsWrapper.releaseDate}  </div>
@@ -54,6 +55,11 @@
 
                 </div>
 
+                <aura:if isTrue="{!and(v.movieDetailsWrapper.linkY != null ,  v.movieDetailsWrapper.linkY != '' )}">
+               <div style="margin-right:9% box-shadow: 10px 10px 5px lightblue;">
+                    <c:MP_VideoComponent id="{!v.movieDetailsWrapper.linkY}" />
+               </div>
+                </aura:if>
             </lightning:layout>
 
             <div style="margin-left:70px; margin-right:400px; margin-top:40px; font-size:16px">
