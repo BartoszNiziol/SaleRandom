@@ -56,7 +56,7 @@ public with sharing class MP_MovieCrewController {
             String role = (String) params.get('character');
 
             MP_ProfileWrapper profileWrapper = new MP_ProfileWrapper(Id,isAdult,name,bio,null,null,known_for_department,null,profile_path,role);
-            crew.add(profileWrapper);
+            casts.add(profileWrapper);
 
         }
         System.debug(crew.get(0));

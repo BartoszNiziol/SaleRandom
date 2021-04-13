@@ -28,7 +28,7 @@
                 if(state  == "SUCCESS"){
                      console.log(response.getReturnValue());
                      component.set('v.wholeWrapper', response.getReturnValue());
-                     console.log(response.getReturnValue());
+                 console.log(component.get('v.wholeWrapper.cast'));
                       component.set('v.componentEnabled',true);
                 }
             });

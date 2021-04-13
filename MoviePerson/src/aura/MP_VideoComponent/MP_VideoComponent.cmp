@@ -1,0 +1,9 @@
+<!--
+ - Created by BRITENET on 13.04.2021.
+ -->
+
+<aura:component>
+
+    <iframe width="720" height="480" src="https://www.youtube.com/embed/45JRuZOBIKk"></iframe>
+
+</aura:component>
