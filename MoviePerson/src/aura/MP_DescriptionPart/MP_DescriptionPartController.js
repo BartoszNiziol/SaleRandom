@@ -14,11 +14,33 @@
             if(state  == "SUCCESS"){
                  component.set('v.profileWrapper', response.getReturnValue());
                  component.set('v.componentEnabled',true);
+
+                let path = component.get("v.profileWrapper.profilePath");
+
+
+                            if (path != null){
+                             if(path.startsWith('http')){
+                                 component.set('v.internalPath',true);
+                             }
+                             }
             }
         });
         $A.enqueueAction(action);
     },
      hideComponent: function(component,event,helper){
             component.set('v.componentEnabled',false);
-        }
+        },
+
+//        checkLink:function(component,event,helper){
+//           let path component.get("v.profileWrapper.profile.profilePath");
+//           if (path != null){
+//            if(path.startsWith('http')){
+//                component.set('v.internalPath',true);
+//            }
+//            }
+//
+//
+//        }
+
+
     });

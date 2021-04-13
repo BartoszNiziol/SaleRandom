@@ -14,6 +14,15 @@
             if(state  == "SUCCESS"){
                  component.set('v.movieDetailsWrapper', response.getReturnValue());
                  component.set('v.componentEnabled',true);
+
+                  let path = component.get("v.movieDetailsWrapper.backdropPath");
+
+                                             if (path != null){
+                                              if(path.startsWith('http')){
+                                                  component.set('v.internalPath',true);
+                                              }
+                                              }
+
             }
         });
         $A.enqueueAction(action);

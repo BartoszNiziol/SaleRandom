@@ -8,6 +8,7 @@
     <aura:attribute type="String" name="externalId"/>
     <aura:attribute type="object" name="movieDetailsWrapper"/>
     <aura:attribute type="Boolean" name="componentEnabled" default="false"/>
+    <aura:attribute type="Boolean" name="internalPath" default="false"/>
     <aura:handler event="c:MP_DirectPersonClickEvent" action="{!c.hideComponent}"/>
     <aura:handler event="c:MP_SelectMovieEvent" action="{!c.loadDescription}"/>
     <aura:handler event="c:MP_SearchEvent" action="{!c.hideComponent}"/>
@@ -18,6 +19,12 @@
             </div>
             <div style="margin:20px;"></div>
             <lightning:layout>
+
+                <aura:if isTrue="{!v.internalPath}" >
+                    <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;" src="{!v.movieDetailsWrapper.backdropPath}"/>
+                    <aura:set attribute="else">
+
+
                 <aura:if
                         isTrue="{!and( v.movieDetailsWrapper.backdropPath != null ,   v.movieDetailsWrapper.backdropPath != '')}">
                     <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;"
@@ -25,6 +32,9 @@
                     <aura:set attribute="else">
                         <img style="max-width:200px; object-fit: cover; height: 100%; margin-left:35px; box-shadow: 10px 10px 5px lightblue;"
                              src="https://cdn2.iconfinder.com/data/icons/peppyicons/512/clip-512.png"/>
+                    </aura:set>
+                </aura:if>
+
                     </aura:set>
                 </aura:if>
 

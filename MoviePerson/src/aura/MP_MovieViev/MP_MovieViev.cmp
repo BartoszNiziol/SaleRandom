@@ -9,6 +9,8 @@
     <aura:attribute name="posterPath" type="String"/>
     <aura:attribute name="externalId" type="String"/>
     <aura:attribute name="inSearch" type="Boolean" default="false"/>
+    <aura:attribute name="internalPath" type="Boolean" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
     <aura:registerEvent name="MP_DirectMovieClickEvent" type="c:MP_DirectMovieClickEvent"/>
     <aura:registerEvent name="MP_DirectMovieClickEventInSearch" type="c:MP_DirectMovieClickEventInSearch"/>
 
@@ -16,11 +18,17 @@
         <div onclick="{!c.fireSelect}" class="flex-container" >
             <div class="box" style="width:100px">
 
+                <aura:if isTrue="{!v.internalPath}" >
+                    <img style="max-width:100px; object-fit: cover;max-height: 150px;" src="{!v.posterPath}"/>
+                    <aura:set attribute="else">
                 <aura:if isTrue="{!and( v.posterPath != null ,   v.posterPath != '')}">
                     <img style="max-width:100px; object-fit: cover;max-height: 150px;"
                          src="{!'https://image.tmdb.org/t/p/w500/'+v.posterPath}"/>
                     <aura:set attribute="else">
                         <img style="max-width:100px; object-fit: cover;max-height: 150px;" src="https://cdn2.iconfinder.com/data/icons/peppyicons/512/clip-512.png"/>
+                    </aura:set>
+                </aura:if>
+
                     </aura:set>
                 </aura:if>
             </div>

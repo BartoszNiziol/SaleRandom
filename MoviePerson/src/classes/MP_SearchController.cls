@@ -63,12 +63,14 @@ public with sharing class MP_SearchController {
             System.debug(currentPage);
             System.debug((Integer) responseMap.get('total_pages'));
 
-        if(currentPage  == (Integer) responseMap.get('total_pages')){
+        if(currentPage  == (Integer) responseMap.get('total_pages') || (Integer) responseMap.get('total_pages') == 0 ){
             System.debug('INIT');
+            search =  search.replace('+',' ');
             List<MP_SingleResultWrapper> moviesFromDB = searchMovieInDb(search);
             for (MP_SingleResultWrapper movie:moviesFromDB){
                 wrappers.add(movie);
             }
+
         }
 
 
@@ -142,7 +144,8 @@ public with sharing class MP_SearchController {
 
         }
 
-        if(currentPage ==(Integer) responseMap.get('total_pages')){
+        if(currentPage ==(Integer) responseMap.get('total_pages') || (Integer) responseMap.get('total_pages') == 0){
+            search =  search.replace('+',' ');
             List<MP_SingleResultWrapper> peoplesFromDb = searchPersonInDb(search);
             for(MP_SingleResultWrapper person:peoplesFromDb){
                 wrappers.add(person);
@@ -182,6 +185,8 @@ public with sharing class MP_SearchController {
         String approved = 'Approve';
         List<MP_SingleResultWrapper> wrappers = new List<MP_SingleResultWrapper>() ;
         String likeQuery = '%' + searchString + '%';
+        System.debug('likeQuery');
+        System.debug(likeQuery);
         String stringQuery = 'SELECT Id,ApiId__c,KnownForRole__c,Name,Biography__c FROM Person__c WHERE Name LIKE \'' + likeQuery+'\''+ 'AND Status__c = \'' + approved + '\'';
 
         List<Person__c> insidePersons = Database.query(stringQuery);
