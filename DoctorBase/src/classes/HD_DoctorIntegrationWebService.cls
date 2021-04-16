@@ -116,6 +116,7 @@ global class HD_DoctorIntegrationWebService {
 
             }
 
+
             try {
                 DB_Utils.turnOffTrigger(Doctor__c.getSObjectType());
                 delete doctorsToDelete;
