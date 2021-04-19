@@ -27,6 +27,7 @@ global virtual with sharing class ViewSurveyController {
     public String  surveyThankYouURL          {get; set;}
     public String  caseId                     {get; set;}
     public String contactId {get;set;}
+    public String leadId {get;set;}
     public String anonymousAnswer {get;set;}
     public List<SelectOption> anonymousOrUser {get;set;}
     public Boolean isInternal {get;set;}
