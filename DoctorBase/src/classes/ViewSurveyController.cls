@@ -21,7 +21,7 @@ global virtual with sharing class ViewSurveyController {
     public List<SFQuestion> allQuestions        {get; set;}
     public List<String> responses                   {get; set;}
     public Integer allQuestionsSize               {get; set;}
-    //public String  templateURL                {get; set;}
+    public String  templateURL                {get; set;}
     public String  surveyThankYouText         {get; set;}
     public String surveyContainerCss {get; set;}
     public String  surveyThankYouURL          {get; set;}
@@ -32,7 +32,6 @@ global virtual with sharing class ViewSurveyController {
     public List<SelectOption> anonymousOrUser {get;set;}
     public Boolean isInternal {get;set;}
     public String baseURL {get;set;}
-
     public String userId{get;set;}
     public String userName{get;set;}
     public String surveyTakerId {get;set;}
@@ -46,9 +45,10 @@ global virtual with sharing class ViewSurveyController {
     */
     //------------------------------------------------------------------------------//
     public ViewSurveyController(ApexPages.StandardController stdController) {
+        System.debug('aaa');
         // Get url parameters
         mySurvey = (Survey__c)stdController.getRecord();
-
+        leadId = ApexPages.currentPage().getParameters().get('lId');
         surveyId = Apexpages.currentPage().getParameters().get('id');
         caseId   = Apexpages.currentPage().getParameters().get('caId');
         contactId = Apexpages.currentPage().getParameters().get('cId');
@@ -60,9 +60,13 @@ global virtual with sharing class ViewSurveyController {
         if(contactId == null || contactId.length()<15){
             contactId = 'none';
         }
+        if(leadId == null || leadId.length()<15){
+            leadId = 'none';
+        }
         surveyId = String.escapeSingleQuotes(surveyId);
         caseId = String.escapeSingleQuotes(caseId);
         contactId = String.escapeSingleQuotes(contactId);
+        leadId = String.escapeSingleQuotes(leadId);
         // By default the preview is not showing up
         renderSurveyPreview = 'false';
 
@@ -74,29 +78,38 @@ global virtual with sharing class ViewSurveyController {
 
     public ViewSurveyController(ViewShareSurveyComponentController controller)
     {
+        System.debug('bbb');
         surveyId = Apexpages.currentPage().getParameters().get('id');
         mySurvey = [SELECT Id, Thank_You_Link__c FROM Survey__c WHERE Id = :surveyId WITH SECURITY_ENFORCED LIMIT 1];
 
         caseId   = Apexpages.currentPage().getParameters().get('caId');
         contactId = Apexpages.currentPage().getParameters().get('cId');
+        leadId = Apexpages.currentPage().getParameters().get('leadId');
         if(caseId == null || caseId.length()<15){
             caseId = 'none';
         }
         if(contactId == null || contactId.length()<15){
             contactId = 'none';
         }
+        if(leadId == null || leadId.length()<15){
+            leadId = 'none';
+        }
         surveyId = String.escapeSingleQuotes(surveyId);
         caseId = String.escapeSingleQuotes(caseId);
         contactId = String.escapeSingleQuotes(contactId);
+        leadId = String.escapeSingleQuotes(leadId);
         // By default the preview is not showing up
         renderSurveyPreview = 'false';
-        init();
+        if(isSurv == '1') {
+            init();
+        }
     }
 
 
     public void init()
     {
         if (surveyId != null){
+
             // Retrieve all necessary information to be displayed on the page
             allQuestions = new List<SFQuestion>();
             setupQuestionList();
@@ -176,8 +189,8 @@ global virtual with sharing class ViewSurveyController {
             mysurvey = [SELECT Name, Id, Thank_You_Text__c, Thank_You_Link__c FROM Survey__c WHERE Id =:surveyId];
             mysurvey.Name = surveyName;
             update mysurvey;
-        }catch(SFDCAccessControlException e){ SurveyForceUtil.log('ViewSurveyController:updateSurveyName():SFDCAccessControlException' + e.getMessage());
-    }catch(Exception e){Apexpages.addMessages(e);}
+        }catch(SFDCAccessControlException e){System.debug('update1'+e); SurveyForceUtil.log('ViewSurveyController:updateSurveyName():SFDCAccessControlException' + e.getMessage());
+    }catch(Exception e){System.debug('update2'+e); Apexpages.addMessages(e);}
     return null;
 }
 
@@ -196,8 +209,8 @@ public Pagereference updateSurveyThankYouAndLink(){
         mysurvey.Thank_You_Link__c = surveyThankYouURL;
 
         update mysurvey;
-    }catch(SFDCAccessControlException e){ SurveyForceUtil.log('ViewSurveyController:updateSurveyThankYouAndLink():SFDCAccessControlException' + e.getMessage());
-}catch(Exception e){Apexpages.addMessages(e);}
+    }catch(SFDCAccessControlException e){System.debug(e); SurveyForceUtil.log('ViewSurveyController:updateSurveyThankYouAndLink():SFDCAccessControlException' + e.getMessage());
+}catch(Exception e){Apexpages.addMessages(e); System.debug(e);}
 
 return null;
 }
@@ -336,18 +349,22 @@ public PageReference submitResults()
                 sqrList.add(sqr);
             }
         }
+        System.debug('AddSurveyTaker()');
+        System.debug(AddSurveyTaker());
         if(AddSurveyTaker())
         {
             for (SurveyQuestionResponse__c sqr : sqrList)
             {
+                sqr.Lead__c = leadId;
                 sqr.SurveyTaker__c = surveyTakerId;
             }
-            //insert sqrList;
+           System.debug(sqrList);
+           // insert sqrList;
             ViewSurveyControllerWithoutSharing.createSurveyQuestionResponse(sqrList);
             thankYouRendered = true;
         }
-    }catch(SFDCAccessControlException e){ SurveyForceUtil.log('ViewSurveyController:submitResults():SFDCAccessControlException' + e.getMessage()); Apexpages.addMessage(new ApexPages.Message(ApexPages.Severity.Error, 'Some error occured while saving response'));
-    }catch(Exception e){ if(isInternal) { SurveyForceUtil.log(e.getMessage()); Apexpages.addMessage(new ApexPages.Message(ApexPages.Severity.Error, 'Some error occured while saving response'));            }
+    }catch(SFDCAccessControlException e){System.debug('submit res ' +e); SurveyForceUtil.log('ViewSurveyController:submitResults():SFDCAccessControlException' + e.getMessage()); Apexpages.addMessage(new ApexPages.Message(ApexPages.Severity.Error, 'Some error occured while saving response'));
+    }catch(Exception e){ if(isInternal) {System.debug('submit res 2' +e); SurveyForceUtil.log(e.getMessage()); Apexpages.addMessage(new ApexPages.Message(ApexPages.Severity.Error, 'Some error occured while saving response'));            }
     }
 
     if(mysurvey.Thank_You_Link__c != null && mysurvey.Thank_You_Link__c != 'Undefined' && !String.isBlank(mysurvey.Thank_You_Link__c)){
@@ -371,6 +388,9 @@ private Boolean AddSurveyTaker()
     if(contactId != null && (contactId.toUpperCase() == 'NONE'|| contactId.length()<15)){
         contactId = null;
     }
+    if(leadId!= null && (leadId.toUpperCase() == 'NONE'|| leadId.length()<15)){
+        leadId = null;
+    }
     if (anonymousAnswer != 'Anonymous'){ userId = UserInfo.getUserId(); }  else{ userId = null; }
 
 
@@ -387,9 +407,9 @@ private Boolean AddSurveyTaker()
         if(anonymousAnswer != 'Anonymous')
         {
             //If survey is taken by Contact OR Case already then no need to take it again
-            List<SurveyTaker__c> check = [SELECT Contact__c, Survey__c, Case__c, User__c From SurveyTaker__c Where Survey__c=:surveyId and
+            List<SurveyTaker__c> check = [SELECT Lead__c, Contact__c, Survey__c, Case__c, User__c From SurveyTaker__c Where Survey__c=:surveyId and
             ((Contact__c != null and Contact__c=:contactId) or (Case__c!= null and Case__c = :caseId)
-            or (User__c!= null and User__c = :userId))];
+            or (User__c!= null and User__c = :userId) or (Lead__c!= null and Lead__c = :leadId))];
             if(check != null && check.size()>0){
                 Apexpages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, System.Label.LABS_SF_You_have_already_taken_this_survey));
 
@@ -402,13 +422,14 @@ private Boolean AddSurveyTaker()
         st.Taken__c = 'true';
         st.Case__c = (caseId == null)?null: String.escapeSingleQuotes(caseId);
         st.User__c = userId;
-
+        st.Lead__c = (leadId ==null)?null: String.escapeSingleQuotes(leadId);
         //insert st;
+        System.debug(st);
         ViewSurveyControllerWithoutSharing.createSurveyTaken(st);
         surveyTakerId = st.Id;
         retVal = true;
-    }catch(SFDCAccessControlException e){ SurveyForceUtil.log('ViewSurveyController:AddSurveyTaker():SFDCAccessControlException' + e.getMessage());
-}catch(Exception e){Apexpages.addMessages(e);}
+    }catch(SFDCAccessControlException e){System.debug('add1' +e); SurveyForceUtil.log('ViewSurveyController:AddSurveyTaker():SFDCAccessControlException' + e.getMessage());
+}catch(Exception e){Apexpages.addMessages(e); System.debug('add2'+e);}
 return retVal;
 }
 
